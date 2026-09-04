@@ -212,6 +212,11 @@
   .panel .noperson { font-size: 12.5px; color: var(--faint); }
 
   .hintbar { padding: 0 26px 40px; color: var(--faint); font-size: 12.5px; }
+  .careerprompt { text-align: center; padding: 70px 26px; color: var(--muted); }
+  .careerprompt .big { font-size: 44px; margin-bottom: 10px; }
+  .careerprompt b { color: var(--gold); }
+  .personhint { padding: 6px 26px 0; font-size: 12.5px; color: var(--muted); }
+  .personhint b { color: var(--gold); }
   .sharebtn { font: inherit; cursor: pointer; background: none; border: 1px solid var(--card-edge); color: var(--muted); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
   .sharebtn:hover { color: var(--text); border-color: var(--faint); }
 
@@ -232,8 +237,8 @@
   <span class="row-label">Who is learning</span>
   <span id="peopleChips" style="display:inline-flex;gap:8px;flex-wrap:wrap"></span>
   <span class="addperson">
-    <input id="personName" maxlength="30" placeholder="name…" aria-label="New person's name">
-    <button id="personAdd" type="button">+ Add</button>
+    <input id="personName" maxlength="30" placeholder="child's name…" aria-label="New person's name">
+    <button id="personAdd" type="button">+ Add person</button>
   </span>
   <button class="sharebtn" id="shareBtn" type="button" hidden>🔗 Copy board link</button>
   <span class="statelegend">
@@ -242,6 +247,7 @@
     <span><span class="sw" style="background:var(--card);border:1px solid var(--card-edge)"></span>not started yet</span>
   </span>
 </div>
+<div class="personhint" id="personHint"></div>
 
 <div class="controls" id="controlsOverview">
   <div>
@@ -265,6 +271,10 @@
   </div>
 </div>
 <div class="careersummary" id="careerSummary"></div>
+<div class="careerprompt" id="careerPrompt" hidden>
+  <div class="big">🧭</div>
+  <p>Pick a career above to see <b>only</b> the skills that lead to it —<br>everything else disappears from the board.</p>
+</div>
 
 <div class="board-wrap" id="boardWrap">
   <div class="board" id="board">
@@ -458,7 +468,9 @@ function renderBoard() {
     b.innerHTML = `<span class="e">${c.emoji}</span><span class="t">${c.title}</span>`;
     b.addEventListener("click", e => {
       e.stopPropagation();
-      if (tab === "overview") setTrace(c.id); else openCareerPanel(c.id);
+      if (tab === "overview") setTrace(c.id);
+      else if (careerTabSel === c.id) openCareerPanel(c.id);
+      else selectCareerTab(c.id);
     });
     careerCol.appendChild(b);
   });
@@ -466,7 +478,7 @@ function renderBoard() {
 
   applyStates();
   applyHighlights();
-  requestAnimationFrame(drawEdges);
+  drawEdges();   // synchronous: rAF is suspended in background tabs and the edges would go stale
 }
 
 function drawEdges() {
@@ -611,7 +623,7 @@ function renderPeople() {
     const b = document.createElement("button");
     b.className = "pchip";
     b.setAttribute("aria-pressed", String(p.id === activePerson));
-    b.innerHTML = `${p.name} <span class="x" title="Remove ${p.name}">✕</span>`;
+    b.innerHTML = `${p.id === activePerson ? "✎ " : ""}${p.name} <span class="x" title="Remove ${p.name}">✕</span>`;
     b.addEventListener("click", e => {
       if (e.target.classList.contains("x")) {
         if (confirm(`Remove ${p.name} and their saved progress?`)) removePerson(p.id);
@@ -624,6 +636,15 @@ function renderPeople() {
     wrap.appendChild(b);
   });
   $("shareBtn").hidden = !(store.mode === "api" && store.shareUrl);
+  const hint = $("personHint");
+  if (!people.length) {
+    hint.innerHTML = "No one on the board yet — type a name and press <b>+ Add person</b>. Progress is per person.";
+  } else if (!activePerson) {
+    hint.innerHTML = "Click a name to choose <b>who you are marking for</b>, then click any skill.";
+  } else {
+    const nm = people.find(p => p.id === activePerson)?.name || "";
+    hint.innerHTML = `Marking as <b>${nm}</b> — click any skill and choose ◐ Learning or ✓ Mastered. Click the name again to stop marking.`;
+  }
 }
 
 async function addPerson() {
@@ -727,8 +748,16 @@ function closePanel() {
 function selectCareerTab(cid) {
   careerTabSel = (careerTabSel === cid) ? null : cid;
   syncChips();
+  updateCareerPrompt();
   renderBoard();
   renderCareerSummary();
+}
+
+function updateCareerPrompt() {
+  const promptOn = tab === "career" && !careerTabSel;
+  $("careerPrompt").hidden = !promptOn;
+  $("boardWrap").hidden = promptOn;
+  $("hintbar").hidden = promptOn;
 }
 
 function renderCareerSummary() {
@@ -763,6 +792,7 @@ function switchTab(t) {
   $("controlsCareer").hidden = t !== "career";
   $("traceBanner").classList.toggle("show", t === "overview" && !!traceCareer);
   closePanel();
+  updateCareerPrompt();
   renderBoard();
   renderCareerSummary();
   $("hintbar").textContent = t === "career"

@@ -494,7 +494,7 @@
    "domain": "social-emotional",
    "cluster": true,
    "check": "B",
-   "description": "Practical-life / self-care observation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the Montessori practical-life pillar and literal koolivalmidus criteria (independence in dressing and eating) - framework section 6's SEL root row always promised 'self-care' and the graph had dropped it. Three sub-checks: (a) dresses fully independently including fastenings, laces by ~6; (b) tidies own activity materials without prompting - which is also control-of-error culture, the booklet system's own precondition; (c) sets or clears the table, or an equivalent daily contribution, as an owned job. A TIER-0 ROOT with no consumers: it gates nothing, ever - least of all desk work. Provenance: R1 contains no practical-life coverage (an upstream research gap, flagged in framework CR17); this cluster enters on R3's koolivalmidus evidence directly.",
+   "description": "Practical-life / self-care observation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the Montessori practical-life pillar and literal koolivalmidus criteria (independence in dressing and eating) - framework section 6's SEL root row always promised 'self-care' and the graph had dropped it. Three sub-checks: (a) dresses fully independently including fastenings, laces by ~6; (b) tidies own activity materials without prompting - which is also control-of-error culture, the booklet system's own precondition; (c) sets or clears the table, or an equivalent daily contribution, as an owned job - tallied since v1.7 on the ROTA-RELIABILITY semantics (framework 5.2: the unit is a completed rota cycle with <=1 reminder, not an unprompted instance). A TIER-0 ROOT whose single consumer since v1.7 is the tier-1 contribution continuation (sel-contribution - the mot-gross-body -> mot-gross-2 precedent: a load-bearing intra-stratum edge, since an owned table job and own-materials tidying are the genuine floor under a rota job and shared-space reset); it still gates no desk work, ever. Provenance: R1 contains no practical-life coverage (an upstream research gap, flagged in framework CR17); this cluster enters on R3's koolivalmidus evidence directly.",
    "prereqs": [],
    "careers": [
     "doctor",
@@ -665,7 +665,7 @@
    "domain": "numeracy",
    "strand": "training-ground",
    "keystone": true,
-   "description": "Fluent addition and subtraction within 20, crossing ten, strategies before speed (make-ten, then retrieval), built on within-10 fluency and teens-as-ten-and-ones. BOSS MILESTONE: the consensus Foundations-to-Builder era gate - ceremonial plus numeracy-chain-only, never cross-domain (framework section 3); completable during the koolieelik year or grade 1, no deadline (CR14).",
+   "description": "Fluent addition and subtraction within 20, crossing ten, strategies before speed (make-ten, doubles and near-doubles, compensation, then retrieval - the strategy ladder named in full since v1.7, S-3), built on within-10 fluency and teens-as-ten-and-ones. MODEL-METHOD RUNG 1 (v1.7, Singapore S-1): one-step change and part-whole word problems within 20, told orally or with materials, join this node as a named sub-check (authored in the booklet pipeline like every non-boss check) - and the first PICTORIAL part-whole bar is drawn beside the ten-frame: the bonds-5 ladybird grown up, the bar earning trust on numbers the child already handles (GP3 CPA), a full tier before num-problems-data demands it. BOSS MILESTONE: the consensus Foundations-to-Builder era gate - ceremonial plus numeracy-chain-only, never cross-domain (framework section 3); completable during the koolieelik year or grade 1, no deadline (CR14).",
    "prereqs": [
     "num-addsub-10",
     "num-teens"
@@ -681,10 +681,12 @@
     "finance",
     "youtuber"
    ],
-   "mastery_check": "Unlock trial: 10 mixed +/- facts within 20 incl. crossing ten, 9/10 at roughly 3 seconds per fact or less - the parent listens for retrieval or a fast derived fact, not finger-counting (that is what 'fluent' certifies, GP6/R2 s8); timed-but-gentle per framework 5.5: no visible stopwatch, no racing; passed twice at least 3 days apart",
+   "mastery_check": "Unlock trial: 10 mixed +/- facts within 20 incl. crossing ten, 9/10 - the parent LISTENS for retrieval or a fast derived fact, not finger-counting: prompt, strategy-free answers are what 'fluent' certifies (GP6/R2 s8), and the retrieval-listen replaces any numeric latency bar (v1.7, FIN-16 - a hidden stopwatch is still a stopwatch, framework 5.5); gentle and unclocked, no racing; passed twice at least 3 days apart",
    "exercises": [
     "Make-ten bridges: 8 + 5 as 8 + 2 + 3 on ten-frames",
-    "Balance-format mixes: 13 = □ + 5 and 12 - □ = 4 side by side (CR10)"
+    "Doubles and near-doubles ladder: 6 + 6, then 6 + 7 as double-6-and-one-more; 9 + 6 as 10 + 6 - 1 (compensation) - the strategy rungs between make-ten and retrieval (v1.7, S-3)",
+    "Balance-format mixes: 13 = □ + 5 and 12 - □ = 4 side by side (CR10)",
+    "One-step story problems (join, separate, part-whole) told with materials, the part-whole bar drawn beside the ten-frame - the model method's first rung (v1.7, S-1)"
    ]
   },
   {
@@ -928,6 +930,28 @@
    ]
   },
   {
+   "id": "sel-contribution",
+   "title": "Our Family Counts on Me",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "social-emotional",
+   "cluster": true,
+   "check": "B",
+   "description": "Contribution continuation cluster (framework 5.2, Archetype-B tallies under the v1.7 ROTA-RELIABILITY semantics: for owned jobs the tally unit is a completed rota cycle - the job done all week with <=1 reminder - not an unprompted instance, because duty measures dependability under the rota, not spontaneity), added in v1.7 (international review, Japan J-1): the tier-0 life stratum delivered self-management and stopped one rung short of contribution - after sel-selfcare(c)'s table job the tree offered no rung where the SCOPE of the child's owned service grows, and the family appeared in the graph mostly as the child's audience, customer and playtest pool. Four sub-checks, life-evidenced, maturing across the band and into Band 3: (a) holds a rotating weekly family job end-to-end, set by the family job board at the CR20 weekly meeting - done because it is their job, including on days they don't feel like it; (b) helps reset SHARED family spaces, not only own materials - the tier-1 extension of sel-selfcare(b), the home o-soji; (c) prepares one simple family food element weekly, growing toward a whole simple element by ~8; (d) does one regular small service FOR A PERSON - reads to, teaches or helps a younger child or a grandparent. NO consumers and never gates desk work - the standing life-stratum ruling; nothing is paid and nothing is scored (GP9 untouched: the rota threads duty without rewards or nagging). The family is this system's community of contribution (framework section 6 SEL row, v1.7); this cluster is where the child becomes a serving member of it.",
+   "prereqs": [
+    "sel-selfcare"
+   ],
+   "careers": [
+    "manager",
+    "doctor"
+   ],
+   "exercises": [
+    "Family job board: one rotating weekly job owned end-to-end (table setting, plant watering, bin duty, laundry sorting) - assigned at the CR20 family meeting, tallied per completed rota week (<=1 reminder), never per mood",
+    "Kitchen apprentice: prepare one simple family food element weekly (butter the bread, dress the salad, stir the porridge), growing toward a whole simple element by ~8",
+    "Helper turn: a regular small service for a person - read to a younger sibling or grandparent, teach them a game, carry the shopping in - logged as rota reliability, not spontaneity"
+   ]
+  },
+  {
    "id": "sci-cause-effect",
    "title": "What Happens If...",
    "tier": 1,
@@ -944,7 +968,7 @@
    ],
    "exercises": [
     "Float-or-sink lab: predict with stickers, test in a bowl, record",
-    "Week-long weather chart with a Friday what-changed talk"
+    "Week-long weather chart with a Friday what-changed talk - and since v1.7 the strip RETURNS one week each season, same strip, compared against last season's (Japan J-8, framework section 3 seasonal layer: spaced retrieval wearing seasonal clothes; the check itself stays single-shot at first completion)"
    ]
   },
   {
@@ -973,7 +997,7 @@
    "tier": 2,
    "ageBand": "7-8",
    "domain": "numeracy",
-   "description": "Place value with tens and ones unitised; mental addition and subtraction within 100 and first written column methods. The 0-100 linear-placement mastery check lives here (log-to-linear shift complete by ~7-8, Siegler & Booth): places numbers on an empty 0-100 line with linear, not squashed, spacing.",
+   "description": "Place value with tens and ones unitised; mental addition and subtraction within 100 and first written column methods. The 0-100 linear-placement mastery check lives here (log-to-linear shift complete by ~7-8, Siegler & Booth): places numbers on an empty 0-100 line with linear, not squashed, spacing. MODEL-METHOD RUNG 2 (v1.7, Singapore S-1): the COMPARISON model - 'Liis has 34, Mart has 8 more: how many has Mart? how many together?' - with 'how many more / fewer' named as a sub-check, closing R2 s11's own mandate (comparison problems are the type children who can compute still fail, and the difference structure last appeared at num-subitise-compare, pre-arithmetic).",
    "prereqs": [
     "num-addsub-20",
     "num-numbers-100"
@@ -986,7 +1010,9 @@
    ],
    "exercises": [
     "Draw 47 + 25 with tens-and-ones pictures before the column form",
-    "Number-line hops: 62 - 30 as jumps of ten; empty-line placement check rides along"
+    "Reasonableness first: will 47 + 25 land nearer 70 or 100? Say why, then check (answer-estimation discipline, v1.7, S-3)",
+    "Number-line hops: 62 - 30 as jumps of ten; empty-line placement check rides along",
+    "Comparison-bar stories: draw Liis's bar, then Mart's longer bar with the 8-more marked; answer 'how many more?' and 'how many together?' (the comparison model, v1.7, S-1)"
    ]
   },
   {
@@ -995,7 +1021,7 @@
    "tier": 2,
    "ageBand": "7-8",
    "domain": "numeracy",
-   "description": "Multiplication and division as equal groups, arrays and fair sharing; skip counting in 2s, 5s and 10s. Concept only - table retrieval starts in num-tables-1, only after this concept is secure (R3 section 5 multiplication-timing row).",
+   "description": "Multiplication and division as equal groups, arrays and fair sharing; skip counting in 2s, 5s and 10s. Concept only - table retrieval starts in num-tables-1, only after this concept is secure (R3 section 5 multiplication-timing row). MODEL-METHOD RUNG 3 (v1.7, Singapore S-1): the equal-groups bar drawn beside the array - one idea, two costumes (GP14).",
    "prereqs": [
     "num-addsub-20"
    ],
@@ -1007,6 +1033,7 @@
    ],
    "exercises": [
     "Array hunt: draw 3 x 4 as rows of stickers, write both matching facts",
+    "Equal-groups bar beside the array: the same 3 x 4 as a bar of three equal 4-blocks - one idea, two costumes (GP14; the model method's rung 3, v1.7)",
     "Skip-counting tracks in 2s, 5s and 10s around the game board"
    ]
   },
@@ -1106,7 +1133,8 @@
    ],
    "exercises": [
     "Repeated-reading pairs: read the same passage twice, chart the smoothness",
-    "Read-and-do cards: follow a written instruction to draw or color something"
+    "Read-and-do cards: follow a written instruction to draw or color something",
+    "From ~8, one CR18 rail night a week may flip direction: the child reads to a younger sibling or a grandparent (v1.7, Japan J-11) - fluency practice, service (sel-contribution(d)) and appetite in one unpriced move; the parent's read-aloud nights continue"
    ]
   },
   {
@@ -1253,7 +1281,8 @@
    ],
    "exercises": [
     "Body-map Life page (B13): label the big parts on your own outline, then match each sense to its organ",
-    "Plant-nurse month: water-and-light care log with a weekly drawing; teddy first-aid drill: clean, cover, tell an adult"
+    "Plant-nurse month: water-and-light care log with a weekly drawing - keyed to SPRING PLANTING where the family can (v1.7, seasonal layer, framework section 3): plant in spring, measure through summer, harvest seeds in autumn; and one give-back: seeds saved for next year's child, or a feeder kept filled through winter (framework section 6 sustainability lens)",
+    "Teddy first-aid drill: clean, cover, tell an adult"
    ]
   },
   {
@@ -1341,6 +1370,7 @@
    ],
    "exercises": [
     "Weekly copy passage riding the booklet sessions' form-drawing/warm-up lane (framework section 3 template - the same lane letter formation rides at Band 2, never a separate slot): same text each week, watch it get easier",
+    "My most beautiful page (v1.7, care-of-work ritual, framework 5.3): once a month the child chooses the most careful page from the month's work, dates it, and it enters the portfolio - the child's own eye for quality is the thing being trained, so the child selects and adults never rank",
     "Tool craft: measure, cut and sew a felt bookmark"
    ]
   },
@@ -1385,6 +1415,7 @@
    ],
    "exercises": [
     "Paper bridge v1 vs v2: hold 10 coins, document what changed and why",
+    "Version 2 uses less (framework section 6 sustainability lens, v1.7): one named improvement round where v2 must use less material, or reuse or repair v1's parts - better AND lighter",
     "Flop journal: one thing that failed, one thing to try differently"
    ]
   },
@@ -1433,10 +1464,11 @@
     "finance",
     "youtuber"
    ],
-   "mastery_check": "Unlock trial: 10 mixed one-digit x and / facts drawn across all tables, 9/10 at roughly 3 seconds per fact or less - retrieval, not skip-counting up from zero (the parent listens for it; that automaticity is what the boss certifies, GP6/R2 s11); timed-but-gentle per framework 5.5: no visible stopwatch, no racing; passed twice at least a week apart - a flagged, deliberate widening of Archetype A's >=3-day default (which num-addsub-20 follows): a full-korrutustabel automaticity claim earns the longer verification gap",
+   "mastery_check": "Unlock trial: 10 mixed one-digit x and / facts drawn across all tables, 9/10 - retrieval, not skip-counting up from zero: the parent LISTENS for prompt, strategy-free answers, and the retrieval-listen replaces any numeric latency bar (v1.7, FIN-16 - a hidden stopwatch is still a stopwatch, framework 5.5); gentle and unclocked, no racing; passed twice at least a week apart - a flagged, deliberate widening of Archetype A's >=3-day default (which num-addsub-20 follows): a full-korrutustabel automaticity claim earns the longer verification gap",
    "exercises": [
     "Three gentle minutes at the top of each fluency-maintenance session (the 1-2 weekly slots of the framework section 3 template) - one focus table mixed with two mastered ones, chart your own curve, no red ink, no racing anyone; between those sessions the daily retrieval strips carry the table items, so nothing lands on non-session days (which by rule carry no system work beyond the CR18 read-aloud rail)",
-    "Flip two number cards (1-9), multiply, then say the matching division fact aloud"
+    "Flip two number cards (1-9), multiply, then say the matching division fact aloud",
+    "Remainder sharing: share 23 among 4 - how many each, and what's left over? (division with remainder, the age-9 consensus row's previously missing line, v1.7, S-3)"
    ]
   },
   {
@@ -1488,7 +1520,7 @@
    "ageBand": "8-9",
    "domain": "numeracy",
    "keystone": true,
-   "description": "Solves two-step word problems by drawing bar models first; reads and draws scaled bar graphs; perimeter of simple shapes. Grade-3 checkpoint content (CR14 numeracy run-ahead): completing during tier 4 is normal - no deadline.",
+   "description": "Solves two-step word problems by drawing bar models first - and since v1.7 (Singapore S-1) the only NEW demand here is COMPOSING TWO STEPS in one model: the part-whole bar arrived at num-addsub-20, the comparison bar at num-addsub-100 and the equal-groups bar at num-mult-groups, so 'draw the model before writing any number sentence' asks for a representation the child already trusts (B7/GP6 honored - representation and problem depth no longer debut together on the hardest content). Reads and draws scaled bar graphs; perimeter of simple shapes. Grade-3 checkpoint content (CR14 numeracy run-ahead): completing during tier 4 is normal - no deadline.",
    "prereqs": [
     "num-times-tables",
     "num-multidigit"
@@ -1812,7 +1844,8 @@
    ],
    "exercises": [
     "Two-minute show-and-convince with one drawn visual, timed by a sibling",
-    "Persuasion poster: convince the family of the next trip destination"
+    "Persuasion poster: convince the family of the next trip destination",
+    "One showing to a non-household audience where it comes naturally - grandparents, a huviring - performing for people who did not watch you rehearse, years before tier 4's real audiences (v1.7, Japan J-11)"
    ]
   },
   {
@@ -1900,7 +1933,7 @@
    ],
    "exercises": [
     "Plan sheet: menu, shopping list inside a set budget, who-does-what role cards for the family",
-    "Run the night, then a two-question debrief: what worked? what changes next time?"
+    "Run the night, then a two-question debrief: what worked? what changes next time? - filed where next time can actually happen (v1.7): the CR20 family meeting and the framework 5.1 quest-revival tradition (a restaurant night for grandparents in a later season opens by reading this sheet aloud)"
    ]
   },
   {
@@ -1987,8 +2020,8 @@
     "entrepreneur"
    ],
    "exercises": [
-    "Make a batch (cards, biscuits, bookmarks); write down cost, price, and why that price",
-    "Run the stall; count profit = sold minus cost; decide one thing version 2 of the stall changes"
+    "Make a batch (cards, biscuits, bookmarks); write down cost, price, and why that price - costs include materials AND leftovers: what was used up and what was thrown away go on the card too (framework section 6 sustainability lens, v1.7)",
+    "Run the stall; count profit = sold minus cost; decide one thing version 2 of the stall changes - and version 2 RUNS (v1.7, Japan J-6): the next stall (a seasonal revival or the next family market, framework 5.1 quest-revival tradition) opens by reading this decision aloud, so the hansei is a promise the system keeps, not a form"
    ]
   },
   {
@@ -2228,7 +2261,8 @@
    ],
    "exercises": [
     "Birdhouse from your own dimensioned sketch",
-    "Egg-drop iteration cycle with documented versions"
+    "Egg-drop iteration cycle with documented versions",
+    "One cycle runs the 'version 2 uses less' constraint: same performance, less material - and repair beats rebuild where it can (framework section 6 sustainability lens, v1.7)"
    ]
   },
   {
@@ -2248,7 +2282,7 @@
     "youtuber"
    ],
    "exercises": [
-    "Run three micro-ventures across the year; keep a one-page P&L for each",
+    "Run three micro-ventures across the year; keep a one-page P&L for each - materials-honest since v1.7: inputs, leftovers and waste appear in the P&L beside the euros (framework section 6 sustainability lens)",
     "Post-mortem ritual: what sold, what flopped, what the next venture changes"
    ]
   },
