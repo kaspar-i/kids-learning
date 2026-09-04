@@ -297,10 +297,10 @@ const DOMAIN_LABEL = {
   "creativity": "Creativity", "motor-spatial": "Motor & spatial",
 };
 const TIER_META = [
-  ["Spark", "kindergarten · age 5–6"],
-  ["Foundations", "school year 1 · age 6–7"],
-  ["Builder", "school year 2 · age 7–8"],
-  ["Explorer", "school year 3 · age 8–9"],
+  ["Spark", "lasteaed · age 5–6"],
+  ["Foundations", "koolieelik · age 6–7"],
+  ["Builder", "grade 1 · age 7–8"],
+  ["Explorer", "grade 2 · age 8–9"],
   ["Voyager", "middle school · age 10–13"],
   ["Horizons", "high school · age 14–18"],
 ];
@@ -589,7 +589,10 @@ function syncChips() {
 }
 
 /* ======================= progress states ======================= */
-function stateOf(nodeId) { return activePerson ? progress[activePerson]?.[nodeId] || null : null; }
+function stateOf(nodeId) {
+  const s = activePerson ? progress[activePerson]?.[nodeId] : null;
+  return STATES.includes(s) ? s : null;   // legacy/unknown stored states render as unmarked
+}
 
 function applyStates() {
   document.querySelectorAll(".node").forEach(el => {
@@ -766,14 +769,17 @@ function renderCareerSummary() {
   const c = DATA.careers.find(x => x.id === careerTabSel);
   const core = [...careerSet(careerTabSel)];
   const enr = enrichmentSet(careerTabSel);
+  /* CR19: additive display only — what has been gathered, never a ratio,
+     percentage, or bar toward the career. */
   let progHtml = "";
   if (activePerson) {
     const states = progress[activePerson] || {};
     const m = core.filter(id => states[id] === "mastered").length;
     const l = core.filter(id => states[id] === "learning").length;
     const person = people.find(p => p.id === activePerson);
-    progHtml = `<div class="nums">${person?.name}: <b style="color:var(--ok)">${m}</b> mastered · <b style="color:var(--warn)">${l}</b> learning · ${core.length - m - l} ahead</div>
-      <div class="pbar"><div class="m" style="width:${(m / core.length * 100).toFixed(1)}%"></div><div class="l" style="width:${(l / core.length * 100).toFixed(1)}%"></div></div>`;
+    progHtml = (m || l)
+      ? `<div class="nums">${person?.name} has gathered <b style="color:var(--ok)">✓ ${m}</b> mastered${l ? ` and <b style="color:var(--warn)">◐ ${l}</b> in learning` : ""} on this path</div>`
+      : `<div class="nums">${person?.name}'s journey on this path is just beginning ✨</div>`;
   } else {
     progHtml = `<div class="nums">Select a person above to see their progress on this path.</div>`;
   }
