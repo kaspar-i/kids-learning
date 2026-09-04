@@ -1,0 +1,857 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Little Learners Skill Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* Committed single-theme design: a game board at night. All colors explicit. */
+  :root {
+    --bg: #131a24;
+    --bg-raise: #18212e;
+    --card: #1d2634;
+    --card-edge: #2c394c;
+    --text: #edf2f7;
+    --muted: #93a3b5;
+    --faint: #5c6c80;
+    --gold: #ffcf66;
+    --gold-dim: #8a6f37;
+    --ok: #6cc07a;        /* mastered */
+    --ok-bg: rgba(108, 192, 122, .16);
+    --warn: #f0b95a;      /* learning */
+    --warn-bg: rgba(240, 185, 90, .15);
+    --todo: #e07a7a;      /* not learned yet */
+    --todo-bg: rgba(224, 122, 122, .13);
+    --d-literacy: #e8794a;
+    --d-numeracy: #4fa3e3;
+    --d-logic: #b48ce8;
+    --d-science: #4dbd91;
+    --d-executive-function: #e8b64a;
+    --d-social-emotional: #e87a9c;
+    --d-communication: #6ecfd9;
+    --d-motor-spatial: #9ebf5a;
+    --d-digital: #7d94e8;
+    --d-creativity: #d98ae0;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  h1, h2, h3, .tier-label, .tabs button { font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; }
+
+  header.top { padding: 24px 26px 0; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  header.top h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.01em; }
+  header.top h1 .leaf { color: var(--gold); }
+  header.top .mode { font-size: 11.5px; color: var(--faint); border: 1px solid var(--card-edge); border-radius: 999px; padding: 3px 10px; }
+
+  /* ---------- tabs ---------- */
+  .tabs { display: flex; gap: 6px; padding: 14px 26px 0; border-bottom: 1px solid var(--card-edge); }
+  .tabs button {
+    font-size: 15px; font-weight: 700; color: var(--muted); background: none; border: none;
+    padding: 8px 14px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button:hover { color: var(--text); }
+  .tabs button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ---------- people bar ---------- */
+  .peoplebar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 26px 0;
+  }
+  .peoplebar .row-label { margin-right: 2px; }
+  .pchip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); padding: 6px 12px;
+  }
+  .pchip:hover { border-color: var(--faint); }
+  .pchip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .pchip[aria-pressed="true"] { border-color: var(--gold); background: #2a2c22; color: var(--gold); }
+  .pchip .x { color: var(--faint); font-size: 12px; padding: 0 0 0 2px; }
+  .pchip .x:hover { color: var(--todo); }
+  .addperson { display: inline-flex; gap: 6px; }
+  .addperson input {
+    font: inherit; background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); border-radius: 999px; padding: 6px 12px; width: 130px;
+  }
+  .addperson input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .addperson button {
+    font: inherit; font-weight: 700; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--gold); border: 1px solid var(--gold-dim); padding: 6px 14px;
+  }
+  .addperson button:hover { border-color: var(--gold); }
+  .statelegend { display: inline-flex; gap: 12px; margin-left: auto; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .statelegend span { display: inline-flex; align-items: center; gap: 5px; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+  /* ---------- controls ---------- */
+  .controls { padding: 12px 26px 4px; display: flex; flex-direction: column; gap: 10px; }
+  .row-label { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: var(--faint); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips button {
+    font: inherit; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); padding: 6px 13px;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .chips button:hover { border-color: var(--faint); }
+  .chips button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .chips button[aria-pressed="true"] { border-color: var(--gold); background: #2a2c22; color: var(--gold); }
+  .chips .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  /* active-career banner (overview trace) */
+  .tracebanner {
+    margin: 0 26px; padding: 8px 14px; border: 1px solid var(--gold-dim); border-radius: 10px;
+    background: rgba(255, 207, 102, .07); display: none; align-items: center; gap: 10px; font-size: 13px;
+  }
+  .tracebanner.show { display: flex; }
+  .tracebanner b { color: var(--gold); }
+  .tracebanner button {
+    margin-left: auto; font: inherit; cursor: pointer; background: none; border: 1px solid var(--card-edge);
+    color: var(--muted); border-radius: 999px; padding: 3px 12px;
+  }
+  .tracebanner button:hover { color: var(--text); border-color: var(--faint); }
+
+  /* ---------- career summary (career tab) ---------- */
+  .careersummary { margin: 12px 26px 0; padding: 14px 18px; background: var(--bg-raise); border: 1px solid var(--card-edge); border-radius: 14px; display: none; }
+  .careersummary.show { display: block; }
+  .careersummary .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .careersummary h2 { margin: 0; font-size: 21px; font-weight: 800; }
+  .careersummary .nums { color: var(--muted); font-size: 13px; }
+  .pbar { height: 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--card-edge); margin-top: 10px; overflow: hidden; display: flex; }
+  .pbar .m { background: var(--ok); }
+  .pbar .l { background: var(--warn); }
+
+  /* ---------- the board ---------- */
+  .board-wrap { overflow-x: auto; padding: 10px 26px 30px; }
+  .board { position: relative; display: flex; gap: 46px; width: max-content; padding-right: 26px; }
+  #edges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  .col { display: flex; flex-direction: column; gap: 9px; width: 208px; flex: none; position: relative; z-index: 1; }
+  .col-head { position: sticky; top: 0; padding: 4px 2px 8px; background: linear-gradient(var(--bg) 78%, transparent); z-index: 2; }
+  .tier-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .tier-sub { font-size: 11.5px; color: var(--faint); }
+
+  .node {
+    background: var(--card); border: 1px solid var(--card-edge);
+    border-left: 4px solid var(--dc, var(--faint));
+    border-radius: 9px; padding: 8px 10px 7px; cursor: pointer;
+    transition: opacity .18s, transform .12s, border-color .18s, box-shadow .18s;
+    text-align: left; font: inherit; color: inherit; width: 100%; position: relative;
+  }
+  .node:hover { transform: translateY(-1px); border-color: var(--faint); }
+  .node:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .node .t { font-weight: 600; font-size: 13.5px; line-height: 1.3; display: block; padding-right: 18px; }
+  .node .m { display: flex; gap: 6px; align-items: center; margin-top: 3px; font-size: 11px; color: var(--muted); }
+  .node .m .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dc, var(--faint)); flex: none; }
+  .node .st { position: absolute; top: 7px; right: 8px; font-size: 12px; font-weight: 700; }
+  .node.s-mastered { background: linear-gradient(var(--ok-bg), var(--ok-bg)) var(--card); }
+  .node.s-mastered .st { color: var(--ok); }
+  .node.s-learning { background: linear-gradient(var(--warn-bg), var(--warn-bg)) var(--card); }
+  .node.s-learning .st { color: var(--warn); }
+  .node.s-notlearned { background: linear-gradient(var(--todo-bg), var(--todo-bg)) var(--card); }
+  .node.s-notlearned .st { color: var(--todo); }
+  .node.enrich { border-style: dashed; }
+  .node.enrich .t::after { content: " ✦"; color: var(--gold-dim); }
+
+  .career {
+    background: linear-gradient(160deg, #253044, #1d2634);
+    border: 1px solid var(--gold-dim);
+    border-radius: 12px; padding: 12px; cursor: pointer;
+    display: flex; gap: 10px; align-items: center;
+    transition: opacity .18s, transform .12s, border-color .18s;
+    font: inherit; color: inherit; width: 100%; text-align: left;
+  }
+  .career:hover { transform: translateY(-1px); border-color: var(--gold); }
+  .career:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .career .e { font-size: 26px; }
+  .career .t { font-weight: 700; font-size: 13.5px; line-height: 1.25; font-family: "Bricolage Grotesque", sans-serif; }
+
+  .board.tracing .node:not(.lit), .board.tracing .career:not(.lit) { opacity: .16; }
+  .board.tracing .node.lit { border-color: var(--gold-dim); box-shadow: 0 0 0 1px var(--gold-dim); }
+  .board.tracing .career.lit { border-color: var(--gold); box-shadow: 0 0 14px rgba(255, 207, 102, .25); }
+  .node.sel { border-color: var(--gold) !important; box-shadow: 0 0 0 1.5px var(--gold) !important; }
+
+  /* ---------- detail panel ---------- */
+  .panel {
+    position: fixed; right: 18px; bottom: 18px; width: min(410px, calc(100vw - 36px));
+    max-height: min(70vh, 600px); overflow-y: auto;
+    background: var(--bg-raise); border: 1px solid var(--card-edge); border-radius: 14px;
+    padding: 16px 18px; box-shadow: 0 12px 40px rgba(0, 0, 0, .5); z-index: 10;
+    display: none;
+  }
+  .panel.open { display: block; }
+  .panel .close {
+    position: sticky; top: 0; float: right; font: inherit; cursor: pointer;
+    background: var(--card); color: var(--muted); border: 1px solid var(--card-edge);
+    border-radius: 999px; width: 28px; height: 28px;
+  }
+  .panel .close:hover { color: var(--text); }
+  .panel h2 { margin: 0 40px 2px 0; font-size: 19px; font-weight: 700; }
+  .panel .meta { font-size: 12px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .panel .meta .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .panel .pathtag { font-size: 12px; border-radius: 999px; padding: 2px 10px; border: 1px solid var(--gold-dim); color: var(--gold); display: inline-block; margin-bottom: 8px; }
+  .panel .pathtag.off { border-color: var(--card-edge); color: var(--faint); }
+  .panel p.desc { margin: 0 0 10px; }
+  .panel h3 { margin: 12px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--faint); }
+  .panel ul { margin: 0; padding-left: 1.2em; }
+  .panel li { margin-bottom: 4px; }
+  .panel .cline { font-size: 20px; letter-spacing: 6px; }
+  .panel .stat { display: flex; gap: 14px; margin: 8px 0 2px; }
+  .panel .stat div { background: var(--card); border: 1px solid var(--card-edge); border-radius: 10px; padding: 8px 12px; }
+  .panel .stat b { display: block; font-size: 20px; color: var(--gold); font-family: "Bricolage Grotesque", sans-serif; }
+  .panel .stat span { font-size: 11.5px; color: var(--muted); }
+  .statebtns { display: flex; gap: 7px; flex-wrap: wrap; margin: 6px 0 2px; }
+  .statebtns button {
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 9px;
+    padding: 7px 12px; background: var(--card); color: var(--text); border: 1.5px solid var(--card-edge);
+  }
+  .statebtns button:hover { border-color: var(--faint); }
+  .statebtns button.on-mastered { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+  .statebtns button.on-learning { border-color: var(--warn); color: var(--warn); background: var(--warn-bg); }
+  .statebtns button.on-notlearned { border-color: var(--todo); color: var(--todo); background: var(--todo-bg); }
+  .panel .noperson { font-size: 12.5px; color: var(--faint); }
+
+  .hintbar { padding: 0 26px 40px; color: var(--faint); font-size: 12.5px; }
+  .sharebtn { font: inherit; cursor: pointer; background: none; border: 1px solid var(--card-edge); color: var(--muted); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
+  .sharebtn:hover { color: var(--text); border-color: var(--faint); }
+
+  @media (prefers-reduced-motion: reduce) { .node, .career { transition: none; } }
+</style>
+
+<header class="top">
+  <h1>Little Learners <span class="leaf">Skill Tree</span></h1>
+  <span class="mode" id="modeTag">…</span>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tabOverview" aria-selected="true">Overview</button>
+  <button role="tab" id="tabCareer" aria-selected="false">Career paths</button>
+</nav>
+
+<div class="peoplebar">
+  <span class="row-label">Who is learning</span>
+  <span id="peopleChips" style="display:inline-flex;gap:8px;flex-wrap:wrap"></span>
+  <span class="addperson">
+    <input id="personName" maxlength="30" placeholder="name…" aria-label="New person's name">
+    <button id="personAdd" type="button">+ Add</button>
+  </span>
+  <button class="sharebtn" id="shareBtn" type="button" hidden>🔗 Copy board link</button>
+  <span class="statelegend">
+    <span><span class="sw" style="background:var(--ok)"></span>mastered</span>
+    <span><span class="sw" style="background:var(--warn)"></span>learning</span>
+    <span><span class="sw" style="background:var(--todo)"></span>not learned yet</span>
+    <span><span class="sw" style="background:var(--card);border:1px solid var(--card-edge)"></span>not marked</span>
+  </span>
+</div>
+
+<div class="controls" id="controlsOverview">
+  <div>
+    <div class="row-label">Light up a career path</div>
+    <div class="chips" id="careerChips"></div>
+  </div>
+  <div>
+    <div class="row-label">Focus one domain</div>
+    <div class="chips" id="domainChips"></div>
+  </div>
+</div>
+<div class="tracebanner" id="traceBanner">
+  <span id="traceText"></span>
+  <button type="button" id="traceClear">✕ Clear</button>
+</div>
+
+<div class="controls" id="controlsCareer" hidden>
+  <div>
+    <div class="row-label">Choose a career — the board shows only its path</div>
+    <div class="chips" id="careerTabChips"></div>
+  </div>
+</div>
+<div class="careersummary" id="careerSummary"></div>
+
+<div class="board-wrap" id="boardWrap">
+  <div class="board" id="board">
+    <svg id="edges" aria-hidden="true"></svg>
+  </div>
+</div>
+<div class="hintbar" id="hintbar">The board scrolls sideways like a game tech tree — kindergarten on the left, careers on the right. Click a skill for details and to mark progress. ✦ = enrichment skill for the chosen career. Esc clears highlights.</div>
+
+<aside class="panel" id="panel" aria-live="polite"></aside>
+
+<script>
+const DATA = __DATA__;
+
+/* ======================= data derivations ======================= */
+const DOMAIN_ORDER = ["literacy", "communication", "numeracy", "logic", "science", "digital", "executive-function", "social-emotional", "creativity", "motor-spatial"];
+const DOMAIN_LABEL = {
+  "literacy": "Literacy", "communication": "Communication", "numeracy": "Numeracy",
+  "logic": "Logic", "science": "Science", "digital": "Digital",
+  "executive-function": "Executive function", "social-emotional": "Social-emotional",
+  "creativity": "Creativity", "motor-spatial": "Motor & spatial",
+};
+const TIER_META = [
+  ["Spark", "kindergarten · age 5–6"],
+  ["Foundations", "school year 1 · age 6–7"],
+  ["Builder", "school year 2 · age 7–8"],
+  ["Explorer", "school year 3 · age 8–9"],
+  ["Voyager", "middle school · age 10–13"],
+  ["Horizons", "high school · age 14–18"],
+];
+const STATES = ["notlearned", "learning", "mastered"];
+const STATE_LABEL = { mastered: "✓ Mastered", learning: "◐ Learning", notlearned: "○ Not learned yet" };
+const STATE_MARK = { mastered: "✓", learning: "◐", notlearned: "○" };
+
+const nodesById = {}; DATA.nodes.forEach(n => nodesById[n.id] = n);
+const kids = {}; DATA.nodes.forEach(n => (n.prereqs || []).forEach(p => (kids[p] = kids[p] || []).push(n.id)));
+const tiers = [...new Set(DATA.nodes.map(n => n.tier))].sort((a, b) => a - b);
+const maxTier = Math.max(...tiers);
+const domIdx = d => { const i = DOMAIN_ORDER.indexOf(d); return i < 0 ? 99 : i; };
+
+const ancCache = {};
+function ancestorsOf(id) {
+  if (ancCache[id]) return ancCache[id];
+  const out = new Set();
+  (function walk(i) { (nodesById[i]?.prereqs || []).forEach(p => { if (!out.has(p)) { out.add(p); walk(p); } }); })(id);
+  return (ancCache[id] = out);
+}
+function descendantsOf(id) {
+  const out = new Set();
+  (function walk(i) { (kids[i] || []).forEach(k => { if (!out.has(k)) { out.add(k); walk(k); } }); })(id);
+  return out;
+}
+
+/* Canonical career path = ancestor closure of its capstones + quest, plus the common trunk. */
+const careerSetCache = {};
+function careerSet(cid) {
+  if (careerSetCache[cid]) return careerSetCache[cid];
+  const c = DATA.careers.find(x => x.id === cid);
+  const seeds = [...(c.capstone_prereqs || []), ...(c.quest ? [c.quest] : [])].filter(id => nodesById[id]);
+  const s = new Set(seeds);
+  seeds.forEach(id => ancestorsOf(id).forEach(a => s.add(a)));
+  (DATA.common_trunk || []).forEach(id => { if (nodesById[id]) s.add(id); });
+  return (careerSetCache[cid] = s);
+}
+function enrichmentSet(cid) {
+  const core = careerSet(cid);
+  return new Set(DATA.nodes.filter(n => (n.careers || []).includes(cid) && !core.has(n.id)).map(n => n.id));
+}
+
+/* ======================= storage ======================= */
+function localStore() {
+  const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  return {
+    mode: "local",
+    shareUrl: null,
+    async load() { return { people: read("lls-people", []), progress: read("lls-progress", {}) }; },
+    async addPerson(name) {
+      const people = read("lls-people", []);
+      const id = "p" + Math.random().toString(36).slice(2, 9);
+      people.push({ id, name }); write("lls-people", people); return id;
+    },
+    async removePerson(id) {
+      write("lls-people", read("lls-people", []).filter(p => p.id !== id));
+      const prog = read("lls-progress", {}); delete prog[id]; write("lls-progress", prog);
+    },
+    async setState(personId, nodeId, state) {
+      const prog = read("lls-progress", {});
+      prog[personId] = prog[personId] || {};
+      if (state) prog[personId][nodeId] = state; else delete prog[personId][nodeId];
+      write("lls-progress", prog);
+    },
+  };
+}
+
+function apiStore(boardCode) {
+  const call = async (path, opts) => {
+    const r = await fetch(path, { headers: { "content-type": "application/json" }, ...opts });
+    if (!r.ok) throw new Error("api " + r.status);
+    return r.json();
+  };
+  const ensureBoard = async () => {
+    if (!boardCode) {
+      const b = await call("api/board", { method: "POST", body: "{}" });
+      boardCode = b.code;
+      const u = new URL(location.href); u.searchParams.set("board", boardCode);
+      history.replaceState(null, "", u.toString());
+    }
+    return boardCode;
+  };
+  return {
+    mode: "api",
+    get shareUrl() { return boardCode ? location.href : null; },
+    async load() {
+      if (!boardCode) return { people: [], progress: {} };
+      try { return await call("api/board?code=" + encodeURIComponent(boardCode)); }
+      catch { return { people: [], progress: {} }; }
+    },
+    async addPerson(name) {
+      const code = await ensureBoard();
+      const r = await call("api/person", { method: "POST", body: JSON.stringify({ code, name }) });
+      return r.id;
+    },
+    async removePerson(id) {
+      await call("api/person?code=" + encodeURIComponent(boardCode) + "&id=" + encodeURIComponent(id), { method: "DELETE" });
+    },
+    async setState(personId, nodeId, state) {
+      await call("api/progress", { method: "POST", body: JSON.stringify({ code: boardCode, personId, nodeId, state: state || null }) });
+    },
+  };
+}
+
+/* ======================= app state ======================= */
+let store = localStore();
+let people = [];
+let progress = {};       // personId -> {nodeId: state}
+let activePerson = null;
+let tab = "overview";    // 'overview' | 'career'
+let traceCareer = null;  // overview highlight context (sticky)
+let traceDomain = null;
+let careerTabSel = null; // career-tab filter
+let selectedNode = null;
+
+const $ = id => document.getElementById(id);
+const board = $("board"), svg = $("edges"), panel = $("panel");
+
+/* ======================= board rendering ======================= */
+function visibleNodeIds() {
+  if (tab === "career" && careerTabSel) {
+    const s = new Set([...careerSet(careerTabSel), ...enrichmentSet(careerTabSel)]);
+    return s;
+  }
+  return null; // all
+}
+
+function renderBoard() {
+  const vis = visibleNodeIds();
+  const enrich = (tab === "career" && careerTabSel) ? enrichmentSet(careerTabSel) : new Set();
+  board.querySelectorAll(".col").forEach(c => c.remove());
+
+  for (const t of tiers) {
+    const list = DATA.nodes
+      .filter(n => n.tier === t && (!vis || vis.has(n.id)))
+      .sort((a, b) => domIdx(a.domain) - domIdx(b.domain) || a.title.localeCompare(b.title));
+    if (vis && list.length === 0) continue;
+    const col = document.createElement("div");
+    col.className = "col";
+    const [name, sub] = TIER_META[t] || [`Tier ${t}`, ""];
+    col.innerHTML = `<div class="col-head"><div class="tier-label">${name}</div><div class="tier-sub">${sub}</div></div>`;
+    list.forEach(n => {
+      const b = document.createElement("button");
+      b.className = "node" + (enrich.has(n.id) ? " enrich" : "");
+      b.id = "n-" + n.id;
+      b.style.setProperty("--dc", `var(--d-${n.domain})`);
+      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}</span>`;
+      b.addEventListener("click", e => { e.stopPropagation(); openNode(n.id); });
+      col.appendChild(b);
+    });
+    board.appendChild(col);
+  }
+
+  const careerCol = document.createElement("div");
+  careerCol.className = "col";
+  careerCol.innerHTML = `<div class="col-head"><div class="tier-label">Careers</div><div class="tier-sub">destination goals</div></div>`;
+  const careersToShow = (tab === "career" && careerTabSel) ? DATA.careers.filter(c => c.id === careerTabSel) : DATA.careers;
+  careersToShow.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "career";
+    b.id = "c-" + c.id;
+    b.innerHTML = `<span class="e">${c.emoji}</span><span class="t">${c.title}</span>`;
+    b.addEventListener("click", e => {
+      e.stopPropagation();
+      if (tab === "overview") setTrace(c.id); else openCareerPanel(c.id);
+    });
+    careerCol.appendChild(b);
+  });
+  board.appendChild(careerCol);
+
+  applyStates();
+  applyHighlights();
+  requestAnimationFrame(drawEdges);
+}
+
+function drawEdges() {
+  const br = board.getBoundingClientRect();
+  svg.setAttribute("width", board.scrollWidth);
+  svg.setAttribute("height", board.scrollHeight);
+  svg.setAttribute("viewBox", `0 0 ${board.scrollWidth} ${board.scrollHeight}`);
+  const pos = el => {
+    const r = el.getBoundingClientRect();
+    return { l: r.left - br.left, r: r.right - br.left, y: r.top - br.top + r.height / 2 };
+  };
+  let html = `<style>
+    .e { stroke: rgba(96, 118, 148, .30); stroke-width: 1.4; }
+    .e.lit { stroke: var(--gold); stroke-width: 2; opacity: .8; }
+  </style>`;
+  const edge = (fromEl, toEl, cls) => {
+    const a = pos(fromEl), b = pos(toEl);
+    const dx = Math.max(24, (b.l - a.r) / 2);
+    return `<path class="${cls}" d="M ${a.r} ${a.y} C ${a.r + dx} ${a.y}, ${b.l - dx} ${b.y}, ${b.l} ${b.y}" fill="none"/>`;
+  };
+  DATA.nodes.forEach(n => (n.prereqs || []).forEach(p => {
+    const f = $("n-" + p), t = $("n-" + n.id);
+    if (f && t) html += edge(f, t, `e ep-${p} et-${n.id}`);
+  }));
+  // link each career card from its visible feeder nodes: capstone prereqs (+ quest if tier-max missing)
+  DATA.careers.forEach(c => {
+    const cEl = $("c-" + c.id);
+    if (!cEl) return;
+    const feeders = (c.capstone_prereqs || []).filter(id => $("n-" + id));
+    feeders.forEach(id => { html += edge($("n-" + id), cEl, `e ec-${c.id} ep-${id}`); });
+  });
+  svg.innerHTML = html;
+  applyEdgeHighlights();
+}
+
+/* ======================= highlights (overview trace) ======================= */
+function litSets() {
+  if (tab !== "overview") return null;
+  if (traceCareer) {
+    const core = careerSet(traceCareer);
+    const enr = enrichmentSet(traceCareer);
+    return { nodes: new Set([...core, ...enr]), careers: [traceCareer] };
+  }
+  if (traceDomain) {
+    const s = new Set(DATA.nodes.filter(n => n.domain === traceDomain).map(n => n.id));
+    const cars = [...new Set(DATA.nodes.filter(n => n.domain === traceDomain).flatMap(n => n.careers || []))];
+    return { nodes: s, careers: cars };
+  }
+  if (selectedNode && !panel.classList.contains("open")) return null;
+  if (selectedNode && !traceCareer) {
+    const s = new Set([selectedNode, ...ancestorsOf(selectedNode), ...descendantsOf(selectedNode)]);
+    return { nodes: s, careers: nodesById[selectedNode]?.careers || [] };
+  }
+  return null;
+}
+
+function applyHighlights() {
+  const lit = litSets();
+  board.classList.toggle("tracing", !!lit);
+  document.querySelectorAll(".node, .career").forEach(el => el.classList.remove("lit"));
+  if (lit) {
+    lit.nodes.forEach(id => $("n-" + id)?.classList.add("lit"));
+    lit.careers.forEach(id => $("c-" + id)?.classList.add("lit"));
+  }
+  document.querySelectorAll(".node.sel").forEach(el => el.classList.remove("sel"));
+  if (selectedNode) $("n-" + selectedNode)?.classList.add("sel");
+  applyEdgeHighlights();
+}
+
+function applyEdgeHighlights() {
+  const lit = litSets();
+  svg.querySelectorAll("path.e").forEach(p => {
+    if (!lit) { p.classList.remove("lit"); return; }
+    const cl = [...p.classList];
+    const from = cl.find(c => c.startsWith("ep-"))?.slice(3);
+    const to = cl.find(c => c.startsWith("et-"))?.slice(3);
+    const car = cl.find(c => c.startsWith("ec-"))?.slice(3);
+    const on = car
+      ? lit.careers.includes(car) && lit.nodes.has(from)
+      : lit.nodes.has(from) && lit.nodes.has(to);
+    p.classList.toggle("lit", on);
+  });
+}
+
+function setTrace(cid) {
+  traceCareer = (traceCareer === cid) ? null : cid;
+  traceDomain = null;
+  syncChips();
+  applyHighlights();
+  const bn = $("traceBanner");
+  if (traceCareer) {
+    const c = DATA.careers.find(x => x.id === traceCareer);
+    $("traceText").innerHTML = `Lighting the path to <b>${c.emoji} ${c.title}</b> — click any skill for details; the highlight stays until you clear it.`;
+    bn.classList.add("show");
+  } else bn.classList.remove("show");
+}
+function setDomain(d) {
+  traceDomain = (traceDomain === d) ? null : d;
+  traceCareer = null;
+  $("traceBanner").classList.remove("show");
+  syncChips();
+  applyHighlights();
+}
+function syncChips() {
+  document.querySelectorAll("#careerChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === traceCareer)));
+  document.querySelectorAll("#domainChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === traceDomain)));
+  document.querySelectorAll("#careerTabChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === careerTabSel)));
+}
+
+/* ======================= progress states ======================= */
+function stateOf(nodeId) { return activePerson ? progress[activePerson]?.[nodeId] || null : null; }
+
+function applyStates() {
+  document.querySelectorAll(".node").forEach(el => {
+    const id = el.id.slice(2);
+    el.classList.remove("s-mastered", "s-learning", "s-notlearned");
+    const st = stateOf(id);
+    if (st) el.classList.add("s-" + st);
+    const mark = el.querySelector(".st");
+    if (mark) mark.textContent = st ? STATE_MARK[st] : "";
+  });
+  renderCareerSummary();
+}
+
+async function setNodeState(nodeId, state) {
+  if (!activePerson) return;
+  progress[activePerson] = progress[activePerson] || {};
+  const cur = progress[activePerson][nodeId] || null;
+  const next = (cur === state) ? null : state;    // clicking the active state clears it
+  if (next) progress[activePerson][nodeId] = next; else delete progress[activePerson][nodeId];
+  applyStates();
+  if (selectedNode === nodeId) openNode(nodeId, true);
+  try { await store.setState(activePerson, nodeId, next); }
+  catch (e) { console.warn("save failed", e); }
+}
+
+/* ======================= people ======================= */
+function renderPeople() {
+  const wrap = $("peopleChips");
+  wrap.innerHTML = "";
+  people.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "pchip";
+    b.setAttribute("aria-pressed", String(p.id === activePerson));
+    b.innerHTML = `${p.name} <span class="x" title="Remove ${p.name}">✕</span>`;
+    b.addEventListener("click", e => {
+      if (e.target.classList.contains("x")) {
+        if (confirm(`Remove ${p.name} and their saved progress?`)) removePerson(p.id);
+        return;
+      }
+      activePerson = (activePerson === p.id) ? null : p.id;
+      renderPeople(); applyStates();
+      if (selectedNode) openNode(selectedNode, true);
+    });
+    wrap.appendChild(b);
+  });
+  $("shareBtn").hidden = !(store.mode === "api" && store.shareUrl);
+}
+
+async function addPerson() {
+  const inp = $("personName");
+  const name = inp.value.trim();
+  if (!name) return;
+  inp.value = "";
+  try {
+    const id = await store.addPerson(name);
+    people.push({ id, name });
+    activePerson = id;
+    progress[id] = progress[id] || {};
+    renderPeople(); applyStates();
+  } catch (e) { alert("Could not save the new person — try again."); }
+}
+
+async function removePerson(id) {
+  people = people.filter(p => p.id !== id);
+  delete progress[id];
+  if (activePerson === id) activePerson = null;
+  renderPeople(); applyStates();
+  try { await store.removePerson(id); } catch (e) {}
+}
+
+/* ======================= detail panel ======================= */
+function pathTagFor(nodeId) {
+  const ctx = (tab === "career" && careerTabSel) ? careerTabSel : traceCareer;
+  if (!ctx) return "";
+  const c = DATA.careers.find(x => x.id === ctx);
+  if (careerSet(ctx).has(nodeId)) return `<span class="pathtag">On the ${c.emoji} ${c.title.split(" / ")[0]} path</span>`;
+  if (enrichmentSet(ctx).has(nodeId)) return `<span class="pathtag">✦ Enrichment for ${c.emoji} ${c.title.split(" / ")[0]}</span>`;
+  return `<span class="pathtag off">Not on the ${c.emoji} path</span>`;
+}
+
+function stateButtonsHtml(nodeId) {
+  if (!activePerson) {
+    return people.length
+      ? `<p class="noperson">Select a person above to mark progress.</p>`
+      : `<p class="noperson">Add a person above to start marking progress.</p>`;
+  }
+  const cur = stateOf(nodeId);
+  const person = people.find(p => p.id === activePerson);
+  return `<h3>${person ? person.name + "'s" : ""} progress</h3>
+    <div class="statebtns">${STATES.map(s =>
+      `<button type="button" data-state="${s}" class="${cur === s ? "on-" + s : ""}">${STATE_LABEL[s]}</button>`).join("")}
+    </div>`;
+}
+
+function openNode(id, keepScroll) {
+  selectedNode = id;
+  const n = nodesById[id];
+  const prereqTitles = (n.prereqs || []).map(p => nodesById[p]?.title || p);
+  const unlocks = (kids[id] || []).filter(k => !visibleNodeIds() || visibleNodeIds().has(k)).map(k => nodesById[k].title);
+  panel.innerHTML = `
+    <button class="close" aria-label="Close">×</button>
+    <h2>${n.title}</h2>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--d-${n.domain})"></span>${DOMAIN_LABEL[n.domain] || n.domain}</span>
+      <span>age ${n.ageBand}</span>
+      <span>${(TIER_META[n.tier] || ["Tier " + n.tier])[0]}</span>
+    </div>
+    ${pathTagFor(id)}
+    <p class="desc">${n.description}</p>
+    ${stateButtonsHtml(id)}
+    ${n.exercises?.length ? `<h3>Example exercises</h3><ul>${n.exercises.map(e => `<li>${e}</li>`).join("")}</ul>` : ""}
+    ${prereqTitles.length ? `<h3>Builds on</h3><ul>${prereqTitles.map(t => `<li>${t}</li>`).join("")}</ul>` : "<h3>Builds on</h3><p class='desc' style='color:var(--muted)'>Nothing — this is a starting skill.</p>"}
+    ${unlocks.length ? `<h3>Unlocks</h3><ul>${unlocks.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
+    <h3>Feeds these careers</h3>
+    <div class="cline">${(n.careers || []).map(c => DATA.careers.find(x => x.id === c)?.emoji || "").join(" ")}</div>`;
+  panel.classList.add("open");
+  panel.querySelector(".close").addEventListener("click", closePanel);
+  panel.querySelectorAll(".statebtns button").forEach(b =>
+    b.addEventListener("click", () => setNodeState(id, b.dataset.state)));
+  applyHighlights();
+}
+
+function openCareerPanel(cid) {
+  const c = DATA.careers.find(x => x.id === cid);
+  const core = careerSet(cid);
+  const early = [...core].filter(id => nodesById[id].tier <= 3).length;
+  selectedNode = null;
+  panel.innerHTML = `
+    <button class="close" aria-label="Close">×</button>
+    <h2>${c.emoji} ${c.title}</h2>
+    <p class="desc">${c.description}</p>
+    <div class="stat">
+      <div><b>${core.size}</b><span>skills on this path</span></div>
+      <div><b>${early}</b><span>built at ages 5–9</span></div>
+    </div>`;
+  panel.classList.add("open");
+  panel.querySelector(".close").addEventListener("click", closePanel);
+}
+
+function closePanel() {
+  panel.classList.remove("open");
+  selectedNode = null;
+  applyHighlights();
+}
+
+/* ======================= career tab ======================= */
+function selectCareerTab(cid) {
+  careerTabSel = (careerTabSel === cid) ? null : cid;
+  syncChips();
+  renderBoard();
+  renderCareerSummary();
+}
+
+function renderCareerSummary() {
+  const el = $("careerSummary");
+  if (!(tab === "career" && careerTabSel)) { el.classList.remove("show"); return; }
+  const c = DATA.careers.find(x => x.id === careerTabSel);
+  const core = [...careerSet(careerTabSel)];
+  const enr = enrichmentSet(careerTabSel);
+  let progHtml = "";
+  if (activePerson) {
+    const states = progress[activePerson] || {};
+    const m = core.filter(id => states[id] === "mastered").length;
+    const l = core.filter(id => states[id] === "learning").length;
+    const person = people.find(p => p.id === activePerson);
+    progHtml = `<div class="nums">${person?.name}: <b style="color:var(--ok)">${m}</b> mastered · <b style="color:var(--warn)">${l}</b> learning · ${core.length - m - l} ahead</div>
+      <div class="pbar"><div class="m" style="width:${(m / core.length * 100).toFixed(1)}%"></div><div class="l" style="width:${(l / core.length * 100).toFixed(1)}%"></div></div>`;
+  } else {
+    progHtml = `<div class="nums">Select a person above to see their progress on this path.</div>`;
+  }
+  const early = core.filter(id => nodesById[id].tier <= 3).length;
+  el.innerHTML = `<div class="head"><h2>${c.emoji} ${c.title}</h2>
+    <span class="nums">${core.length} path skills (${early} at ages 5–9) · ${enr.size} enrichment ✦</span></div>${progHtml}`;
+  el.classList.add("show");
+}
+
+/* ======================= tabs & chips ======================= */
+function switchTab(t) {
+  tab = t;
+  $("tabOverview").setAttribute("aria-selected", String(t === "overview"));
+  $("tabCareer").setAttribute("aria-selected", String(t === "career"));
+  $("controlsOverview").hidden = t !== "overview";
+  $("controlsCareer").hidden = t !== "career";
+  $("traceBanner").classList.toggle("show", t === "overview" && !!traceCareer);
+  closePanel();
+  renderBoard();
+  renderCareerSummary();
+  $("hintbar").textContent = t === "career"
+    ? "Only the chosen career's skills are shown — solid cards are the required path, ✦ dashed cards are enrichment. Click a skill to mark progress."
+    : "The board scrolls sideways like a game tech tree — kindergarten on the left, careers on the right. Click a skill for details and to mark progress. Esc clears highlights.";
+}
+
+function buildChips() {
+  const mk = (wrap, c, onclick) => {
+    const b = document.createElement("button");
+    b.dataset.id = c.id;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `${c.emoji} ${c.title.split(" / ")[0].split(" (")[0]}`;
+    b.addEventListener("click", onclick);
+    wrap.appendChild(b);
+  };
+  DATA.careers.forEach(c => mk($("careerChips"), c, () => setTrace(c.id)));
+  DATA.careers.forEach(c => mk($("careerTabChips"), c, () => selectCareerTab(c.id)));
+  DOMAIN_ORDER.forEach(d => {
+    const b = document.createElement("button");
+    b.dataset.id = d;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `<span class="dot" style="background:var(--d-${d})"></span>${DOMAIN_LABEL[d]}`;
+    b.addEventListener("click", () => setDomain(d));
+    $("domainChips").appendChild(b);
+  });
+}
+
+/* ======================= boot ======================= */
+async function boot() {
+  buildChips();
+  renderBoard();
+
+  // storage: use the API when this page is served next to one; otherwise this device only
+  const params = new URLSearchParams(location.search);
+  try {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), 2500);
+    const r = await fetch("api/ping", { signal: ctl.signal });
+    clearTimeout(t);
+    if (r.ok) store = apiStore(params.get("board") || null);
+  } catch (e) { /* stay local */ }
+  $("modeTag").textContent = store.mode === "api" ? "🌐 shared family board" : "💾 saving on this device only";
+  $("modeTag").title = store.mode === "api"
+    ? "Progress is saved to the shared board — share the board link so others see it too."
+    : "Progress is saved in this browser only. Deploy with the API + database to share a board.";
+
+  const data = await store.load();
+  people = data.people || [];
+  progress = data.progress || {};
+  if (people.length === 1) activePerson = people[0].id;
+  renderPeople(); applyStates();
+
+  // refresh from server when returning to the tab (api mode)
+  document.addEventListener("visibilitychange", async () => {
+    if (store.mode === "api" && document.visibilityState === "visible") {
+      const d = await store.load();
+      people = d.people || []; progress = d.progress || {};
+      if (activePerson && !people.find(p => p.id === activePerson)) activePerson = null;
+      renderPeople(); applyStates();
+    }
+  });
+}
+
+$("tabOverview").addEventListener("click", () => switchTab("overview"));
+$("tabCareer").addEventListener("click", () => switchTab("career"));
+$("personAdd").addEventListener("click", addPerson);
+$("personName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
+$("traceClear").addEventListener("click", () => setTrace(traceCareer));
+$("shareBtn").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(store.shareUrl); $("shareBtn").textContent = "✓ Link copied"; }
+  catch { prompt("Copy this board link:", store.shareUrl); }
+  setTimeout(() => $("shareBtn").textContent = "🔗 Copy board link", 2000);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (panel.classList.contains("open")) { closePanel(); return; }
+    if (traceCareer) setTrace(traceCareer);
+    if (traceDomain) setDomain(traceDomain);
+  }
+});
+
+/* edges stay glued to the cards: redraw when fonts arrive, on resize, on board reflow */
+if (document.fonts?.ready) document.fonts.ready.then(() => drawEdges());
+addEventListener("resize", () => drawEdges());
+new ResizeObserver(() => drawEdges()).observe(board);
+
+boot();
+</script>

@@ -1,0 +1,3332 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Little Learners Skill Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* Committed single-theme design: a game board at night. All colors explicit. */
+  :root {
+    --bg: #131a24;
+    --bg-raise: #18212e;
+    --card: #1d2634;
+    --card-edge: #2c394c;
+    --text: #edf2f7;
+    --muted: #93a3b5;
+    --faint: #5c6c80;
+    --gold: #ffcf66;
+    --gold-dim: #8a6f37;
+    --ok: #6cc07a;        /* mastered */
+    --ok-bg: rgba(108, 192, 122, .16);
+    --warn: #f0b95a;      /* learning */
+    --warn-bg: rgba(240, 185, 90, .15);
+    --todo: #e07a7a;      /* not learned yet */
+    --todo-bg: rgba(224, 122, 122, .13);
+    --d-literacy: #e8794a;
+    --d-numeracy: #4fa3e3;
+    --d-logic: #b48ce8;
+    --d-science: #4dbd91;
+    --d-executive-function: #e8b64a;
+    --d-social-emotional: #e87a9c;
+    --d-communication: #6ecfd9;
+    --d-motor-spatial: #9ebf5a;
+    --d-digital: #7d94e8;
+    --d-creativity: #d98ae0;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  h1, h2, h3, .tier-label, .tabs button { font-family: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; }
+
+  header.top { padding: 24px 26px 0; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  header.top h1 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.01em; }
+  header.top h1 .leaf { color: var(--gold); }
+  header.top .mode { font-size: 11.5px; color: var(--faint); border: 1px solid var(--card-edge); border-radius: 999px; padding: 3px 10px; }
+
+  /* ---------- tabs ---------- */
+  .tabs { display: flex; gap: 6px; padding: 14px 26px 0; border-bottom: 1px solid var(--card-edge); }
+  .tabs button {
+    font-size: 15px; font-weight: 700; color: var(--muted); background: none; border: none;
+    padding: 8px 14px 10px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button:hover { color: var(--text); }
+  .tabs button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+  .tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ---------- people bar ---------- */
+  .peoplebar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 26px 0;
+  }
+  .peoplebar .row-label { margin-right: 2px; }
+  .pchip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); padding: 6px 12px;
+  }
+  .pchip:hover { border-color: var(--faint); }
+  .pchip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .pchip[aria-pressed="true"] { border-color: var(--gold); background: #2a2c22; color: var(--gold); }
+  .pchip .x { color: var(--faint); font-size: 12px; padding: 0 0 0 2px; }
+  .pchip .x:hover { color: var(--todo); }
+  .addperson { display: inline-flex; gap: 6px; }
+  .addperson input {
+    font: inherit; background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); border-radius: 999px; padding: 6px 12px; width: 130px;
+  }
+  .addperson input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .addperson button {
+    font: inherit; font-weight: 700; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--gold); border: 1px solid var(--gold-dim); padding: 6px 14px;
+  }
+  .addperson button:hover { border-color: var(--gold); }
+  .statelegend { display: inline-flex; gap: 12px; margin-left: auto; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .statelegend span { display: inline-flex; align-items: center; gap: 5px; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+  /* ---------- controls ---------- */
+  .controls { padding: 12px 26px 4px; display: flex; flex-direction: column; gap: 10px; }
+  .row-label { font-size: 11px; text-transform: uppercase; letter-spacing: .14em; color: var(--faint); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips button {
+    font: inherit; cursor: pointer; border-radius: 999px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--card-edge); padding: 6px 13px;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .chips button:hover { border-color: var(--faint); }
+  .chips button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .chips button[aria-pressed="true"] { border-color: var(--gold); background: #2a2c22; color: var(--gold); }
+  .chips .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  /* active-career banner (overview trace) */
+  .tracebanner {
+    margin: 0 26px; padding: 8px 14px; border: 1px solid var(--gold-dim); border-radius: 10px;
+    background: rgba(255, 207, 102, .07); display: none; align-items: center; gap: 10px; font-size: 13px;
+  }
+  .tracebanner.show { display: flex; }
+  .tracebanner b { color: var(--gold); }
+  .tracebanner button {
+    margin-left: auto; font: inherit; cursor: pointer; background: none; border: 1px solid var(--card-edge);
+    color: var(--muted); border-radius: 999px; padding: 3px 12px;
+  }
+  .tracebanner button:hover { color: var(--text); border-color: var(--faint); }
+
+  /* ---------- career summary (career tab) ---------- */
+  .careersummary { margin: 12px 26px 0; padding: 14px 18px; background: var(--bg-raise); border: 1px solid var(--card-edge); border-radius: 14px; display: none; }
+  .careersummary.show { display: block; }
+  .careersummary .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .careersummary h2 { margin: 0; font-size: 21px; font-weight: 800; }
+  .careersummary .nums { color: var(--muted); font-size: 13px; }
+  .pbar { height: 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--card-edge); margin-top: 10px; overflow: hidden; display: flex; }
+  .pbar .m { background: var(--ok); }
+  .pbar .l { background: var(--warn); }
+
+  /* ---------- the board ---------- */
+  .board-wrap { overflow-x: auto; padding: 10px 26px 30px; }
+  .board { position: relative; display: flex; gap: 46px; width: max-content; padding-right: 26px; }
+  #edges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  .col { display: flex; flex-direction: column; gap: 9px; width: 208px; flex: none; position: relative; z-index: 1; }
+  .col-head { position: sticky; top: 0; padding: 4px 2px 8px; background: linear-gradient(var(--bg) 78%, transparent); z-index: 2; }
+  .tier-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .tier-sub { font-size: 11.5px; color: var(--faint); }
+
+  .node {
+    background: var(--card); border: 1px solid var(--card-edge);
+    border-left: 4px solid var(--dc, var(--faint));
+    border-radius: 9px; padding: 8px 10px 7px; cursor: pointer;
+    transition: opacity .18s, transform .12s, border-color .18s, box-shadow .18s;
+    text-align: left; font: inherit; color: inherit; width: 100%; position: relative;
+  }
+  .node:hover { transform: translateY(-1px); border-color: var(--faint); }
+  .node:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .node .t { font-weight: 600; font-size: 13.5px; line-height: 1.3; display: block; padding-right: 18px; }
+  .node .m { display: flex; gap: 6px; align-items: center; margin-top: 3px; font-size: 11px; color: var(--muted); }
+  .node .m .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dc, var(--faint)); flex: none; }
+  .node .st { position: absolute; top: 7px; right: 8px; font-size: 12px; font-weight: 700; }
+  .node.s-mastered { background: linear-gradient(var(--ok-bg), var(--ok-bg)) var(--card); }
+  .node.s-mastered .st { color: var(--ok); }
+  .node.s-learning { background: linear-gradient(var(--warn-bg), var(--warn-bg)) var(--card); }
+  .node.s-learning .st { color: var(--warn); }
+  .node.s-notlearned { background: linear-gradient(var(--todo-bg), var(--todo-bg)) var(--card); }
+  .node.s-notlearned .st { color: var(--todo); }
+  .node.enrich { border-style: dashed; }
+  .node.enrich .t::after { content: " ✦"; color: var(--gold-dim); }
+
+  .career {
+    background: linear-gradient(160deg, #253044, #1d2634);
+    border: 1px solid var(--gold-dim);
+    border-radius: 12px; padding: 12px; cursor: pointer;
+    display: flex; gap: 10px; align-items: center;
+    transition: opacity .18s, transform .12s, border-color .18s;
+    font: inherit; color: inherit; width: 100%; text-align: left;
+  }
+  .career:hover { transform: translateY(-1px); border-color: var(--gold); }
+  .career:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .career .e { font-size: 26px; }
+  .career .t { font-weight: 700; font-size: 13.5px; line-height: 1.25; font-family: "Bricolage Grotesque", sans-serif; }
+
+  .board.tracing .node:not(.lit), .board.tracing .career:not(.lit) { opacity: .16; }
+  .board.tracing .node.lit { border-color: var(--gold-dim); box-shadow: 0 0 0 1px var(--gold-dim); }
+  .board.tracing .career.lit { border-color: var(--gold); box-shadow: 0 0 14px rgba(255, 207, 102, .25); }
+  .node.sel { border-color: var(--gold) !important; box-shadow: 0 0 0 1.5px var(--gold) !important; }
+
+  /* ---------- detail panel ---------- */
+  .panel {
+    position: fixed; right: 18px; bottom: 18px; width: min(410px, calc(100vw - 36px));
+    max-height: min(70vh, 600px); overflow-y: auto;
+    background: var(--bg-raise); border: 1px solid var(--card-edge); border-radius: 14px;
+    padding: 16px 18px; box-shadow: 0 12px 40px rgba(0, 0, 0, .5); z-index: 10;
+    display: none;
+  }
+  .panel.open { display: block; }
+  .panel .close {
+    position: sticky; top: 0; float: right; font: inherit; cursor: pointer;
+    background: var(--card); color: var(--muted); border: 1px solid var(--card-edge);
+    border-radius: 999px; width: 28px; height: 28px;
+  }
+  .panel .close:hover { color: var(--text); }
+  .panel h2 { margin: 0 40px 2px 0; font-size: 19px; font-weight: 700; }
+  .panel .meta { font-size: 12px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .panel .meta .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .panel .pathtag { font-size: 12px; border-radius: 999px; padding: 2px 10px; border: 1px solid var(--gold-dim); color: var(--gold); display: inline-block; margin-bottom: 8px; }
+  .panel .pathtag.off { border-color: var(--card-edge); color: var(--faint); }
+  .panel p.desc { margin: 0 0 10px; }
+  .panel h3 { margin: 12px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--faint); }
+  .panel ul { margin: 0; padding-left: 1.2em; }
+  .panel li { margin-bottom: 4px; }
+  .panel .cline { font-size: 20px; letter-spacing: 6px; }
+  .panel .stat { display: flex; gap: 14px; margin: 8px 0 2px; }
+  .panel .stat div { background: var(--card); border: 1px solid var(--card-edge); border-radius: 10px; padding: 8px 12px; }
+  .panel .stat b { display: block; font-size: 20px; color: var(--gold); font-family: "Bricolage Grotesque", sans-serif; }
+  .panel .stat span { font-size: 11.5px; color: var(--muted); }
+  .statebtns { display: flex; gap: 7px; flex-wrap: wrap; margin: 6px 0 2px; }
+  .statebtns button {
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 9px;
+    padding: 7px 12px; background: var(--card); color: var(--text); border: 1.5px solid var(--card-edge);
+  }
+  .statebtns button:hover { border-color: var(--faint); }
+  .statebtns button.on-mastered { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
+  .statebtns button.on-learning { border-color: var(--warn); color: var(--warn); background: var(--warn-bg); }
+  .statebtns button.on-notlearned { border-color: var(--todo); color: var(--todo); background: var(--todo-bg); }
+  .panel .noperson { font-size: 12.5px; color: var(--faint); }
+
+  .hintbar { padding: 0 26px 40px; color: var(--faint); font-size: 12.5px; }
+  .sharebtn { font: inherit; cursor: pointer; background: none; border: 1px solid var(--card-edge); color: var(--muted); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
+  .sharebtn:hover { color: var(--text); border-color: var(--faint); }
+
+  @media (prefers-reduced-motion: reduce) { .node, .career { transition: none; } }
+</style>
+
+<header class="top">
+  <h1>Little Learners <span class="leaf">Skill Tree</span></h1>
+  <span class="mode" id="modeTag">…</span>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" id="tabOverview" aria-selected="true">Overview</button>
+  <button role="tab" id="tabCareer" aria-selected="false">Career paths</button>
+</nav>
+
+<div class="peoplebar">
+  <span class="row-label">Who is learning</span>
+  <span id="peopleChips" style="display:inline-flex;gap:8px;flex-wrap:wrap"></span>
+  <span class="addperson">
+    <input id="personName" maxlength="30" placeholder="name…" aria-label="New person's name">
+    <button id="personAdd" type="button">+ Add</button>
+  </span>
+  <button class="sharebtn" id="shareBtn" type="button" hidden>🔗 Copy board link</button>
+  <span class="statelegend">
+    <span><span class="sw" style="background:var(--ok)"></span>mastered</span>
+    <span><span class="sw" style="background:var(--warn)"></span>learning</span>
+    <span><span class="sw" style="background:var(--todo)"></span>not learned yet</span>
+    <span><span class="sw" style="background:var(--card);border:1px solid var(--card-edge)"></span>not marked</span>
+  </span>
+</div>
+
+<div class="controls" id="controlsOverview">
+  <div>
+    <div class="row-label">Light up a career path</div>
+    <div class="chips" id="careerChips"></div>
+  </div>
+  <div>
+    <div class="row-label">Focus one domain</div>
+    <div class="chips" id="domainChips"></div>
+  </div>
+</div>
+<div class="tracebanner" id="traceBanner">
+  <span id="traceText"></span>
+  <button type="button" id="traceClear">✕ Clear</button>
+</div>
+
+<div class="controls" id="controlsCareer" hidden>
+  <div>
+    <div class="row-label">Choose a career — the board shows only its path</div>
+    <div class="chips" id="careerTabChips"></div>
+  </div>
+</div>
+<div class="careersummary" id="careerSummary"></div>
+
+<div class="board-wrap" id="boardWrap">
+  <div class="board" id="board">
+    <svg id="edges" aria-hidden="true"></svg>
+  </div>
+</div>
+<div class="hintbar" id="hintbar">The board scrolls sideways like a game tech tree — kindergarten on the left, careers on the right. Click a skill for details and to mark progress. ✦ = enrichment skill for the chosen career. Esc clears highlights.</div>
+
+<aside class="panel" id="panel" aria-live="polite"></aside>
+
+<script>
+const DATA = {
+ "careers": [
+  {
+   "id": "doctor",
+   "title": "Doctor",
+   "emoji": "🩺",
+   "description": "Reads dense text for decades, holds multi-step protocols in working memory under stress, works with fine-motor precision, and pairs calm inhibitory control with genuine empathy.",
+   "quest": "quest-doctor",
+   "capstone_prereqs": [
+    "t5-life-sciences",
+    "t5-research-project"
+   ]
+  },
+  {
+   "id": "software-engineer",
+   "title": "Software Engineer / IT Specialist",
+   "emoji": "💻",
+   "description": "Decomposes problems into steps, reasons over patterns and constraints, and treats every bug as information — built on the sudoku and unplugged-to-Scratch chains.",
+   "quest": "quest-software",
+   "capstone_prereqs": [
+    "t5-software-craft",
+    "t5-advanced-math"
+   ]
+  },
+  {
+   "id": "manager",
+   "title": "Fortune-500 Manager / Executive",
+   "emoji": "🏢",
+   "description": "Decides with incomplete information, explains the call in three sentences, reads the room, delegates with role clarity, and runs plan-do-debrief loops.",
+   "quest": "quest-manager",
+   "capstone_prereqs": [
+    "t5-org-leadership",
+    "t5-financial-analysis"
+   ]
+  },
+  {
+   "id": "lawyer",
+   "title": "Lawyer",
+   "emoji": "⚖️",
+   "description": "Reads precisely, retells with the sequence intact, argues with reasons, spots rule violations, and summarizes the other side fairly before answering it.",
+   "quest": "quest-lawyer",
+   "capstone_prereqs": [
+    "t5-argument-law"
+   ]
+  },
+  {
+   "id": "scientist",
+   "title": "Scientist / Researcher",
+   "emoji": "🔬",
+   "description": "Disciplined curiosity: observe, classify, measure, change one thing at a time, chart the results, explain with evidence, and write it up.",
+   "quest": "quest-scientist",
+   "capstone_prereqs": [
+    "t5-research-project",
+    "t5-advanced-math"
+   ]
+  },
+  {
+   "id": "engineer",
+   "title": "Engineer (Civil / Mechanical)",
+   "emoji": "🏗️",
+   "description": "Spatial reasoning, measurement, structural intuition, technical drawings, and the version-2 habit: iterate after failure until it holds.",
+   "quest": "quest-engineer",
+   "capstone_prereqs": [
+    "t5-applied-engineering"
+   ]
+  },
+  {
+   "id": "entrepreneur",
+   "title": "Entrepreneur",
+   "emoji": "🚀",
+   "description": "Generates many ideas, notices problems worth solving, understands profit = sell minus cost, persuades, leads small teams, and metabolizes flops.",
+   "quest": "quest-entrepreneur",
+   "capstone_prereqs": [
+    "t5-venture"
+   ]
+  },
+  {
+   "id": "finance",
+   "title": "Finance Professional",
+   "emoji": "📈",
+   "description": "Deep number sense, ratio and probability instincts, delayed gratification made visible, fluent reading of tables, and systematic checking discipline.",
+   "quest": "quest-finance",
+   "capstone_prereqs": [
+    "t5-financial-analysis"
+   ]
+  },
+  {
+   "id": "youtuber",
+   "title": "YouTuber / Content Creator",
+   "emoji": "🎬",
+   "description": "Finds stories worth telling, speaks to a camera clearly and warmly, shoots and edits until version 2 is genuinely better, keeps a schedule, reads audience feedback with empathy, and runs the channel as a small honest venture - with publishing parent-gated throughout childhood and online-safety judgment walked as a first-class skill, never fine print.",
+   "quest": "quest-youtuber",
+   "capstone_prereqs": [
+    "t5-creator-business",
+    "t5-venture"
+   ]
+  }
+ ],
+ "common_trunk": [
+  "ef-attention-persist",
+  "ef-plan-check",
+  "sel-emotions-turns",
+  "sel-cooperation",
+  "com-retell-story",
+  "com-because-reasons",
+  "lit-phonemic-awareness",
+  "lit-letter-knowledge",
+  "lit-ee-decoding",
+  "lit-reading-fluency",
+  "lit-en-oral-vocab",
+  "lit-en-oral-2",
+  "lit-en-oral-3",
+  "lit-en-phonics-1",
+  "lit-en-phonics-2",
+  "lit-en-reading",
+  "num-counting-cardinality",
+  "num-subitise-compare",
+  "num-bonds-5",
+  "num-bonds-10",
+  "num-addsub-10",
+  "num-teens",
+  "num-addsub-20",
+  "num-mult-groups",
+  "num-tables-1",
+  "num-times-tables"
+ ],
+ "nodes": [
+  {
+   "id": "ef-attention-persist",
+   "title": "Stick With It",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "executive-function",
+   "cluster": true,
+   "check": "mixed",
+   "description": "Cluster node, two sub-checks with DIFFERENT archetypes (framework 5.2, hence check: mixed): (a) sustains a freely chosen task for about 10 minutes - an observation tally, Archetype B (>=3 unprompted instances across >=2 weeks); (b) follows a 2-step spoken instruction from memory at band entry, 3-step for mastery - a performance check, Archetype A (an instruction is by definition prompted, and this is a two-minute working-memory check, not a disposition). The 3-step bar sits at the TOP of the Band-1 WM budget (2-3 chunks), so this sub-check is expected to consolidate late in the band - never a day-1 binary. Trained through games-with-rules, never abstract drills; no per-sitting rewards (B20).",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Simon-says with 2-part commands growing to 3-part across the band, executed from memory",
+    "Sand-timer challenge: stay with a chosen puzzle page for 10 minutes; at node completion the poster records the capability statement 'I can stay with a puzzle for 10 minutes now' (B20) - no per-sitting stamps"
+   ]
+  },
+  {
+   "id": "sel-emotions-turns",
+   "title": "Feelings & Fair Turns",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "social-emotional",
+   "cluster": true,
+   "check": "mixed",
+   "description": "Cluster node, three sub-checks (framework 5.2, hence check: mixed - restructured in v1.6 to add the calming toolkit gap review found missing): (a) names at least four basic emotions in self and others - Archetype A (a two-minute table check); (b) takes turns and copes with losing a game - Archetype B observation tally; (c) uses a chosen calming move when upset (belly breath, count-down, ask-for-a-break - the child picks their move in calm weather first) - Archetype B tally, closing the framework section 6 co-regulation-to-self-regulation rung the graph previously started at vocabulary.",
+   "prereqs": [],
+   "careers": [
+    "manager",
+    "doctor",
+    "entrepreneur",
+    "lawyer"
+   ],
+   "exercises": [
+    "Emotion-faces page: match four faces to story pictures, then play show-me-the-face",
+    "Board-game night with a losing-gracefully script in the parent footer",
+    "Calm-corner card: choose and practice YOUR calming move while calm, so it is there when the storm comes - uses in real upsets are tallied, never demanded"
+   ]
+  },
+  {
+   "id": "mot-pencil-grip",
+   "title": "Pencil Power",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "motor-spatial",
+   "description": "Tripod grip consolidated; cuts along a line with scissors; copies circle, square, triangle and cross. Form-drawing warm-ups open every booklet.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "engineer",
+    "lawyer",
+    "scientist"
+   ],
+   "exercises": [
+    "Form-drawing warm-up: trace then freehand waves, loops and zigzags in 2 cm lanes",
+    "Scissor road: cut along a winding line to bring the fox home"
+   ]
+  },
+  {
+   "id": "mot-gross-body",
+   "title": "Move & Balance",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "motor-spatial",
+   "cluster": true,
+   "check": "B",
+   "description": "Gross-motor observation cluster (framework 5.2, Archetype-B tallies) - the 'gross before fine' half of MOT-SPA that koolivalmidus checks at playground level: (a) balances on one leg ~5 seconds and hops on each foot; (b) throws and catches a big ball from a few steps away; (c) runs, climbs and takes stairs confidently. Tracked as life observations, and deliberately NOT a hard prerequisite of pencil work: gross-to-fine is developmental context, soft-linked to mot-pencil-grip on the poster layer only, because hard-gating desk skills behind ball skills would fail the load-bearing edge test.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Playground circuit: curb-walk balance, ten hops on each foot - logged as observation tallies, never drilled at a table",
+    "Big-ball games: ten throws and catches with a parent from three steps away"
+   ]
+  },
+  {
+   "id": "spa-pattern-blocks",
+   "title": "Patterns & Blocks",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "motor-spatial",
+   "description": "Copies and extends patterns on a big grid, completes mirror-halves, and builds block or tangram figures from a picture. Spatial play at 5 predicts later math and STEM.",
+   "prereqs": [],
+   "careers": [
+    "engineer",
+    "doctor",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Copy-the-grid: reproduce a 4x4 colored-square pattern next to the model",
+    "Mirror-half page: finish the symmetric other half of a picture"
+   ]
+  },
+  {
+   "id": "num-counting-cardinality",
+   "title": "Counting Collections",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "numeracy",
+   "description": "Counts collections to 20 with one-to-one correspondence and cardinality — the last number said IS the amount. Includes the linear 1-10 number-path board game.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Counting collections: count out 7, 12, then 17 buttons into printed circles",
+    "Play the printed linear 1-10 number-path board game, naming each square"
+   ]
+  },
+  {
+   "id": "num-subitise-compare",
+   "title": "Fast Eyes for Numbers",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "numeracy",
+   "description": "Instantly recognizes 1-5 without counting (dice patterns, ten-frames) and compares sets: more, fewer, equal.",
+   "prereqs": [],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Dot-flash flaps: lift, say how many without counting (1-5)",
+    "Who-has-more page comparing two plates of pictured strawberries"
+   ]
+  },
+  {
+   "id": "num-bonds-5",
+   "title": "Number Bonds of 5",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "numeracy",
+   "description": "Splits numbers within 5 into parts and recombines them in play with objects and fingers — the koolivalmidus arithmetic target, in missing-part format from the start.",
+   "prereqs": [
+    "num-counting-cardinality",
+    "num-subitise-compare"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Part-whole ladybirds: 5 spots split across two leaves, fill the missing side (5 = 3 + □)",
+    "Finger-flash: parent hides some of 5 fingers, child names the hidden part"
+   ]
+  },
+  {
+   "id": "lit-phonemic-awareness",
+   "title": "Sound Games",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "literacy",
+   "description": "Oral-only phonological play: claps syllables, finds rhymes, isolates first sounds, blends and segments spoken words. The shared root of Estonian and English literacy — no print involved.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Parent game cards: what is the first sound in frog? clap the syllables in ele-phant",
+    "Rhyme pairs: connect pictures whose names rhyme, parent reads aloud"
+   ]
+  },
+  {
+   "id": "lit-letter-knowledge",
+   "title": "Letter Friends",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "literacy",
+   "description": "Recognizes most letters, links them to their Estonian sounds, and writes OR builds own name in printed capitals (letter tiles or tracing count in full - the Band-1 motor rule is place/circle-don't-write, and free letter formation is a tier-1 node; freehand name-writing is a delightful bonus, never the check).",
+   "prereqs": [
+    "lit-phonemic-awareness"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Letter hunt: circle every A hiding in the big picture",
+    "Name plate for the bedroom door: build it from letter tiles, then trace the letters - writing freehand is a bonus"
+   ]
+  },
+  {
+   "id": "lit-en-oral-vocab",
+   "title": "English Ears",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "literacy",
+   "description": "Understands a growing bank of spoken English through daily read-alouds, songs and picture talk; follows simple oral English instructions. No English decoding demanded before ~6-7. DELIVERY VEHICLE: the daily read-alouds ride the CR18 family read-aloud rail (framework CR18, v1.6) - the one named, priced daily item outside the session system - so this node's 'daily' is sanctioned by rule, not smuggled; any checks run inside sessions, the rail carries only reading and talk.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Daily English read-aloud on the CR18 family read-aloud rail, with point-to-the-picture checks",
+    "Picture bingo: parent calls English words, child covers the pictures"
+   ]
+  },
+  {
+   "id": "com-retell-story",
+   "title": "Tell It Back",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "communication",
+   "description": "Retells a story with beginning, middle and end; gives and follows 2-3-step spoken instructions.",
+   "prereqs": [],
+   "careers": [
+    "lawyer",
+    "manager",
+    "entrepreneur",
+    "doctor",
+    "youtuber"
+   ],
+   "exercises": [
+    "Three-frame retell: order beginning/middle/end pictures, then tell the story to a parent",
+    "Instruction swap: give the parent 2-step drawing instructions, compare results"
+   ]
+  },
+  {
+   "id": "log-sorting-patterns",
+   "title": "Sort & Sequence",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "logic",
+   "description": "Sorts objects by one then two attributes, continues repeating patterns, and orders 3-5 picture cards into a sensible sequence.",
+   "prereqs": [],
+   "careers": [
+    "software-engineer",
+    "scientist",
+    "finance",
+    "lawyer"
+   ],
+   "exercises": [
+    "Two-hoops page: sort buttons by color, then by color AND size",
+    "Pattern trains: continue the AB / ABB / ABC sticker pattern"
+   ]
+  },
+  {
+   "id": "log-sudoku-4x4",
+   "title": "Picture Sudoku 4x4",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "logic",
+   "description": "Solves a rows-and-columns 4x4 picture sudoku (no box rule yet - that arrives at S3, framework 4.4) with cut-out tiles unaided — one-to-one correspondence, systematic search, elimination, inhibition and working memory in one self-checking puzzle. Home node of ENTRY BOOKLETS 1a AND 1b (framework 4.4 note 4 - split per B7 so a day-1 five-year-old never meets two new mechanics in one booklet), and a TIER-0 ROOT (no hard prereqs): booklet 1a is self-contained - its opening pages ARE the sorting/patterns content plus the S1 rows-only strips (one new mechanic: no repeats in a row); booklet 1b brings S2's one new mechanic (columns join rows on 4x4) - so a day-1 start is legitimate. The former hard edges from log-sorting-patterns and ef-attention-persist are demoted to soft poster-layer helps-with links (hard versions locked the flagship booklet for weeks behind consolidation waits and were circular with GP16, which trains attention THROUGH sudoku-class games).",
+   "prereqs": [],
+   "careers": [
+    "software-engineer",
+    "scientist",
+    "finance"
+   ],
+   "exercises": [
+    "Booklet 1a: warm-up spreads of sorting and pattern strips, then S1 rows-only strips with cut-out tiles - the no-repeats rule alone, with its 2-3 recognition pages after the worked example (framework 4.4 every-level battery)",
+    "Booklet 1b: 4x4 picture grids (rows AND columns), cut-out tiles, 6-8 givens (deliberately easier than R1's 4-6 - framework 4.4 note), unique solutions only; find-the-mistake: spot the doubled animal in a finished grid"
+   ]
+  },
+  {
+   "id": "dig-robot-game",
+   "title": "Robot Commands",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "digital",
+   "description": "Unplugged programming: gives step-by-step commands that a robot-parent executes literally, and spots the wrong step in a short picture sequence.",
+   "prereqs": [
+    "log-sorting-patterns"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer"
+   ],
+   "exercises": [
+    "Robot parent: child lays arrow cards, parent executes them literally",
+    "Wrong-step hunt: a 5-picture toothbrushing sequence with one step out of place"
+   ]
+  },
+  {
+   "id": "sci-observe-senses",
+   "title": "Look Closely",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "science",
+   "cluster": true,
+   "check": "mixed",
+   "description": "Cluster node, three sub-checks (framework 5.2, hence check: mixed per the 5.1 cluster-consolidation ruling): (a) observes with all senses and draws what is seen with three details - Archetype A; (b) sorts living vs non-living - Archetype A; (c) talks about weather and seasons across a week, exercised via the week-long weather strip - a week-long chart activity, single-shot at its completion (same treatment as num-money-time's savings-jar sub-check).",
+   "prereqs": [],
+   "careers": [
+    "scientist",
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Draw-what-you-see: one leaf, three details minimum",
+    "Living or not? cut-and-sort pictures into two boxes",
+    "Weather strip: circle today's weather picture each morning for a week, then a Friday talk - which day was warmest? what season is coming? (the sub-check (c) activity)"
+   ]
+  },
+  {
+   "id": "cre-idea-fluency",
+   "title": "Many Ideas",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "creativity",
+   "description": "Generates many ideas for one prompt and makes free-but-constrained decorative patterns (the Beauty pages of the Life/Beauty/Knowledge rotation).",
+   "prereqs": [],
+   "careers": [
+    "entrepreneur",
+    "engineer",
+    "scientist",
+    "youtuber"
+   ],
+   "exercises": [
+    "Ten uses for a cardboard box — parent scribes the list",
+    "Beauty page: fill an empty grid with your own symmetric tile pattern",
+    "Observational-drawing costume (v1.6): draw a person or a thing from life with three true details - depiction joins pattern in the Beauty rotation (kunst technique itself stays lasteaed/school-delivered, framework CR17)"
+   ]
+  },
+  {
+   "id": "sel-selfcare",
+   "title": "I Can Do It Myself",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "social-emotional",
+   "cluster": true,
+   "check": "B",
+   "description": "Practical-life / self-care observation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the Montessori practical-life pillar and literal koolivalmidus criteria (independence in dressing and eating) - framework section 6's SEL root row always promised 'self-care' and the graph had dropped it. Three sub-checks: (a) dresses fully independently including fastenings, laces by ~6; (b) tidies own activity materials without prompting - which is also control-of-error culture, the booklet system's own precondition; (c) sets or clears the table, or an equivalent daily contribution, as an owned job. A TIER-0 ROOT with no consumers: it gates nothing, ever - least of all desk work. Provenance: R1 contains no practical-life coverage (an upstream research gap, flagged in framework CR17); this cluster enters on R3's koolivalmidus evidence directly.",
+   "prereqs": [],
+   "careers": [
+    "doctor",
+    "manager"
+   ],
+   "exercises": [
+    "Morning-independence tally: dressed self including fastenings, packed own bag, tidied own materials - logged as life observations, never drilled",
+    "Table job of the week: set or clear for the family, child-owned end to end"
+   ]
+  },
+  {
+   "id": "sel-safe-well",
+   "title": "Safe & Well",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "social-emotional",
+   "cluster": true,
+   "check": "B",
+   "description": "Safety-and-wellness observation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the inimeseõpetus/koolivalmidus slice - traffic safety as a pedestrian is a NAMED koolivalmidus outcome, and this child will walk to school alone at 7 in Estonian winter darkness - that the tree previously left to the DIG e-safety thread alone. Four sub-checks, all life-evidenced on real walks and outings: (a) crosses streets by the rules on real walks, tallied, years before the solo school walk; (b) wears the reflector (helkur - legally required in the dark season) and helmet as an owned habit, not a nagged one; (c) says the stranger/lost script and own name, address and a parent's number in play rehearsal; (d) says and follows the water rules at the pool. Health-rhythm content (why sleep, handwashing, teeth) enters as booklet Life pages (B13) and the sci-body-health content, never as drills. A TIER-0 ROOT with no consumers: never a prerequisite of anything.",
+   "prereqs": [],
+   "careers": [
+    "doctor"
+   ],
+   "exercises": [
+    "Walk-to-the-shop tally: the child leads every crossing, parent observes silently; reflector on the coat from the first dark week, child-checked",
+    "Lost-in-the-shop rehearsal: stop-stay-ask script plus own address, played as a game once a season; pool-day rules said aloud before swimming"
+   ]
+  },
+  {
+   "id": "cre-music-play",
+   "title": "Rhythm & Song",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "creativity",
+   "cluster": true,
+   "check": "B",
+   "description": "Music-and-rhythm observation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the small home-sized answer to muusika - one of the Estonian kindergarten's seven statutory areas, previously absent from graph, prose and rulings alike (lasteaed delivers music proper; framework CR17 rules the division) - and the tree's carrier for the songs-and-poems koolivalmidus item. Three sub-checks: (a) keeps a steady beat and plays call-and-response rhythm games (beat work is also a cheap phonological-awareness ally - syllable clapping lives next door in lit-phonemic-awareness, a poster-layer helps-with link, never an edge); (b) sings 4-5 songs from memory, Estonian repertoire welcome; (c) says 2-3 Estonian rhymes or poems by heart - peast õppimine, verbatim memory's one home in a system otherwise built on retrieval science. A TIER-0 ROOT with no consumers: gates nothing; the creator wonder's performance craft starts here informally.",
+   "prereqs": [],
+   "careers": [
+    "youtuber"
+   ],
+   "exercises": [
+    "Kitchen rhythm games: copy-my-clap, call-and-response, march-and-freeze to a steady beat",
+    "Family songbook page: the child's 4-5 known songs and 2-3 rhymes listed and illustrated, sung and said at will - folk-calendar songs join in season (CR17 seasonal layer)"
+   ]
+  },
+  {
+   "id": "num-bonds-10",
+   "title": "Number Bonds to 10",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "strand": "training-ground",
+   "description": "Part-whole mastery to 10 with ten-frames, in missing-part formats (8 = 5 + □) from the start; the equals sign taught as balance.",
+   "prereqs": [
+    "num-bonds-5"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "software-engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Ten-frame fill-ups: 7 needs □ more to make 10",
+    "Balance formats: 8 = 5 + □ and □ + 4 = 10 side by side"
+   ]
+  },
+  {
+   "id": "num-addsub-10",
+   "title": "Add & Subtract Within 10",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "strand": "training-ground",
+   "description": "Fluent addition and subtraction within 10, strategies before speed (count-on, bond retrieval). First stage of the within-20 fluency ladder (framework 5.2 extended-fluency split) so the tree moves while fluency grows.",
+   "prereqs": [
+    "num-bonds-10"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Bond-and-story pages: 7 + 2 and 9 - 2 from the same part-whole picture",
+    "Missing-part dominoes: match each fact within 10 to its inverse"
+   ]
+  },
+  {
+   "id": "num-teens",
+   "title": "Teen Numbers as Ten and Ones",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "description": "Understands and builds 11-19 as one ten plus ones - the small, genuinely load-bearing piece for crossing ten (extracted from the 0-100 node per review; R3 section 4 consensus places full place value after within-20 fluency).",
+   "prereqs": [
+    "num-counting-cardinality"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Teen-number build: 14 as a ten-stick and 4 ones, draw then write",
+    "Ten-frame pairs: one full frame plus loose counters, say the teen number fast"
+   ]
+  },
+  {
+   "id": "lit-en-oral-2",
+   "title": "English Story Ears",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "literacy",
+   "description": "Follows and retells short spoken-English stories; answers who/what/where questions about them (in English or Estonian); receptive vocabulary keeps compounding through daily read-alouds riding the CR18 family read-aloud rail (framework CR18, v1.6 - the rail is the delivery vehicle; checks run inside sessions). The tier-1 continuation of the English oral-language leg that the Simple View of Reading requires alongside decoding (GP10, R2 section 10.1).",
+   "prereqs": [
+    "lit-en-oral-vocab"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Listen-and-draw: parent reads a 3-sentence English scene, child draws exactly what it says",
+    "Two story questions (who? what happened?) after each rail read-aloud, answered in either language - light talk on the rail, never a check there"
+   ]
+  },
+  {
+   "id": "num-numbers-100",
+   "title": "The Number Line to 100",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "description": "Reads, builds with digit cards, and orders numbers to 100, with regular ESTIMATION practice on an empty 0-100 line (numeral WRITING is deliberately not demanded - mot-letter-formation is a same-tier non-ancestor, and the exercises here are card-based anyway). OWN mastery check - reads, builds and orders number cards to 100 - so the chain cannot deadlock; ONLY the linear-placement-accuracy criterion defers downstream to num-addsub-100, because the log-to-linear representational shift completes ~7-8 (Siegler & Booth): placement is exercised from 6, never pass/failed here. Deliberate range-end placement, flagged per the traceability convention: to-100 at 6-7 sits at the US-K end of R3's spread and in tension with GP18's depth-over-range (koolivalmidus targets 12; UK goes deep to 10) - accepted because this node is structure-and-estimation exposure, not a fluency demand, and the depth work lives in the bonds/addsub chain. Demoted from boss-gate prerequisite per review (within-20 fluency does not require it; the load-bearing teen-number piece is num-teens).",
+   "prereqs": [
+    "num-counting-cardinality"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Where does 37 live? Mark and discuss numbers on an empty 0-100 line (estimation talk, no pass/fail)",
+    "Hundred-chart treasure hunts: find, read and order number cards to 100"
+   ]
+  },
+  {
+   "id": "num-addsub-20",
+   "title": "Add & Subtract Within 20",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "strand": "training-ground",
+   "keystone": true,
+   "description": "Fluent addition and subtraction within 20, crossing ten, strategies before speed (make-ten, then retrieval), built on within-10 fluency and teens-as-ten-and-ones. BOSS MILESTONE: the consensus Foundations-to-Builder era gate - ceremonial plus numeracy-chain-only, never cross-domain (framework section 3); completable during the koolieelik year or grade 1, no deadline (CR14).",
+   "prereqs": [
+    "num-addsub-10",
+    "num-teens"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "mastery_check": "Unlock trial: 10 mixed +/- facts within 20 incl. crossing ten, 9/10 at roughly 3 seconds per fact or less - the parent listens for retrieval or a fast derived fact, not finger-counting (that is what 'fluent' certifies, GP6/R2 s8); timed-but-gentle per framework 5.5: no visible stopwatch, no racing; passed twice at least 3 days apart",
+   "exercises": [
+    "Make-ten bridges: 8 + 5 as 8 + 2 + 3 on ten-frames",
+    "Balance-format mixes: 13 = □ + 5 and 12 - □ = 4 side by side (CR10)"
+   ]
+  },
+  {
+   "id": "num-measure-data",
+   "title": "Measure & Record",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "numeracy",
+   "cluster": true,
+   "description": "Cluster node, four sub-checks (framework 5.2; the fourth added in v1.6 - the koolivalmidus 'days of the week and seasons' item previously had no home): (a) measures length with informal then standard units (cm); (b) tells full and half hours; (c) records counts as a simple pictograph; (d) time orientation - says the days of the week in order, names today/yesterday/tomorrow, and places the months of own birthday and midsummer in the year.",
+   "prereqs": [
+    "num-counting-cardinality"
+   ],
+   "careers": [
+    "scientist",
+    "engineer",
+    "doctor",
+    "finance"
+   ],
+   "exercises": [
+    "Eureka quest: measure five things in the kitchen with a ruler, in cm",
+    "Weather pictograph: one sticker per sunny day for a week",
+    "Week wheel: spin to today, say yesterday and tomorrow; month ladder with family birthdays pinned on"
+   ]
+  },
+  {
+   "id": "lit-ee-decoding",
+   "title": "Reading Estonian",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "literacy",
+   "description": "Sounds out (veerib) and reads Estonian words and simple sentences. Transparent orthography, school-led at 7 — this node supports, never duplicates, the school's work.",
+   "prereqs": [
+    "lit-letter-knowledge"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Syllable ladders: veerimine from 2-syllable words to a 3-word sentence",
+    "Read-and-draw: read a short Estonian sentence, draw exactly what it says"
+   ]
+  },
+  {
+   "id": "lit-en-phonics-1",
+   "title": "English Code I",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "literacy",
+   "strand": "training-ground",
+   "description": "Explicit synthetic English phonics begins on a UK-style SSP sequence — started at 6-7 by our own ruling (CR2/CR14; UK Reception starts at 4-5, ours is a deliberately delayed start reaching the same endpoint by ~9): single-letter GPC sets in SATPIN-style order, blending CVC words, first decodable strips — framed as cracking English's tricky code. A UK-style SSP sequence includes ENCODING from the start (spelling consolidates GPC knowledge): build-the-word with letter tiles from day one, write-the-CVC-word sub-ticks once mot-letter-formation is in hand. Extended-fluency node (framework 5.2): internal sub-level ticks per GPC set keep the poster moving monthly. Estonian-English clashing letter values get contrast pages, never same-week introduction (B21). Frontier curation surfaces lit-ee-decoding before this node (framework GP10 - a soft order, never an edge; parallel onset is fine when the child pulls).",
+   "prereqs": [
+    "lit-phonemic-awareness",
+    "lit-letter-knowledge"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "SATPIN ladders: blend s-a-t into sat, then read the decodable strip; tick the GPC-set ladder as sets consolidate",
+    "Sound-swap: change one letter card to turn sat into sit into pit; flag-icon contrast page when a letter clashes with its Estonian sound (B21)",
+    "Say-build-write: parent says a CVC word, child builds it from tiles - and writes it once letter formation is in hand (the encoding sub-tick)"
+   ]
+  },
+  {
+   "id": "mot-letter-formation",
+   "title": "Forming Letters",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "motor-spatial",
+   "strand": "training-ground",
+   "description": "Forms letters and numerals correctly in 1.5 cm cells, with form-drawing warm-ups; confusable forms interleaved. Numeral formation here also unlocks digit-written sudoku (log-sudoku-symbols).",
+   "prereqs": [
+    "mot-pencil-grip",
+    "lit-letter-knowledge"
+   ],
+   "careers": [
+    "doctor",
+    "lawyer",
+    "scientist"
+   ],
+   "exercises": [
+    "Letter lanes: trace, copy, then write from memory",
+    "b/d twins page: interleaved discrimination with picture anchors"
+   ]
+  },
+  {
+   "id": "spa-shapes-symmetry",
+   "title": "Shapes & Symmetry",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "motor-spatial",
+   "cluster": true,
+   "description": "Cluster node, three sub-checks (framework 5.2): (a) names and composes 2-D shapes and recognizes basic 3-D solids; (b) completes symmetric figures; (c) solves tangram outlines.",
+   "prereqs": [
+    "spa-pattern-blocks"
+   ],
+   "careers": [
+    "engineer",
+    "doctor",
+    "scientist"
+   ],
+   "exercises": [
+    "Tangram outlines: fill the fox using all seven pieces",
+    "Symmetry mirror: complete the butterfly's other wing on the grid"
+   ]
+  },
+  {
+   "id": "mot-gross-2",
+   "title": "Move Like a Schoolkid",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "motor-spatial",
+   "cluster": true,
+   "check": "B",
+   "description": "Gross-motor continuation cluster (framework 5.2, Archetype-B tallies), added in v1.6: the branch previously dead-ended its gross-motor half at tier 0, while Estonia's I kooliaste kehaline kasvatus carries a COMPULSORY beginner swimming course (target ~200 m) plus seasonal-skills norms (R3 section 2.1). Three sub-checks, school/life-evidenced: (a) water confidence building toward the school swim course - face in the water, float, push-and-glide (the course itself is school-delivered, framework CR17; this is the home-side readiness watch); (b) rides a bike without stabilisers; (c) seasonal-skills exposure per family tradition - skates or skis tried each winter. One hard prereq, mot-gross-body: balance and coordination genuinely underlie bike and stroke - a load-bearing developmental edge, made hard (where the gap review sketched a soft link) because invariant 2 requires every non-tier-0 node to carry one, and this is the honest candidate. The cluster itself has NO consumers and never gates desk work - the same ruling mot-gross-body carries.",
+   "prereqs": [
+    "mot-gross-body"
+   ],
+   "careers": [
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Pool-day watch: face in the water, starfish float, push-and-glide - logged as observations across the season, never drilled at the poolside",
+    "Bike-and-blades log: first no-stabilisers ride; skates or skis tried each winter, per family tradition"
+   ]
+  },
+  {
+   "id": "com-because-reasons",
+   "title": "Because...",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "communication",
+   "description": "Gives reasons for opinions and moves — including explaining why a sudoku cell must hold a given picture — and repeats back another person's view before replying.",
+   "prereqs": [
+    "com-retell-story"
+   ],
+   "careers": [
+    "lawyer",
+    "scientist",
+    "manager",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Why must this cell be the frog? Parent scribes the because-sentence",
+    "Opinion card: the best pet is ... with two because-reasons"
+   ]
+  },
+  {
+   "id": "log-sudoku-boxes",
+   "title": "Boxes Join In (4x4)",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "logic",
+   "description": "Solves 4x4 picture sudoku with the 2x2 box rule as the third constraint (S3, framework 4.4 - the box rule is introduced alone on 4x4, NOT on 6x6, whose boxes are 2x3), with the sparser 4-6-given grids; finds the mistake in a finished grid — debugging on paper.",
+   "prereqs": [
+    "log-sudoku-4x4"
+   ],
+   "careers": [
+    "software-engineer",
+    "scientist",
+    "finance"
+   ],
+   "exercises": [
+    "Box-rule page: one 4x4 grid where only the 2x2 box rule can place the missing picture, introduced alone on its own page (S3)",
+    "Find-the-mistake: spot the doubled picture in a finished boxed grid and name the rule it breaks (the B16 page for this mechanic, ratio scope CR15)"
+   ]
+  },
+  {
+   "id": "dig-beebot-arrows",
+   "title": "Arrow Programs",
+   "tier": 0,
+   "ageBand": "5-6",
+   "domain": "digital",
+   "description": "Writes and debugs arrow-card programs on a printed floor/paper grid (a Bee-Bot is optional flavor, never required - the node is fully satisfiable paper-only). RAMPED ENTRY, documented the way num-numbers-100 documents its deviation: entry at 2-3-step programs (typical kindergarten Bee-Bot practice, inside the Band-1 WM budget of 2-3 chunks, so a just-turned-5 starter meets GP17's 70-90% success), with sub-level ticks up the ladder - 4-step, then 6+ steps with debugging, then predicting where a program lands before running it; the 6+/predict line is the MASTERY bar, not the entry bar. R3/CR5 ProgeTiiger schedule: this belongs in the kindergarten years.",
+   "prereqs": [
+    "dig-robot-game"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer"
+   ],
+   "exercises": [
+    "Arrow-program ladder: 2-3 steps to reach the treasure at entry, growing to 6+ steps as ticks climb; run each program after writing it (child or parent walks the token)",
+    "Predict-then-run: circle where this SHORT program will land before testing - prediction starts on 2-3-step programs and grows with the ladder"
+   ]
+  },
+  {
+   "id": "ef-plan-check",
+   "title": "Plan, Do, Check",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "executive-function",
+   "description": "Draws or says a plan before building, checks own finished work against a model, and persists 15-20 minutes. Trunk by schedule and session design, not by fan-out (GP16): every branch's sessions exercise plan-do-check, and the common_trunk places this node on every career's highlighted path; its hard out-edges stay few and project-shaped by design.",
+   "prereqs": [
+    "ef-attention-persist"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Plan-first build: draw the tower, build it, compare drawing and tower",
+    "Traffic-light self-check of a finished page against the model"
+   ]
+  },
+  {
+   "id": "sel-cooperation",
+   "title": "Playing & Working Together",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "social-emotional",
+   "check": "B",
+   "description": "Cooperates in games with roles, waits, asks for help appropriately, and treats failure as not-yet — the koolivalmidus social profile.",
+   "prereqs": [
+    "sel-emotions-turns"
+   ],
+   "careers": [
+    "manager",
+    "doctor",
+    "entrepreneur",
+    "lawyer"
+   ],
+   "exercises": [
+    "Two-player puzzle: each holds half the clues, solvable only by talking",
+    "Not-yet bookmark: rehearse the coping script after a lost game"
+   ]
+  },
+  {
+   "id": "sci-cause-effect",
+   "title": "What Happens If...",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "science",
+   "description": "Runs playful cause-effect experiments (float/sink, melt/freeze), predicts outcomes before testing, and keeps a week-long weather record.",
+   "prereqs": [
+    "sci-observe-senses"
+   ],
+   "careers": [
+    "scientist",
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Float-or-sink lab: predict with stickers, test in a bowl, record",
+    "Week-long weather chart with a Friday what-changed talk"
+   ]
+  },
+  {
+   "id": "cre-make-own-puzzle",
+   "title": "Puzzle Maker",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "creativity",
+   "description": "Makes own puzzles of any type the child has met - sudoku, pattern trains, mazes, sorting games - for someone else to solve, and invents new symbol sets and variants. Puzzle-agnostic by design: the creativity branch is never hard-locked behind any one puzzle chain (R4 A4.3; a soft helps-with edge from log-sudoku-4x4 lives on the poster layer).",
+   "prereqs": [
+    "cre-idea-fluency"
+   ],
+   "careers": [
+    "entrepreneur",
+    "software-engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Make-your-own puzzle: e.g. erase cells from a solved sudoku grid, or draw a maze - a parent must solve it",
+    "Invent the fifth symbol: design a new tile set for a puzzle you like"
+   ]
+  },
+  {
+   "id": "num-addsub-100",
+   "title": "Add & Subtract Within 100",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "numeracy",
+   "description": "Place value with tens and ones unitised; mental addition and subtraction within 100 and first written column methods. The 0-100 linear-placement mastery check lives here (log-to-linear shift complete by ~7-8, Siegler & Booth): places numbers on an empty 0-100 line with linear, not squashed, spacing.",
+   "prereqs": [
+    "num-addsub-20",
+    "num-numbers-100"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Draw 47 + 25 with tens-and-ones pictures before the column form",
+    "Number-line hops: 62 - 30 as jumps of ten; empty-line placement check rides along"
+   ]
+  },
+  {
+   "id": "num-mult-groups",
+   "title": "Groups, Arrays & Skip Counting",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "numeracy",
+   "description": "Multiplication and division as equal groups, arrays and fair sharing; skip counting in 2s, 5s and 10s. Concept only - table retrieval starts in num-tables-1, only after this concept is secure (R3 section 5 multiplication-timing row).",
+   "prereqs": [
+    "num-addsub-20"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Array hunt: draw 3 x 4 as rows of stickers, write both matching facts",
+    "Skip-counting tracks in 2s, 5s and 10s around the game board"
+   ]
+  },
+  {
+   "id": "num-money-time",
+   "title": "Money & Time",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "numeracy",
+   "cluster": true,
+   "check": "mixed",
+   "description": "Cluster node, three sub-checks (framework 5.2, hence check: mixed per the 5.1 cluster-consolidation ruling): (a) counts euro coins, pays and makes change, compares prices - Archetype A; (b) reads the clock to five minutes - Archetype A; (c) keeps a small savings-jar chart running over several weeks - a weeks-long chart, single-shot at its completion. The node is Consolidated when all three sub-checks are, each under its own archetype.",
+   "prereqs": [
+    "num-addsub-20",
+    "num-measure-data"
+   ],
+   "careers": [
+    "finance",
+    "entrepreneur",
+    "manager"
+   ],
+   "exercises": [
+    "Shop page: pay 1.40 euros with printed coins two ways, make change from 2 euros",
+    "Supermarket Eureka: is the big pack actually cheaper? Check with a parent"
+   ]
+  },
+  {
+   "id": "lit-en-phonics-2",
+   "title": "English Code II",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "literacy",
+   "strand": "training-ground",
+   "description": "Digraphs, vowel teams and common tricky words (taught within the SSP sequence, never as a memorize-first track); reads short decodable English texts with growing confidence, and spells taught patterns in gentle dictation - the encoding leg continues (SSP includes spelling throughout; English free writing still waits for t4-english-fluent, which rides Estonian-trained composition). Extended-fluency node with per-GPC-set sub-level ticks (framework 5.2); cross-language contrast pages per B21 wherever a vowel team clashes with Estonian values.",
+   "prereqs": [
+    "lit-en-phonics-1"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Digraph ladders: sh/ch/th word builds with picture self-checks",
+    "Decodable mini-book: read a 40-word English story, tick the tricky words met",
+    "Three-word gentle English dictation from taught patterns, with a fold-over self-check flap (B15) - child checks, adult never grades"
+   ]
+  },
+  {
+   "id": "lit-en-oral-3",
+   "title": "Longer English Listening",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "literacy",
+   "description": "The tier-2 continuation of the English oral-comprehension leg - the strand school will not supply, and which the 8-12-week decay rule would otherwise dim long before its tier-3 consumer: follows longer English read-alouds and audio stories across several sessions, retells them with detail, answers inferential questions (why did she do that?), and keeps compounding vocabulary through talk. Keeps the Simple View's language-comprehension leg warm and growing between lit-en-oral-2 and lit-en-reading (GP10, R2 section 10.1). The chapter-a-night listening rides the CR18 family read-aloud rail (framework CR18, v1.6); retell and inference checks run inside sessions.",
+   "prereqs": [
+    "lit-en-oral-2"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Chapter-a-night English read-aloud or audio story on the CR18 rail; the child retells yesterday's part before the next chapter starts",
+    "Word-collector jar: three new English words a week, each used in the child's own sentence at dinner"
+   ]
+  },
+  {
+   "id": "lit-reading-fluency",
+   "title": "Reading Takes Off",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "literacy",
+   "strand": "training-ground",
+   "description": "Reads age-level Estonian text fluently and accurately as sight vocabulary grows through orthographic mapping; reading starts becoming a tool, not a task. Extended-fluency node (framework 5.2), evidenced largely through school reading (see section 7 sourcing note).",
+   "prereqs": [
+    "lit-ee-decoding"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Repeated-reading pairs: read the same passage twice, chart the smoothness",
+    "Read-and-do cards: follow a written instruction to draw or color something"
+   ]
+  },
+  {
+   "id": "lit-writing-sentences",
+   "title": "Sentences & Spelling",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "literacy",
+   "description": "Writes connected sentences with capitals and full stops; spells learned words mostly correctly in gentle dictation.",
+   "prereqs": [
+    "mot-letter-formation",
+    "lit-ee-decoding"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Sentence builder: expand a 2-word sentence with when/where cards, write it out",
+    "Dictation with fold-over self-check flap: three learned words"
+   ]
+  },
+  {
+   "id": "log-sudoku-symbols",
+   "title": "Sudoku Goes Symbolic (6x6)",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "logic",
+   "description": "Solves 6x6 sudoku (2x3 boxes) in glyphs and then digits after a picture-to-symbol bridge page (S4, framework 4.4 - 9x9 waits for the next node); uses candidate marks to externalize working memory. Writing digits presupposes numeral formation, hence the motor prerequisite.",
+   "prereqs": [
+    "log-sudoku-boxes",
+    "mot-letter-formation"
+   ],
+   "careers": [
+    "software-engineer",
+    "finance",
+    "scientist"
+   ],
+   "exercises": [
+    "Bridge page: the identical 6x6 puzzle twice — pictures left, digits right",
+    "Candidate corners: write the two possible digits small before committing"
+   ]
+  },
+  {
+   "id": "log-decompose-debug",
+   "title": "Break It Down, Fix It",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "logic",
+   "description": "Decomposes a task into ordered steps, follows and writes simple conditionals (if red, clap), and finds the planted bug in a six-step recipe.",
+   "prereqs": [
+    "dig-beebot-arrows"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Sandwich algorithm: order the six recipe steps, then find the planted bug",
+    "If-then card game with a rule switch halfway through"
+   ]
+  },
+  {
+   "id": "dig-scratchjr",
+   "title": "Block-Coding Stories",
+   "tier": 1,
+   "ageBand": "6-7",
+   "domain": "digital",
+   "description": "First deliberate, co-used screen contact, on the R3/CR5 schedule (~6-7): block sequences, loops and events animate a two-character story in ANY introductory block-based environment - ScratchJr, Scratch's junior mode, a Code.org pre-reader course, or equivalent. Activity-agnostic by design (R4 C3.4, same treatment as dig-beebot-arrows): no single app, hated interface or missing tablet can wall off the software branch - the id keeps its historical name, the requirement does not. E-safety basics start at first contact and stay threaded through every later DIG node.",
+   "prereqs": [
+    "dig-beebot-arrows"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer",
+    "youtuber"
+   ],
+   "exercises": [
+    "Animate a two-character story with a loop in any block environment, premiere it for the family",
+    "Make the family screen-rules card together (e-safety at first contact)"
+   ]
+  },
+  {
+   "id": "dig-block-projects",
+   "title": "Block Projects II",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "digital",
+   "description": "Plans a multi-sprite block-coding project on paper first, builds it with loops and events in any introductory block environment, and finds and fixes own bugs before asking for help. The tier-2 digital rung added in loop 3: it keeps the first-screen skill warm between dig-scratchjr (~7) and dig-scratch (~8-9) - without it the 8-12-week decay timer (framework 5.1) would dim the block-coding node ~18 months before its consumer unlocks, and paper warm-up strips cannot refresh a screen skill. Activity-agnostic like its parent (any block environment satisfies it); co-used screen time on the CR5 schedule; the e-safety thread continues.",
+   "prereqs": [
+    "dig-scratchjr"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer",
+    "youtuber"
+   ],
+   "exercises": [
+    "Paper storyboard first, then a two-scene, three-sprite story with loops and events; premiere it for the family",
+    "Own-bug clinic: when it misbehaves, say what you EXPECTED, what HAPPENED, then fix it yourself before asking for help"
+   ]
+  },
+  {
+   "id": "sci-measure-record",
+   "title": "Measure Like a Scientist",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "science",
+   "description": "Uses ruler and thermometer inside real inquiry and records results in tables and picture charts; first content bursts: plants, materials, habitats, the human body and senses (the body burst added in v1.6 - measuring runs on the child's own body too: pulse after running, hand spans, temperature; the vocabulary rung itself lives in sci-body-health).",
+   "prereqs": [
+    "sci-cause-effect",
+    "num-measure-data"
+   ],
+   "careers": [
+    "scientist",
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Thermometer week: morning temperature in a table, then a bar chart",
+    "Plant walk: collect, label and press three different leaves",
+    "Body-data page: count your pulse before and after ten jumps, measure everyone's hand span, chart the family"
+   ]
+  },
+  {
+   "id": "sci-body-health",
+   "title": "My Body & Staying Well",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "science",
+   "cluster": true,
+   "check": "mixed",
+   "description": "Body-and-health cluster (framework 5.2, hence check: mixed), added in v1.6: closes the five-system age-6 consensus milestone 'body parts & senses' (R3 section 3.3), the Estonian loodusõpetus 'human senses and body' slice, the inimeseõpetus health slice, the koolivalmidus healthy-behaviour criterion, and the doctor career's own section 2 seed-corpus claim that gap review found undelivered (the first human-body content otherwise sat at t5-life-sciences, age 14+). Four sub-checks: (a) names main body parts and the five senses as their organs, using the vocabulary in real talk - Archetype A; (b) explains healthy habits in own words: sleep, handwashing, teeth, food variety - Archetype A; (c) performs the three first-aid steps for a small scrape (clean, cover, tell an adult) and knows when to fetch help - Archetype A; (d) cares for a living thing across weeks with a simple care log (plant or pet - the classic responsibility-and-empathy seed) - a weeks-long chart, single-shot at its completion (savings-jar mechanics, framework 5.1). Feeds quest-doctor as its science leg since v1.6 (swapped in for sci-measure-record under the fan-in-2 cap; the quest card carries an assumes-measuring line so nothing hides).",
+   "prereqs": [
+    "sci-observe-senses"
+   ],
+   "careers": [
+    "doctor",
+    "scientist"
+   ],
+   "exercises": [
+    "Body-map Life page (B13): label the big parts on your own outline, then match each sense to its organ",
+    "Plant-nurse month: water-and-light care log with a weekly drawing; teddy first-aid drill: clean, cover, tell an adult"
+   ]
+  },
+  {
+   "id": "sel-conflict-resolution",
+   "title": "Solve It Yourselves",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "social-emotional",
+   "check": "B",
+   "description": "Resolves peer conflicts with words and without an adult; reads others' feelings and intentions; takes responsibility for own tasks and belongings.",
+   "prereqs": [
+    "sel-cooperation"
+   ],
+   "careers": [
+    "manager",
+    "lawyer",
+    "doctor",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Conflict comics: draw the fair ending to a toy dispute",
+    "Peace steps rehearsed: say what happened, name the feeling, propose a fix",
+    "Trade-and-swap games: offer, counter-offer, meet in the middle over cards or chores - negotiation's first costume (v1.6, the entrepreneur profile's nearest childhood root)"
+   ]
+  },
+  {
+   "id": "ef-multistep-projects",
+   "title": "Projects Across Days",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "executive-function",
+   "description": "Carries a 2-3-session project from plan to finish with a plan-do-reflect page; keeps materials and steps organized without reminders.",
+   "prereqs": [
+    "ef-plan-check"
+   ],
+   "careers": [
+    "manager",
+    "entrepreneur",
+    "engineer",
+    "scientist",
+    "youtuber"
+   ],
+   "exercises": [
+    "Three-session project sheet: plan page, do pages, what-I-would-change page",
+    "Own the backpack checklist for a whole week"
+   ]
+  },
+  {
+   "id": "com-explain-decision",
+   "title": "Explain Your Call",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "communication",
+   "description": "Explains a decision or solution in about three clear sentences; listens to a different view and summarizes it fairly before replying.",
+   "prereqs": [
+    "com-because-reasons"
+   ],
+   "careers": [
+    "manager",
+    "lawyer",
+    "entrepreneur",
+    "doctor",
+    "youtuber"
+   ],
+   "exercises": [
+    "Three-sentence frame for a real decision: I chose X. Because... So...",
+    "Steel-listener: repeat the other person's view back before answering it"
+   ]
+  },
+  {
+   "id": "mot-handwriting-auto",
+   "title": "Handwriting on Autopilot",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "motor-spatial",
+   "strand": "training-ground",
+   "description": "Handwriting automatic enough to free working memory for composing; uses real tools in crafts (the tööõpetus asset). Extended-fluency node (framework 5.2) with monthly speed-and-ease ticks, never speed pressure.",
+   "prereqs": [
+    "mot-letter-formation"
+   ],
+   "careers": [
+    "doctor",
+    "lawyer",
+    "engineer"
+   ],
+   "exercises": [
+    "Weekly copy passage riding the booklet sessions' form-drawing/warm-up lane (framework section 3 template - the same lane letter formation rides at Band 2, never a separate slot): same text each week, watch it get easier",
+    "Tool craft: measure, cut and sew a felt bookmark"
+   ]
+  },
+  {
+   "id": "spa-build-diagram",
+   "title": "Build From the Plan",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "motor-spatial",
+   "description": "Builds a model from a step diagram (LEGO-style), draws simple maps and bird's-eye plans of real places, and solves mental-rotation puzzles.",
+   "prereqs": [
+    "spa-shapes-symmetry"
+   ],
+   "careers": [
+    "engineer",
+    "doctor",
+    "software-engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Diagram build: construct the model, peeking at each step only once",
+    "Map my room: bird's-eye plan with a grid and a legend"
+   ]
+  },
+  {
+   "id": "cre-iterate-v2",
+   "title": "Version 2",
+   "tier": 2,
+   "ageBand": "7-8",
+   "domain": "creativity",
+   "description": "Treats a flop as data: improves a failed design and documents version 1 versus version 2.",
+   "prereqs": [
+    "cre-make-own-puzzle",
+    "ef-plan-check"
+   ],
+   "careers": [
+    "engineer",
+    "entrepreneur",
+    "scientist",
+    "software-engineer",
+    "youtuber"
+   ],
+   "exercises": [
+    "Paper bridge v1 vs v2: hold 10 coins, document what changed and why",
+    "Flop journal: one thing that failed, one thing to try differently"
+   ]
+  },
+  {
+   "id": "num-tables-1",
+   "title": "First Tables (2, 5, 10, 3, 4)",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "strand": "training-ground",
+   "description": "Retrieval of the 2, 5, 10, 3 and 4 times tables with their matching division facts - stage one of the korrutustabel split (framework 5.2 extended-fluency ruling) so the tree moves while fluency grows; the equal-groups concept was secured in num-mult-groups.",
+   "prereqs": [
+    "num-mult-groups"
+   ],
+   "careers": [
+    "finance",
+    "software-engineer",
+    "engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Fluency-maintenance sessions (the 1-2 weekly slots of the framework section 3 template - never a separate daily obligation): three gentle minutes on the focus table mixed with one mastered table, chart your own smoothness curve; table items also ride the daily retrieval strips",
+    "Fact-family triangles: 3, 4, 12 - say all four facts from one triangle"
+   ]
+  },
+  {
+   "id": "num-times-tables",
+   "title": "Times Tables Mastered",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "strand": "training-ground",
+   "keystone": true,
+   "description": "Full one-digit multiplication and division retrieval - the remaining 6, 7, 8 and 9 tables integrated with the first set into the whole korrutustabel - via spaced, gentle fluency ladders. BOSS MILESTONE: the consensus Explorer-to-Voyager era gate - ceremonial plus numeracy-chain-only, never cross-domain (framework section 3). Also Estonian grade-3 checkpoint content (the korrutustabel is on the list; CR14 numeracy run-ahead): banded 8-9 as available target, completing during tier 4 (~9-10, where the official checkpoint sits) is normal - no deadline, the same stance as num-multidigit, num-fractions and num-problems-data (this sentence added in v1.6 so the four checkpoint nodes really do all say so on their own cards).",
+   "prereqs": [
+    "num-tables-1"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "mastery_check": "Unlock trial: 10 mixed one-digit x and / facts drawn across all tables, 9/10 at roughly 3 seconds per fact or less - retrieval, not skip-counting up from zero (the parent listens for it; that automaticity is what the boss certifies, GP6/R2 s11); timed-but-gentle per framework 5.5: no visible stopwatch, no racing; passed twice at least a week apart - a flagged, deliberate widening of Archetype A's >=3-day default (which num-addsub-20 follows): a full-korrutustabel automaticity claim earns the longer verification gap",
+   "exercises": [
+    "Three gentle minutes at the top of each fluency-maintenance session (the 1-2 weekly slots of the framework section 3 template) - one focus table mixed with two mastered ones, chart your own curve, no red ink, no racing anyone; between those sessions the daily retrieval strips carry the table items, so nothing lands on non-session days (which by rule carry no system work beyond the CR18 read-aloud rail)",
+    "Flip two number cards (1-9), multiply, then say the matching division fact aloud"
+   ]
+  },
+  {
+   "id": "num-multidigit",
+   "title": "Big Numbers, Long Sums",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "description": "Numbers to 10,000; written column addition and subtraction; two-step expressions with brackets. Estonian grade-3 checkpoint content under CR14's scheduled numeracy run-ahead: banded 8-9 as available target; completing during tier 4 (~9-10, where the official checkpoint sits) is normal - no deadline, same stance as num-addsub-20.",
+   "prereqs": [
+    "num-addsub-100"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Column addition with a place-value scaffold that fades across the set",
+    "Bracket puzzles: make 24 two different ways with two-step expressions"
+   ]
+  },
+  {
+   "id": "num-fractions",
+   "title": "Fractions as Fair Shares",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "keystone": true,
+   "description": "Fractions 1/2 to 1/5 built from fair sharing, then placed as numbers on the number line; first equivalence. Grade-3 checkpoint content (CR14 numeracy run-ahead): completing during tier 4 is normal - no deadline. Keystone (GP13): the era-capping chain-end of numeracy's fractions leg - its sole consumer is tier-4 t4-algebra-data, so numeracy caps two legs the way literacy caps three.",
+   "prereqs": [
+    "num-mult-groups"
+   ],
+   "careers": [
+    "finance",
+    "engineer",
+    "scientist",
+    "doctor"
+   ],
+   "exercises": [
+    "Fair-share bakery: cut pictured cakes for 2, 3, 4 and 5 friends",
+    "Fraction washing line: pin 1/2, 1/4 and 3/4 between 0 and 1"
+   ]
+  },
+  {
+   "id": "num-problems-data",
+   "title": "Two-Step Problems & Charts",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "keystone": true,
+   "description": "Solves two-step word problems by drawing bar models first; reads and draws scaled bar graphs; perimeter of simple shapes. Grade-3 checkpoint content (CR14 numeracy run-ahead): completing during tier 4 is normal - no deadline.",
+   "prereqs": [
+    "num-times-tables",
+    "num-multidigit"
+   ],
+   "careers": [
+    "finance",
+    "manager",
+    "scientist",
+    "engineer"
+   ],
+   "exercises": [
+    "Bar-model stories: draw the model before writing any number sentence",
+    "Survey the family, then draw a scaled bar chart of the results",
+    "Unit breadth for the grade-3 list (v1.6): weigh baking ingredients in g/kg, estimate then check a family walk in km, mark s/min/h on the day plan - so cm/m/km, g/kg and time units all get lived practice, not just cm and euros"
+   ]
+  },
+  {
+   "id": "num-chance",
+   "title": "What Are the Chances?",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "description": "Micro-node (excluded from the keystone chain-end rule like dig-typing), added in v1.6: first reasoning under uncertainty - the childhood root R4 B3 explicitly calls booklet-able for the finance profile ('probability intuition, dice/spinner games') and gap review found absent below t5-advanced-math at 14+. Check: plays and reasons about spinner and dice games - sorts events into certain / possible / impossible; says which of two spinners makes red MORE likely and why (more sections - comparing counts, never formulas); tallies a two-dice game across many rolls and says which sum came up most and whether it HAD to. Prereq num-measure-data: tallying and reading the results chart IS the method here (sub-check (c), recording counts). Feeds t5-advanced-math, whose probability lab is this seed's named consumer - routed there rather than into t4-algebra-data because that bundle's fan-in already sits at the cap of 2 with both legs load-bearing (the tier-skipping edge follows the num-money-time -> t4-money-management precedent). The games-with-rules asset (GP16) supplies the format; no timing, no scoring against anyone.",
+   "prereqs": [
+    "num-measure-data"
+   ],
+   "careers": [
+    "finance",
+    "scientist",
+    "manager"
+   ],
+   "exercises": [
+    "Spinner choice: which spinner would you pick to land on red? Say why with section counts BEFORE spinning, then test it",
+    "Two-dice tally race: roll 30 times, tally each sum on a strip, talk about why 7 keeps winning and whether it must"
+   ]
+  },
+  {
+   "id": "lit-en-reading",
+   "title": "Reading English for Real",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "literacy",
+   "keystone": true,
+   "description": "Reads short English texts and instructions independently on BOTH legs of the Simple View (decoding x language comprehension, GP10, R2 section 10.1) - hence the twin prerequisites, with the comprehension leg arriving through the tier-2 oral node so it never idles for a year; vocabulary and listening keep compounding alongside.",
+   "prereqs": [
+    "lit-en-phonics-2",
+    "lit-en-oral-3"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "English instruction cards: read and execute a 20-word task solo",
+    "Decodable-plus readers and short non-fiction pages with a one-line log - chapter books wait for t4-english-fluent (framework Band 4 assumes short instructions, not novels)"
+   ]
+  },
+  {
+   "id": "lit-comprehension",
+   "title": "Reading to Learn",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "literacy",
+   "keystone": true,
+   "description": "Answers who/what/why/how questions, summarizes, and uses non-fiction features (headings, captions, index) to find things out on purpose. LANGUAGE OF THE CHECK: the prereq chain is Estonian-track, so the check runs on Estonian school texts with the parent question protocol (section 7 sourcing note); the English booklet-line versions of these exercises assume lit-en-reading and are a second representation (GP14), never the check itself.",
+   "prereqs": [
+    "lit-reading-fluency"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist",
+    "manager",
+    "finance"
+   ],
+   "exercises": [
+    "Who/what/why question grid after a non-fiction page on hedgehogs (booklet-line English version - assumes lit-en-reading; the check itself runs on Estonian school texts, section 7)",
+    "Text-feature hunt: use headings and the index to find three facts fast - in an Estonian or English book, whichever the child reads"
+   ]
+  },
+  {
+   "id": "lit-composition",
+   "title": "Write a Whole Piece",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "literacy",
+   "keystone": true,
+   "description": "Plans and writes a structured short text with beginning, middle and end, then edits own draft against a checklist. LANGUAGE OF THE CHECK: the prereq chain is Estonian-track, so the piece is written in Estonian and evidenced via school writing plus the parent protocol (section 7 sourcing note); the English booklet-line story-mountain version assumes lit-en-reading and is a second representation (GP14), never the check itself (English composition proper lives in t4-english-fluent).",
+   "prereqs": [
+    "lit-writing-sentences",
+    "mot-handwriting-auto"
+   ],
+   "careers": [
+    "lawyer",
+    "scientist",
+    "manager",
+    "doctor",
+    "youtuber"
+   ],
+   "exercises": [
+    "Plan-write-edit cycle: story-mountain plan, draft, checklist edit (in Estonian for the check; the booklet-line English version is a second costume, GP14)",
+    "A real letter to a grandparent, posted for real - in whichever language the grandparent reads"
+   ]
+  },
+  {
+   "id": "lit-reads-for-fun",
+   "title": "Reads for the Joy of It",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "literacy",
+   "check": "B",
+   "description": "Dispositional reading-appetite node (Archetype B), added in v1.6: the system previously trained decoding meticulously and appetite not at all, though self-chosen reading is the single strongest motivational lever this band has and the thing that actually separates fluent 9-year-old readers from reluctant ones. Check: the child UNPROMPTED picks up and reads self-chosen material on 3 or more occasions across 2 weeks; the evidence line is a title log the child keeps. Deliberately NEVER gates anything and NEVER carries a reward, ceremony or evidence attachment - paying for pleasure-reading would violate GP9, so this node is excluded from the keystone set by rule (framework GP13) and its check is observational only. The daily family read-aloud rail (framework CR18) is its soil: the Estonian bedtime read-aloud is a named, protected family ritual, not an unmentioned assumption.",
+   "prereqs": [
+    "lit-reading-fluency"
+   ],
+   "careers": [
+    "lawyer",
+    "doctor",
+    "scientist"
+   ],
+   "exercises": [
+    "My-books log: a title list the child keeps, any language, any format - comics and easy books count; the parent contributes nothing but library trips",
+    "Library habit: a regular borrowing trip where the child chooses freely - no vetting for level; easy books are how appetite compounds"
+   ]
+  },
+  {
+   "id": "log-sudoku-master",
+   "title": "Sudoku Master & Variants",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "logic",
+   "keystone": true,
+   "description": "Solves hard 6x6 and first 9x9 digit sudoku (S5, framework 4.4) using the first named strategy — taught only after months of self-found ones — and explains a deduction chain aloud; the variant sampler (jigsaw, futoshiki) opens the S6 doorway that continues past 9.",
+   "prereqs": [
+    "log-sudoku-symbols"
+   ],
+   "careers": [
+    "software-engineer",
+    "finance",
+    "scientist"
+   ],
+   "exercises": [
+    "Hard 6x6, then 9x9 with digits; the single-candidate scan named and taught only now (S5)",
+    "Variant sampler: jigsaw regions and futoshiki inequality grids (S6 begins)",
+    "Strategy board-game costume family (GP14, v1.6): checkers, chess-lite, route-building games - planning, look-ahead and losing gracefully, the same constraint-and-plan muscles in a social costume; a costume note, never a check"
+   ]
+  },
+  {
+   "id": "dig-scratch",
+   "title": "Scratch Projects",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "digital",
+   "keystone": true,
+   "description": "Plans on paper, then builds a small Scratch game or animation with loops, conditionals and simple variables; debugging as routine, not crisis. The e-safety thread continues: account hygiene and ask-before-sharing rules ride along with first online publishing.",
+   "prereqs": [
+    "dig-block-projects",
+    "log-decompose-debug"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer",
+    "scientist"
+   ],
+   "exercises": [
+    "Plan-then-build a catch-game: paper storyboard first, then code",
+    "Debug clinic: fix three broken starter projects"
+   ]
+  },
+  {
+   "id": "dig-typing",
+   "title": "Keyboard Basics",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "digital",
+   "description": "Micro-node: types short words and sentences with home-row habits and growing accuracy - the transcription skill t4-programming presupposes (framework section 3, Band 4: typing introduced ~8-9). Accuracy and habits, never speed pressure; cadence lives INSIDE the two weekly booklet/project sessions of the framework section 3 template (a ten-minute opener), never as a third standing slot - the Band-4 budget prices exactly 5 sessions and node cadences may not add time on top (section 3 subordination rule). Prereq is the transcription line (mot-letter-formation - knowing letter forms and controlled finger work are what typing actually builds on), NOT block coding: the former dig-scratchjr edge failed this file's own load-bearing test and existed only to satisfy the no-orphan invariant.",
+   "prereqs": [
+    "mot-letter-formation"
+   ],
+   "careers": [
+    "software-engineer"
+   ],
+   "exercises": [
+    "Ten calm minutes as the opener of each booklet/project session (2x weekly, section 3 template slot) in a child typing trainer - accuracy before speed, no leaderboards",
+    "Type and print your own three-sentence story for the fridge"
+   ]
+  },
+  {
+   "id": "dig-media-sense",
+   "title": "Who Made This?",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "digital",
+   "description": "Viewer-side media-literacy micro-node on the DIG e-safety thread (excluded from the keystone chain-end rule like dig-typing), added in v1.6: R3 section 3.6's consensus rows place 'searching with judgment' at 8 and 'understands the internet has authors & intentions' at 9, and the v1.5 youtuber wonder trained the creator while never training the viewer - the DIG scope line promised media judgment the graph delivered nowhere. Check, on three real media pieces the child actually uses: (a) tells content from advertising and says how; (b) names who made the piece and what the maker gets when you keep watching - watch-time, ads, the algorithm feeding more of the same; (c) co-authors and signs the family watch-time agreement. Prereq dig-block-projects: having planned, built and premiered own projects is what makes 'someone made this, with intentions' concrete rather than abstract - creator experience feeding viewer judgment. Audience judgment as a CONSUMER precedes creator judgment; the youtuber wonder's honest counterweight, soft-highlighted on that path, cheap and parent-runnable.",
+   "prereqs": [
+    "dig-block-projects"
+   ],
+   "careers": [
+    "youtuber"
+   ],
+   "exercises": [
+    "Ad-or-content hunt: in one favorite app or channel, find three things that are advertising and say how you can tell",
+    "Watch-time detective: what does the app get when you keep watching? Then draft and sign the family watch-time agreement together"
+   ]
+  },
+  {
+   "id": "sci-fair-test",
+   "title": "The Fair Test",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "science",
+   "keystone": true,
+   "description": "Runs the full inquiry cycle — predict, test, record, conclude — changing one thing at a time, and explains findings with evidence.",
+   "prereqs": [
+    "sci-measure-record"
+   ],
+   "careers": [
+    "scientist",
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Two plants, one in the dark: daily picture log and a conclusion sentence",
+    "Fair-or-unfair cards: spot which experiment cheats and say why"
+   ]
+  },
+  {
+   "id": "spa-scale-drawings",
+   "title": "Plans to Scale",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "motor-spatial",
+   "keystone": true,
+   "description": "Draws and reads simple scale drawings: measures a real object or room and draws it to a stated scale on a 1 cm grid, unfolds boxes into nets and folds them back, matches block buildings to their top/front/side views, and names positions with first coordinates on a labeled grid. The tier-3 spatial rung added in loop 3: the framework's own doctrine says spatial is a trunk most curricula under-serve and is MOST trainable at this band - the branch previously jumped from spa-build-diagram (7-8) straight to t4-design-build (10-13), starving the engineer spine exactly where training pays most; t4-design-build now builds on this node. Scales stay friendly (an assumes-line in the quest-card idiom, never an edge - this node's ancestry is pure MOT-SPA by design and the scoped boss rule rightly forbids a hard numeracy edge): 1 cell = one floor tile or one big step; numeric scale CONVERSION assumes the num-tables-1 frontier, and if that node is still open the parent co-pilots the arithmetic.",
+   "prereqs": [
+    "spa-build-diagram"
+   ],
+   "careers": [
+    "engineer",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Room plan to scale: measure the bedroom with a tape, draw it on a 1 cm grid with a stated scale and a legend, then check a sibling can find the bed from the plan",
+    "Views and nets: match photographed block buildings to their top/front/side views; cut out a net, fold the box, then draw the net of a different box before cutting"
+   ]
+  },
+  {
+   "id": "ef-goal-setting",
+   "title": "Goals & Tracking",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "executive-function",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Sets a personal goal, tracks it on a chart for a month, and self-evaluates honestly against it. Month-scale dispositional node: single-shot consolidation (framework 5.1 - the activity is itself weeks long and self-spacing).",
+   "prereqs": [
+    "ef-multistep-projects"
+   ],
+   "careers": [
+    "manager",
+    "finance",
+    "entrepreneur",
+    "doctor",
+    "youtuber"
+   ],
+   "exercises": [
+    "Month goal chart: pick a goal, tick daily, honest Friday self-review",
+    "Savings-jar graph climbing toward a chosen small purchase"
+   ]
+  },
+  {
+   "id": "sel-team-roles",
+   "title": "Team Roles",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "social-emotional",
+   "check": "B",
+   "keystone": true,
+   "description": "Works in a small team with named roles (leader, scribe, timekeeper), gives and receives feedback kindly, and debriefs what to improve.",
+   "prereqs": [
+    "sel-conflict-resolution",
+    "ef-multistep-projects"
+   ],
+   "careers": [
+    "manager",
+    "entrepreneur",
+    "doctor",
+    "lawyer",
+    "youtuber"
+   ],
+   "exercises": [
+    "Family cooking project with role cards, then a what-to-improve debrief",
+    "Feedback practice on each other's home-made puzzles"
+   ]
+  },
+  {
+   "id": "com-present",
+   "title": "Show & Convince",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "communication",
+   "keystone": true,
+   "description": "Prepares and delivers a 2-3-minute presentation with one visual; makes a poster that persuades.",
+   "prereqs": [
+    "com-explain-decision"
+   ],
+   "careers": [
+    "manager",
+    "lawyer",
+    "entrepreneur",
+    "scientist",
+    "youtuber"
+   ],
+   "exercises": [
+    "Two-minute show-and-convince with one drawn visual, timed by a sibling",
+    "Persuasion poster: convince the family of the next trip destination"
+   ]
+  },
+  {
+   "id": "cre-invent-improve",
+   "title": "Invent & Improve",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "creativity",
+   "keystone": true,
+   "description": "Invents an original thing - a game, gadget, recipe or service - and carries it through at least two feedback-driven improvement rounds. The tier-3 continuation of the creativity branch: creativity no longer dead-ends at tier 2 but runs unbroken toward the entrepreneur wonder (section 4).",
+   "prereqs": [
+    "cre-iterate-v2"
+   ],
+   "careers": [
+    "entrepreneur",
+    "engineer",
+    "scientist",
+    "youtuber"
+   ],
+   "exercises": [
+    "Invention week: invent a game or gadget, get two people to try it, log what they said",
+    "Improvement rounds: change one thing per round; keep a v1/v2/v3 card that shows the thinking"
+   ]
+  },
+  {
+   "id": "quest-doctor",
+   "title": "Quest: Teddy Clinic",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "science",
+   "quest_for": "doctor",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the doctor wonder's first door, child-sized and week-scale. Runs a home teddy clinic: examines patients, measures and records, writes a simple patient chart, and delivers the diagnosis kindly - precision plus empathy, the doctor pairing. REWIRED in v1.6 (gap review 2 D4): the science leg is now sci-body-health - the quest finally sits on body knowledge its chain actually builds, not just measurement it borrows - swapped for sci-measure-record under the fan-in-2 cap. Quest card carries 'assumes you can also...' soft-prereq lines (booklet pipeline spec): chart-writing assumes mot-letter-formation-level writing, or the parent scribes; the measuring assumes the sci-measure-record/num-measure-data frontier, and if those are still open the parent co-pilots the thermometer and tape (the spa-scale-drawings assumes-line idiom - a soft line, never an edge).",
+   "prereqs": [
+    "sci-body-health",
+    "sel-conflict-resolution"
+   ],
+   "careers": [
+    "doctor"
+   ],
+   "exercises": [
+    "Patient chart for a sick teddy: name, symptoms, measurements, treatment plan - one patient a day for a week",
+    "Bedside manner: deliver a worrying diagnosis to the teddy's owner (sibling or parent) kindly and clearly"
+   ]
+  },
+  {
+   "id": "quest-software",
+   "title": "Quest: Game Night",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "digital",
+   "quest_for": "software-engineer",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the software wonder's first door. Designs and builds a small game (ScratchJr or paper rules), hosts a family game night with it, and fixes the bugs the players find - shipping plus debugging, child-sized.",
+   "prereqs": [
+    "dig-scratchjr",
+    "log-decompose-debug"
+   ],
+   "careers": [
+    "software-engineer"
+   ],
+   "exercises": [
+    "Build a game with a start, a goal and one rule twist; playtest it on the family",
+    "Bug log: write down everything that broke on game night, fix two bugs, release version 2"
+   ]
+  },
+  {
+   "id": "quest-manager",
+   "title": "Quest: Restaurant Night",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "social-emotional",
+   "quest_for": "manager",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the manager wonder's first door. Plans and runs a family restaurant night end-to-end: menu, budget, delegated roles, service, and a debrief - the plan-do-debrief loop with real people. Quest card carries an 'assumes you can also...' soft-prereq line: the budgeted shopping list leans on num-money-time (a parent co-pilots the money math if that node is still open).",
+   "prereqs": [
+    "ef-multistep-projects",
+    "sel-conflict-resolution"
+   ],
+   "careers": [
+    "manager"
+   ],
+   "exercises": [
+    "Plan sheet: menu, shopping list inside a set budget, who-does-what role cards for the family",
+    "Run the night, then a two-question debrief: what worked? what changes next time?"
+   ]
+  },
+  {
+   "id": "quest-lawyer",
+   "title": "Quest: Family Court",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "communication",
+   "quest_for": "lawyer",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the lawyer wonder's first door. Convenes family court over a real small dispute: hears both sides, summarizes each fairly before ruling, and writes the ruling with reasons.",
+   "prereqs": [
+    "com-explain-decision",
+    "sel-conflict-resolution"
+   ],
+   "careers": [
+    "lawyer"
+   ],
+   "exercises": [
+    "Hear a real dispute (whose turn, which film): summarize each side back until they say 'yes, that is my view', then rule",
+    "Write the ruling: 'I decide X because...' with two reasons, posted on the fridge"
+   ]
+  },
+  {
+   "id": "quest-scientist",
+   "title": "Quest: Kitchen Lab",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "science",
+   "quest_for": "scientist",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the scientist wonder's first door. Runs a week-long kitchen experiment: own question, prediction, one variable changed, daily records, findings presented to the family. Requires sci-fair-test - the node that teaches exactly the one-variable fair-test cycle this quest demands (sci-measure-record stays in the ancestry through it).",
+   "prereqs": [
+    "sci-fair-test",
+    "ef-plan-check"
+   ],
+   "careers": [
+    "scientist"
+   ],
+   "exercises": [
+    "Pick a question (which ice melts faster? what makes dough rise?), predict, change ONE thing, record daily",
+    "Present the chart to the family: what I expected, what happened, what I would test next"
+   ]
+  },
+  {
+   "id": "quest-engineer",
+   "title": "Quest: Bridge Challenge",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "motor-spatial",
+   "quest_for": "engineer",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the engineer wonder's first door. Builds a paper bridge that must hold 20 coins, load-tests it to failure, redesigns, and retests - the design-build-test cycle with documented versions.",
+   "prereqs": [
+    "spa-build-diagram",
+    "cre-iterate-v2"
+   ],
+   "careers": [
+    "engineer"
+   ],
+   "exercises": [
+    "Build v1 from your own drawn plan, load coins until it fails, mark where it broke",
+    "Redesign and build v2; make a load-test poster showing both scores"
+   ]
+  },
+  {
+   "id": "quest-entrepreneur",
+   "title": "Quest: Market Stall",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "creativity",
+   "quest_for": "entrepreneur",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the entrepreneur wonder's first door. Makes a small product batch, prices it against real costs, sells at a family-and-friends market, and counts honest profit.",
+   "prereqs": [
+    "num-money-time",
+    "cre-iterate-v2"
+   ],
+   "careers": [
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Make a batch (cards, biscuits, bookmarks); write down cost, price, and why that price",
+    "Run the stall; count profit = sold minus cost; decide one thing version 2 of the stall changes"
+   ]
+  },
+  {
+   "id": "quest-finance",
+   "title": "Quest: Pocket-Money Ledger",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "numeracy",
+   "quest_for": "finance",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the finance wonder's first door. Keeps a month-long pocket-money ledger with categories, weekly totals and a savings goal tracked on a chart.",
+   "prereqs": [
+    "num-money-time",
+    "num-addsub-100"
+   ],
+   "careers": [
+    "finance"
+   ],
+   "exercises": [
+    "Rule a ledger: date, in, out, balance - enter every cent for a month",
+    "Savings-goal chart: pick a target, mark the line weekly, review honestly at month end"
+   ]
+  },
+  {
+   "id": "quest-youtuber",
+   "title": "Quest: Family Show",
+   "tier": 3,
+   "ageBand": "8-9",
+   "domain": "communication",
+   "quest_for": "youtuber",
+   "check": "single-shot",
+   "keystone": true,
+   "description": "Career capstone quest (CR12): the creator wonder's first door. Plans, records and premieres a 2-minute family show: picks a topic worth telling, storyboards it in three frames, records takes on a parent's phone (or performs it live if no camera is at hand - device-agnostic like dig-beebot-arrows), watches version 1 back, improves one thing, and presents version 2 at a family premiere - the plan-record-review-improve loop, child-sized. Everything stays inside the family: nothing is published anywhere, and the quest card says so - publishing is a parent-gated, much-later door on the DIG branch's e-safety thread.",
+   "prereqs": [
+    "com-explain-decision",
+    "cre-iterate-v2"
+   ],
+   "careers": [
+    "youtuber"
+   ],
+   "exercises": [
+    "Storyboard three frames (opening, middle, ending), then record take one of the 2-minute show on a parent's phone - or perform it live",
+    "Watch it back together, pick ONE thing to improve, record version 2, and premiere it at family movie night"
+   ]
+  },
+  {
+   "id": "t4-algebra-data",
+   "title": "Algebra & Data Foundations",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "numeracy",
+   "description": "Equations as balance, negative numbers, ratio and percent, and descriptive statistics — the abstraction layer over a fluent arithmetic base.",
+   "prereqs": [
+    "num-fractions",
+    "num-problems-data"
+   ],
+   "careers": [
+    "finance",
+    "scientist",
+    "engineer",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Balance puzzles growing into simple equations — the missing-box logic grown up",
+    "Percent in the wild: discounts and receipt VAT, then statistics on your own data"
+   ]
+  },
+  {
+   "id": "t4-academic-writing",
+   "title": "Research & Report",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "literacy",
+   "description": "Writes multi-paragraph reports and arguments drawing on more than one source, with structure and a simple source list.",
+   "prereqs": [
+    "lit-composition",
+    "lit-comprehension"
+   ],
+   "careers": [
+    "lawyer",
+    "scientist",
+    "doctor",
+    "manager"
+   ],
+   "exercises": [
+    "Two-source animal report with a simple references list",
+    "Opinion essay: claim, three evidence paragraphs, conclusion"
+   ]
+  },
+  {
+   "id": "t4-english-fluent",
+   "title": "English as a Working Language",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "literacy",
+   "description": "Reads novels and non-fiction, writes and presents comfortably in English — the system's working language secured. The writing leg deliberately rides Estonian-trained composition (the lit-composition prereq): transcription automaticity and text structure transfer across languages - a transfer premise true for structure and FALSE for spelling, conceded here so decomposition remembers it - and English-specific spelling and phrasing are practiced inside this node itself rather than in a separate earlier English-writing chain. DECOMPOSES FIRST (framework 5.2 trigger, v1.6): this is the system's steepest un-staged middle - between 'short decodable-plus texts' and 'novels' lie 3-4 years, and productive SPOKEN English exists nowhere earlier (every oral node to tier 3 is deliberately receptive, 'answers in either language') - so when the child's frontier first enters tier 4 anywhere, this bundle decomposes within the quarter into staged graded-reading levels, a low-stakes productive-spoken-English rung (retell/present in English - the missing register added as a real node), and staged English composition. Until then it carries interim sub-level ticks: graded-reader level climbed, first voluntary English retell, first English paragraph.",
+   "prereqs": [
+    "lit-en-reading",
+    "lit-composition"
+   ],
+   "careers": [
+    "doctor",
+    "software-engineer",
+    "manager",
+    "lawyer",
+    "scientist",
+    "engineer",
+    "entrepreneur",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "First full English novel with a reading journal (a graded-reader ladder climbs to it - tick per level)",
+    "Deliver a school presentation in English (the productive-spoken rung's summit; low-stakes English retells to family come first)"
+   ]
+  },
+  {
+   "id": "t4-programming",
+   "title": "Real Programming",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "digital",
+   "description": "Moves from blocks to a text language (e.g., Python): variables, loops, functions and data; builds small tools and games that someone actually uses.",
+   "prereqs": [
+    "dig-scratch",
+    "dig-typing"
+   ],
+   "careers": [
+    "software-engineer",
+    "engineer",
+    "scientist",
+    "finance"
+   ],
+   "exercises": [
+    "Python turtle art, then a dice-game simulator",
+    "Automate something real: a family chores-rota generator"
+   ]
+  },
+  {
+   "id": "t4-science-method",
+   "title": "Experiments That Count",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "science",
+   "description": "Designs controlled experiments across biology, chemistry and physics topics; keeps a lab notebook; reads others' results critically.",
+   "prereqs": [
+    "sci-fair-test",
+    "num-problems-data"
+   ],
+   "careers": [
+    "scientist",
+    "doctor",
+    "engineer"
+   ],
+   "exercises": [
+    "Design your own one-variable experiment with a lab-notebook write-up",
+    "Replicate a classic kitchen experiment and document it honestly"
+   ]
+  },
+  {
+   "id": "t4-debate",
+   "title": "Argue Both Sides",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "communication",
+   "description": "Builds claim-evidence-rebuttal arguments, steelmans the opposing side, and speaks confidently in front of groups.",
+   "prereqs": [
+    "com-present",
+    "lit-comprehension"
+   ],
+   "careers": [
+    "lawyer",
+    "manager",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Claim-evidence-rebuttal cards; argue the side you personally disagree with",
+    "Two-minute impromptu speeches with one minute of prep"
+   ]
+  },
+  {
+   "id": "t4-money-management",
+   "title": "Money That Works",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "numeracy",
+   "description": "Budgets real pocket money over months, understands saving and price-per-unit, keeps a simple ledger, and FEELS simple interest through the savings chart (softened in v1.6: percent and ratio live in t4-algebra-data, which is not in this chain's ancestry - the card claims the felt experience, not the formula; interest proper is recovered downstream where t5-financial-analysis meets t5-advanced-math).",
+   "prereqs": [
+    "num-money-time",
+    "ef-goal-setting"
+   ],
+   "careers": [
+    "finance",
+    "entrepreneur",
+    "manager"
+   ],
+   "exercises": [
+    "Three-month pocket-money ledger with categories and a savings goal",
+    "Price-per-unit audit of the family groceries"
+   ]
+  },
+  {
+   "id": "t4-leading-teams",
+   "title": "Lead a Project",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "social-emotional",
+   "description": "Leads a small team project end-to-end: plan, delegate, track, debrief — the Anticipation-Action-Reflection cycle made habitual.",
+   "prereqs": [
+    "sel-team-roles",
+    "ef-goal-setting"
+   ],
+   "careers": [
+    "manager",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Lead a family event end-to-end: plan, delegate, run, debrief",
+    "AAR habit sheet: what we expected, what happened, what next"
+   ]
+  },
+  {
+   "id": "t4-design-build",
+   "title": "Design, Build, Test",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "motor-spatial",
+   "description": "Runs full design cycles with real materials and technical drawing: measure, prototype, test, iterate — the tööõpetus/käsitöö asset grown up, building on the scale-drawing and views work of spa-scale-drawings.",
+   "prereqs": [
+    "spa-scale-drawings",
+    "cre-iterate-v2"
+   ],
+   "careers": [
+    "engineer",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Birdhouse from your own dimensioned sketch",
+    "Egg-drop iteration cycle with documented versions"
+   ]
+  },
+  {
+   "id": "t4-venture-lab",
+   "title": "First Ventures",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "creativity",
+   "description": "Turns invented products into tiny real ventures: repeated make-price-sell-review cycles (school fairs, craft sales, neighborhood services) with honest per-venture accounting - the creativity/entrepreneurship continuation between cre-invent-improve and the student company.",
+   "prereqs": [
+    "cre-invent-improve",
+    "t4-money-management"
+   ],
+   "careers": [
+    "entrepreneur",
+    "manager",
+    "youtuber"
+   ],
+   "exercises": [
+    "Run three micro-ventures across the year; keep a one-page P&L for each",
+    "Post-mortem ritual: what sold, what flopped, what the next venture changes"
+   ]
+  },
+  {
+   "id": "t4-media-production",
+   "title": "Shoot, Edit, Tell",
+   "tier": 4,
+   "ageBand": "10-13",
+   "domain": "digital",
+   "description": "Plans, shoots and edits short videos or audio pieces that tell a story to a real audience: storyboards, camera and sound basics, timeline editing, titles, and feedback-driven re-cuts - the presenting and block-projects lines continued into media craft (paper plan first, build on screen, fix your own problems before asking). Anything published is parent-gated and rides the DIG branch's e-safety thread: audience awareness and what-never-goes-online are first-class content here, not fine print.",
+   "prereqs": [
+    "com-present",
+    "dig-block-projects"
+   ],
+   "careers": [
+    "youtuber"
+   ],
+   "exercises": [
+    "Three-minute mini-documentary about a family hobby: storyboard, shot list, two editing passes, family premiere",
+    "Re-cut rounds: show a cut to two people, log what they said, change one thing per round - version-2 culture on a timeline"
+   ]
+  },
+  {
+   "id": "t5-advanced-math",
+   "title": "Advanced Mathematics",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "numeracy",
+   "description": "Functions, calculus-track mathematics, probability and statistics — the entry ticket to every quantitative career. Since v1.6 the probability lab has a childhood seed in its hard ancestry: num-chance (tier-3 dice/spinner reasoning) is the second prereq - simulations before formulas, intuition before simulations.",
+   "prereqs": [
+    "t4-algebra-data",
+    "num-chance"
+   ],
+   "careers": [
+    "engineer",
+    "finance",
+    "scientist",
+    "software-engineer"
+   ],
+   "exercises": [
+    "Functions and rates of change explored through real datasets",
+    "Probability lab: simulations before formulas"
+   ]
+  },
+  {
+   "id": "t5-life-sciences",
+   "title": "Biology & Chemistry for Medicine",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "science",
+   "description": "Human biology, chemistry and health sciences at depth, with real lab work - paired with sustained people-facing service, the SEL leg of medicine that the doctor profile calls decisive (section 2). KNOWN COARSE-LAYER GAP, named per section 3 (v1.6, the t5-financial-analysis admission pattern): the service/SEL leg rides this card's exercise list with zero SEL ancestry in the hard chain (t4-science-method is the only prereq) - a real people-facing service milestone enters the doctor vestibule when tiers 4-5 decompose, and until then this card admits the dependency rather than implying its chain builds it.",
+   "prereqs": [
+    "t4-science-method"
+   ],
+   "careers": [
+    "doctor",
+    "scientist"
+   ],
+   "exercises": [
+    "Lab practicals and a human-body-systems deep dive",
+    "Shadow a health professional for a day with prepared questions, and hold a term-long volunteering commitment - empathy under real conditions"
+   ]
+  },
+  {
+   "id": "t5-software-craft",
+   "title": "Ship Real Software",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "digital",
+   "description": "Builds and ships larger software projects: algorithms and data structures, version control, and working in a shared codebase. Documentation, forums and codebases run in English - hence the t4-english-fluent prerequisite.",
+   "prereqs": [
+    "t4-programming",
+    "t4-english-fluent"
+   ],
+   "careers": [
+    "software-engineer"
+   ],
+   "exercises": [
+    "Ship a project: repository, versions, README, one real user",
+    "Implement classic search and sort algorithms and measure them"
+   ]
+  },
+  {
+   "id": "t5-research-project",
+   "title": "Independent Research",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "science",
+   "description": "Completes an independent research project (uurimistöö): question, method, data, written report, defended findings. Sources are read in English (t4-english-fluent) - the single fan-in-3 node, inside R4 C3.2's cap.",
+   "prereqs": [
+    "t4-science-method",
+    "t4-academic-writing",
+    "t4-english-fluent"
+   ],
+   "careers": [
+    "scientist",
+    "doctor"
+   ],
+   "exercises": [
+    "Uurimistöö: own question, method, data and a defended write-up",
+    "Read and critique one real published study"
+   ]
+  },
+  {
+   "id": "t5-argument-law",
+   "title": "Rules, Rights & Rhetoric",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "communication",
+   "description": "Advanced argumentation: mock trial or competitive debate, civics and legal reasoning, close reading of rules and contracts.",
+   "prereqs": [
+    "t4-debate",
+    "t4-academic-writing"
+   ],
+   "careers": [
+    "lawyer"
+   ],
+   "exercises": [
+    "Mock trial: prepare and argue a case, then swap sides",
+    "Contract close-read: find the three clauses that matter in a phone plan"
+   ]
+  },
+  {
+   "id": "t5-venture",
+   "title": "Run a Real Venture",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "creativity",
+   "description": "Runs a student company (õpilasfirma): product, costs, prices, profit and a pitch — a real P&L, however small. The creativity chain arrives through t4-venture-lab (money management sits in its ancestry); leading teams is the second hard leg. KNOWN COARSE-LAYER GAP, named per section 3 (v1.6): the final pitch demands structured persuasion while com-present is enrichment for the entrepreneur (soft-highlighted, not in the hard closure) and the trunk's COM chain stops at because-reasons - a COM leg enters the venture chain when tiers 4-5 decompose, and until then this card admits it (negotiation's first costume rides sel-conflict-resolution's trade-and-swap games today).",
+   "prereqs": [
+    "t4-venture-lab",
+    "t4-leading-teams"
+   ],
+   "careers": [
+    "entrepreneur",
+    "manager",
+    "finance",
+    "youtuber"
+   ],
+   "exercises": [
+    "Student company: product, costs, prices, P&L and a final pitch",
+    "Market-day stall with honest profit accounting"
+   ]
+  },
+  {
+   "id": "t5-org-leadership",
+   "title": "Lead Something Real",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "social-emotional",
+   "description": "Holds a sustained leadership role in a club, team or event: sets direction, runs meetings, and is accountable for outcomes and people. Speaking to rooms and arguing a case are load-bearing here - hence t4-debate as the second leg.",
+   "prereqs": [
+    "t4-leading-teams",
+    "t4-debate"
+   ],
+   "careers": [
+    "manager",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Run a club or event series for a term: agenda, budget, people",
+    "Organize a tournament: schedule, roles, prizes, debrief"
+   ]
+  },
+  {
+   "id": "t5-applied-engineering",
+   "title": "Applied Engineering",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "motor-spatial",
+   "description": "Physics-based making: mechanics, CAD, robotics or construction projects that must survive contact with the real world. KNOWN COARSE-LAYER GAP, named per section 3 (v1.6, the t5-financial-analysis admission pattern): CAD and robotics are digital crafts and no DIG node sits in this chain's hard ancestry - a CAD-lite/digital-tools rung enters the design-build chain when tiers 4-5 decompose (it can be the same data-tools node finance is promised), and until then this card admits the dependency rather than implying its chain teaches the tools.",
+   "prereqs": [
+    "t4-design-build",
+    "t5-advanced-math"
+   ],
+   "careers": [
+    "engineer"
+   ],
+   "exercises": [
+    "CAD-design and fabricate a working part",
+    "Bridge-building or robotics competition entry with load testing"
+   ]
+  },
+  {
+   "id": "t5-financial-analysis",
+   "title": "Financial Analysis",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "numeracy",
+   "description": "Reads financial statements, models scenarios in spreadsheets, and understands investing, risk and economics basics. KNOWN COARSE-LAYER GAP, named per section 3: no digital-tools node sits in this chain's hard ancestry yet - a spreadsheet/data-tools node enters the money-management chain when tiers 4-5 decompose, so this card admits the dependency rather than implying its chain teaches the tool.",
+   "prereqs": [
+    "t4-money-management",
+    "t5-advanced-math"
+   ],
+   "careers": [
+    "finance",
+    "manager",
+    "entrepreneur"
+   ],
+   "exercises": [
+    "Spreadsheet model: saving vs investing over ten years",
+    "Read a real annual report: find revenue, costs and profit"
+   ]
+  },
+  {
+   "id": "t5-creator-business",
+   "title": "Run a Creator Channel",
+   "tier": 5,
+   "ageBand": "14-18",
+   "domain": "digital",
+   "description": "Runs a real content channel as a small venture: niche and branding, a publishing schedule actually kept, audience analytics read honestly, community handled kindly, and monetization basics - media craft arriving from t4-media-production, venture discipline from t4-venture-lab (money management sits in its ancestry). Platform literacy and online-safety judgment (what to publish, what stays private, how comment culture is met) are load-bearing here, on the same e-safety thread the DIG branch carries from first screen contact - dig-media-sense (v1.6) is that thread's viewer-side rung, soft-highlighted on this path - and the family gate on publishing lifts only as this node's judgment is demonstrated, never before. KNOWN COARSE-LAYER GAP, named per section 3 (v1.6, the t5-financial-analysis admission pattern): 'audience analytics read honestly' presupposes chart-and-data literacy that this chain's hard ancestry does not carry (num-problems-data's charts are not in the trunk) - the data-tools rung entering the money chain at decomposition serves this card too, and until then the card admits the dependency.",
+   "prereqs": [
+    "t4-media-production",
+    "t4-venture-lab"
+   ],
+   "careers": [
+    "youtuber"
+   ],
+   "exercises": [
+    "Run a channel for a term: content calendar, pieces shipped on schedule, a monthly analytics review of what worked and why",
+    "Creator P&L and brand one-pager: costs, any revenue, audience growth - presented like the student-company pitch"
+   ]
+  }
+ ]
+};
+
+/* ======================= data derivations ======================= */
+const DOMAIN_ORDER = ["literacy", "communication", "numeracy", "logic", "science", "digital", "executive-function", "social-emotional", "creativity", "motor-spatial"];
+const DOMAIN_LABEL = {
+  "literacy": "Literacy", "communication": "Communication", "numeracy": "Numeracy",
+  "logic": "Logic", "science": "Science", "digital": "Digital",
+  "executive-function": "Executive function", "social-emotional": "Social-emotional",
+  "creativity": "Creativity", "motor-spatial": "Motor & spatial",
+};
+const TIER_META = [
+  ["Spark", "kindergarten · age 5–6"],
+  ["Foundations", "school year 1 · age 6–7"],
+  ["Builder", "school year 2 · age 7–8"],
+  ["Explorer", "school year 3 · age 8–9"],
+  ["Voyager", "middle school · age 10–13"],
+  ["Horizons", "high school · age 14–18"],
+];
+const STATES = ["notlearned", "learning", "mastered"];
+const STATE_LABEL = { mastered: "✓ Mastered", learning: "◐ Learning", notlearned: "○ Not learned yet" };
+const STATE_MARK = { mastered: "✓", learning: "◐", notlearned: "○" };
+
+const nodesById = {}; DATA.nodes.forEach(n => nodesById[n.id] = n);
+const kids = {}; DATA.nodes.forEach(n => (n.prereqs || []).forEach(p => (kids[p] = kids[p] || []).push(n.id)));
+const tiers = [...new Set(DATA.nodes.map(n => n.tier))].sort((a, b) => a - b);
+const maxTier = Math.max(...tiers);
+const domIdx = d => { const i = DOMAIN_ORDER.indexOf(d); return i < 0 ? 99 : i; };
+
+const ancCache = {};
+function ancestorsOf(id) {
+  if (ancCache[id]) return ancCache[id];
+  const out = new Set();
+  (function walk(i) { (nodesById[i]?.prereqs || []).forEach(p => { if (!out.has(p)) { out.add(p); walk(p); } }); })(id);
+  return (ancCache[id] = out);
+}
+function descendantsOf(id) {
+  const out = new Set();
+  (function walk(i) { (kids[i] || []).forEach(k => { if (!out.has(k)) { out.add(k); walk(k); } }); })(id);
+  return out;
+}
+
+/* Canonical career path = ancestor closure of its capstones + quest, plus the common trunk. */
+const careerSetCache = {};
+function careerSet(cid) {
+  if (careerSetCache[cid]) return careerSetCache[cid];
+  const c = DATA.careers.find(x => x.id === cid);
+  const seeds = [...(c.capstone_prereqs || []), ...(c.quest ? [c.quest] : [])].filter(id => nodesById[id]);
+  const s = new Set(seeds);
+  seeds.forEach(id => ancestorsOf(id).forEach(a => s.add(a)));
+  (DATA.common_trunk || []).forEach(id => { if (nodesById[id]) s.add(id); });
+  return (careerSetCache[cid] = s);
+}
+function enrichmentSet(cid) {
+  const core = careerSet(cid);
+  return new Set(DATA.nodes.filter(n => (n.careers || []).includes(cid) && !core.has(n.id)).map(n => n.id));
+}
+
+/* ======================= storage ======================= */
+function localStore() {
+  const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+  return {
+    mode: "local",
+    shareUrl: null,
+    async load() { return { people: read("lls-people", []), progress: read("lls-progress", {}) }; },
+    async addPerson(name) {
+      const people = read("lls-people", []);
+      const id = "p" + Math.random().toString(36).slice(2, 9);
+      people.push({ id, name }); write("lls-people", people); return id;
+    },
+    async removePerson(id) {
+      write("lls-people", read("lls-people", []).filter(p => p.id !== id));
+      const prog = read("lls-progress", {}); delete prog[id]; write("lls-progress", prog);
+    },
+    async setState(personId, nodeId, state) {
+      const prog = read("lls-progress", {});
+      prog[personId] = prog[personId] || {};
+      if (state) prog[personId][nodeId] = state; else delete prog[personId][nodeId];
+      write("lls-progress", prog);
+    },
+  };
+}
+
+function apiStore(boardCode) {
+  const call = async (path, opts) => {
+    const r = await fetch(path, { headers: { "content-type": "application/json" }, ...opts });
+    if (!r.ok) throw new Error("api " + r.status);
+    return r.json();
+  };
+  const ensureBoard = async () => {
+    if (!boardCode) {
+      const b = await call("api/board", { method: "POST", body: "{}" });
+      boardCode = b.code;
+      const u = new URL(location.href); u.searchParams.set("board", boardCode);
+      history.replaceState(null, "", u.toString());
+    }
+    return boardCode;
+  };
+  return {
+    mode: "api",
+    get shareUrl() { return boardCode ? location.href : null; },
+    async load() {
+      if (!boardCode) return { people: [], progress: {} };
+      try { return await call("api/board?code=" + encodeURIComponent(boardCode)); }
+      catch { return { people: [], progress: {} }; }
+    },
+    async addPerson(name) {
+      const code = await ensureBoard();
+      const r = await call("api/person", { method: "POST", body: JSON.stringify({ code, name }) });
+      return r.id;
+    },
+    async removePerson(id) {
+      await call("api/person?code=" + encodeURIComponent(boardCode) + "&id=" + encodeURIComponent(id), { method: "DELETE" });
+    },
+    async setState(personId, nodeId, state) {
+      await call("api/progress", { method: "POST", body: JSON.stringify({ code: boardCode, personId, nodeId, state: state || null }) });
+    },
+  };
+}
+
+/* ======================= app state ======================= */
+let store = localStore();
+let people = [];
+let progress = {};       // personId -> {nodeId: state}
+let activePerson = null;
+let tab = "overview";    // 'overview' | 'career'
+let traceCareer = null;  // overview highlight context (sticky)
+let traceDomain = null;
+let careerTabSel = null; // career-tab filter
+let selectedNode = null;
+
+const $ = id => document.getElementById(id);
+const board = $("board"), svg = $("edges"), panel = $("panel");
+
+/* ======================= board rendering ======================= */
+function visibleNodeIds() {
+  if (tab === "career" && careerTabSel) {
+    const s = new Set([...careerSet(careerTabSel), ...enrichmentSet(careerTabSel)]);
+    return s;
+  }
+  return null; // all
+}
+
+function renderBoard() {
+  const vis = visibleNodeIds();
+  const enrich = (tab === "career" && careerTabSel) ? enrichmentSet(careerTabSel) : new Set();
+  board.querySelectorAll(".col").forEach(c => c.remove());
+
+  for (const t of tiers) {
+    const list = DATA.nodes
+      .filter(n => n.tier === t && (!vis || vis.has(n.id)))
+      .sort((a, b) => domIdx(a.domain) - domIdx(b.domain) || a.title.localeCompare(b.title));
+    if (vis && list.length === 0) continue;
+    const col = document.createElement("div");
+    col.className = "col";
+    const [name, sub] = TIER_META[t] || [`Tier ${t}`, ""];
+    col.innerHTML = `<div class="col-head"><div class="tier-label">${name}</div><div class="tier-sub">${sub}</div></div>`;
+    list.forEach(n => {
+      const b = document.createElement("button");
+      b.className = "node" + (enrich.has(n.id) ? " enrich" : "");
+      b.id = "n-" + n.id;
+      b.style.setProperty("--dc", `var(--d-${n.domain})`);
+      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}</span>`;
+      b.addEventListener("click", e => { e.stopPropagation(); openNode(n.id); });
+      col.appendChild(b);
+    });
+    board.appendChild(col);
+  }
+
+  const careerCol = document.createElement("div");
+  careerCol.className = "col";
+  careerCol.innerHTML = `<div class="col-head"><div class="tier-label">Careers</div><div class="tier-sub">destination goals</div></div>`;
+  const careersToShow = (tab === "career" && careerTabSel) ? DATA.careers.filter(c => c.id === careerTabSel) : DATA.careers;
+  careersToShow.forEach(c => {
+    const b = document.createElement("button");
+    b.className = "career";
+    b.id = "c-" + c.id;
+    b.innerHTML = `<span class="e">${c.emoji}</span><span class="t">${c.title}</span>`;
+    b.addEventListener("click", e => {
+      e.stopPropagation();
+      if (tab === "overview") setTrace(c.id); else openCareerPanel(c.id);
+    });
+    careerCol.appendChild(b);
+  });
+  board.appendChild(careerCol);
+
+  applyStates();
+  applyHighlights();
+  requestAnimationFrame(drawEdges);
+}
+
+function drawEdges() {
+  const br = board.getBoundingClientRect();
+  svg.setAttribute("width", board.scrollWidth);
+  svg.setAttribute("height", board.scrollHeight);
+  svg.setAttribute("viewBox", `0 0 ${board.scrollWidth} ${board.scrollHeight}`);
+  const pos = el => {
+    const r = el.getBoundingClientRect();
+    return { l: r.left - br.left, r: r.right - br.left, y: r.top - br.top + r.height / 2 };
+  };
+  let html = `<style>
+    .e { stroke: rgba(96, 118, 148, .30); stroke-width: 1.4; }
+    .e.lit { stroke: var(--gold); stroke-width: 2; opacity: .8; }
+  </style>`;
+  const edge = (fromEl, toEl, cls) => {
+    const a = pos(fromEl), b = pos(toEl);
+    const dx = Math.max(24, (b.l - a.r) / 2);
+    return `<path class="${cls}" d="M ${a.r} ${a.y} C ${a.r + dx} ${a.y}, ${b.l - dx} ${b.y}, ${b.l} ${b.y}" fill="none"/>`;
+  };
+  DATA.nodes.forEach(n => (n.prereqs || []).forEach(p => {
+    const f = $("n-" + p), t = $("n-" + n.id);
+    if (f && t) html += edge(f, t, `e ep-${p} et-${n.id}`);
+  }));
+  // link each career card from its visible feeder nodes: capstone prereqs (+ quest if tier-max missing)
+  DATA.careers.forEach(c => {
+    const cEl = $("c-" + c.id);
+    if (!cEl) return;
+    const feeders = (c.capstone_prereqs || []).filter(id => $("n-" + id));
+    feeders.forEach(id => { html += edge($("n-" + id), cEl, `e ec-${c.id} ep-${id}`); });
+  });
+  svg.innerHTML = html;
+  applyEdgeHighlights();
+}
+
+/* ======================= highlights (overview trace) ======================= */
+function litSets() {
+  if (tab !== "overview") return null;
+  if (traceCareer) {
+    const core = careerSet(traceCareer);
+    const enr = enrichmentSet(traceCareer);
+    return { nodes: new Set([...core, ...enr]), careers: [traceCareer] };
+  }
+  if (traceDomain) {
+    const s = new Set(DATA.nodes.filter(n => n.domain === traceDomain).map(n => n.id));
+    const cars = [...new Set(DATA.nodes.filter(n => n.domain === traceDomain).flatMap(n => n.careers || []))];
+    return { nodes: s, careers: cars };
+  }
+  if (selectedNode && !panel.classList.contains("open")) return null;
+  if (selectedNode && !traceCareer) {
+    const s = new Set([selectedNode, ...ancestorsOf(selectedNode), ...descendantsOf(selectedNode)]);
+    return { nodes: s, careers: nodesById[selectedNode]?.careers || [] };
+  }
+  return null;
+}
+
+function applyHighlights() {
+  const lit = litSets();
+  board.classList.toggle("tracing", !!lit);
+  document.querySelectorAll(".node, .career").forEach(el => el.classList.remove("lit"));
+  if (lit) {
+    lit.nodes.forEach(id => $("n-" + id)?.classList.add("lit"));
+    lit.careers.forEach(id => $("c-" + id)?.classList.add("lit"));
+  }
+  document.querySelectorAll(".node.sel").forEach(el => el.classList.remove("sel"));
+  if (selectedNode) $("n-" + selectedNode)?.classList.add("sel");
+  applyEdgeHighlights();
+}
+
+function applyEdgeHighlights() {
+  const lit = litSets();
+  svg.querySelectorAll("path.e").forEach(p => {
+    if (!lit) { p.classList.remove("lit"); return; }
+    const cl = [...p.classList];
+    const from = cl.find(c => c.startsWith("ep-"))?.slice(3);
+    const to = cl.find(c => c.startsWith("et-"))?.slice(3);
+    const car = cl.find(c => c.startsWith("ec-"))?.slice(3);
+    const on = car
+      ? lit.careers.includes(car) && lit.nodes.has(from)
+      : lit.nodes.has(from) && lit.nodes.has(to);
+    p.classList.toggle("lit", on);
+  });
+}
+
+function setTrace(cid) {
+  traceCareer = (traceCareer === cid) ? null : cid;
+  traceDomain = null;
+  syncChips();
+  applyHighlights();
+  const bn = $("traceBanner");
+  if (traceCareer) {
+    const c = DATA.careers.find(x => x.id === traceCareer);
+    $("traceText").innerHTML = `Lighting the path to <b>${c.emoji} ${c.title}</b> — click any skill for details; the highlight stays until you clear it.`;
+    bn.classList.add("show");
+  } else bn.classList.remove("show");
+}
+function setDomain(d) {
+  traceDomain = (traceDomain === d) ? null : d;
+  traceCareer = null;
+  $("traceBanner").classList.remove("show");
+  syncChips();
+  applyHighlights();
+}
+function syncChips() {
+  document.querySelectorAll("#careerChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === traceCareer)));
+  document.querySelectorAll("#domainChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === traceDomain)));
+  document.querySelectorAll("#careerTabChips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === careerTabSel)));
+}
+
+/* ======================= progress states ======================= */
+function stateOf(nodeId) { return activePerson ? progress[activePerson]?.[nodeId] || null : null; }
+
+function applyStates() {
+  document.querySelectorAll(".node").forEach(el => {
+    const id = el.id.slice(2);
+    el.classList.remove("s-mastered", "s-learning", "s-notlearned");
+    const st = stateOf(id);
+    if (st) el.classList.add("s-" + st);
+    const mark = el.querySelector(".st");
+    if (mark) mark.textContent = st ? STATE_MARK[st] : "";
+  });
+  renderCareerSummary();
+}
+
+async function setNodeState(nodeId, state) {
+  if (!activePerson) return;
+  progress[activePerson] = progress[activePerson] || {};
+  const cur = progress[activePerson][nodeId] || null;
+  const next = (cur === state) ? null : state;    // clicking the active state clears it
+  if (next) progress[activePerson][nodeId] = next; else delete progress[activePerson][nodeId];
+  applyStates();
+  if (selectedNode === nodeId) openNode(nodeId, true);
+  try { await store.setState(activePerson, nodeId, next); }
+  catch (e) { console.warn("save failed", e); }
+}
+
+/* ======================= people ======================= */
+function renderPeople() {
+  const wrap = $("peopleChips");
+  wrap.innerHTML = "";
+  people.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "pchip";
+    b.setAttribute("aria-pressed", String(p.id === activePerson));
+    b.innerHTML = `${p.name} <span class="x" title="Remove ${p.name}">✕</span>`;
+    b.addEventListener("click", e => {
+      if (e.target.classList.contains("x")) {
+        if (confirm(`Remove ${p.name} and their saved progress?`)) removePerson(p.id);
+        return;
+      }
+      activePerson = (activePerson === p.id) ? null : p.id;
+      renderPeople(); applyStates();
+      if (selectedNode) openNode(selectedNode, true);
+    });
+    wrap.appendChild(b);
+  });
+  $("shareBtn").hidden = !(store.mode === "api" && store.shareUrl);
+}
+
+async function addPerson() {
+  const inp = $("personName");
+  const name = inp.value.trim();
+  if (!name) return;
+  inp.value = "";
+  try {
+    const id = await store.addPerson(name);
+    people.push({ id, name });
+    activePerson = id;
+    progress[id] = progress[id] || {};
+    renderPeople(); applyStates();
+  } catch (e) { alert("Could not save the new person — try again."); }
+}
+
+async function removePerson(id) {
+  people = people.filter(p => p.id !== id);
+  delete progress[id];
+  if (activePerson === id) activePerson = null;
+  renderPeople(); applyStates();
+  try { await store.removePerson(id); } catch (e) {}
+}
+
+/* ======================= detail panel ======================= */
+function pathTagFor(nodeId) {
+  const ctx = (tab === "career" && careerTabSel) ? careerTabSel : traceCareer;
+  if (!ctx) return "";
+  const c = DATA.careers.find(x => x.id === ctx);
+  if (careerSet(ctx).has(nodeId)) return `<span class="pathtag">On the ${c.emoji} ${c.title.split(" / ")[0]} path</span>`;
+  if (enrichmentSet(ctx).has(nodeId)) return `<span class="pathtag">✦ Enrichment for ${c.emoji} ${c.title.split(" / ")[0]}</span>`;
+  return `<span class="pathtag off">Not on the ${c.emoji} path</span>`;
+}
+
+function stateButtonsHtml(nodeId) {
+  if (!activePerson) {
+    return people.length
+      ? `<p class="noperson">Select a person above to mark progress.</p>`
+      : `<p class="noperson">Add a person above to start marking progress.</p>`;
+  }
+  const cur = stateOf(nodeId);
+  const person = people.find(p => p.id === activePerson);
+  return `<h3>${person ? person.name + "'s" : ""} progress</h3>
+    <div class="statebtns">${STATES.map(s =>
+      `<button type="button" data-state="${s}" class="${cur === s ? "on-" + s : ""}">${STATE_LABEL[s]}</button>`).join("")}
+    </div>`;
+}
+
+function openNode(id, keepScroll) {
+  selectedNode = id;
+  const n = nodesById[id];
+  const prereqTitles = (n.prereqs || []).map(p => nodesById[p]?.title || p);
+  const unlocks = (kids[id] || []).filter(k => !visibleNodeIds() || visibleNodeIds().has(k)).map(k => nodesById[k].title);
+  panel.innerHTML = `
+    <button class="close" aria-label="Close">×</button>
+    <h2>${n.title}</h2>
+    <div class="meta">
+      <span><span class="dot" style="background:var(--d-${n.domain})"></span>${DOMAIN_LABEL[n.domain] || n.domain}</span>
+      <span>age ${n.ageBand}</span>
+      <span>${(TIER_META[n.tier] || ["Tier " + n.tier])[0]}</span>
+    </div>
+    ${pathTagFor(id)}
+    <p class="desc">${n.description}</p>
+    ${stateButtonsHtml(id)}
+    ${n.exercises?.length ? `<h3>Example exercises</h3><ul>${n.exercises.map(e => `<li>${e}</li>`).join("")}</ul>` : ""}
+    ${prereqTitles.length ? `<h3>Builds on</h3><ul>${prereqTitles.map(t => `<li>${t}</li>`).join("")}</ul>` : "<h3>Builds on</h3><p class='desc' style='color:var(--muted)'>Nothing — this is a starting skill.</p>"}
+    ${unlocks.length ? `<h3>Unlocks</h3><ul>${unlocks.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
+    <h3>Feeds these careers</h3>
+    <div class="cline">${(n.careers || []).map(c => DATA.careers.find(x => x.id === c)?.emoji || "").join(" ")}</div>`;
+  panel.classList.add("open");
+  panel.querySelector(".close").addEventListener("click", closePanel);
+  panel.querySelectorAll(".statebtns button").forEach(b =>
+    b.addEventListener("click", () => setNodeState(id, b.dataset.state)));
+  applyHighlights();
+}
+
+function openCareerPanel(cid) {
+  const c = DATA.careers.find(x => x.id === cid);
+  const core = careerSet(cid);
+  const early = [...core].filter(id => nodesById[id].tier <= 3).length;
+  selectedNode = null;
+  panel.innerHTML = `
+    <button class="close" aria-label="Close">×</button>
+    <h2>${c.emoji} ${c.title}</h2>
+    <p class="desc">${c.description}</p>
+    <div class="stat">
+      <div><b>${core.size}</b><span>skills on this path</span></div>
+      <div><b>${early}</b><span>built at ages 5–9</span></div>
+    </div>`;
+  panel.classList.add("open");
+  panel.querySelector(".close").addEventListener("click", closePanel);
+}
+
+function closePanel() {
+  panel.classList.remove("open");
+  selectedNode = null;
+  applyHighlights();
+}
+
+/* ======================= career tab ======================= */
+function selectCareerTab(cid) {
+  careerTabSel = (careerTabSel === cid) ? null : cid;
+  syncChips();
+  renderBoard();
+  renderCareerSummary();
+}
+
+function renderCareerSummary() {
+  const el = $("careerSummary");
+  if (!(tab === "career" && careerTabSel)) { el.classList.remove("show"); return; }
+  const c = DATA.careers.find(x => x.id === careerTabSel);
+  const core = [...careerSet(careerTabSel)];
+  const enr = enrichmentSet(careerTabSel);
+  let progHtml = "";
+  if (activePerson) {
+    const states = progress[activePerson] || {};
+    const m = core.filter(id => states[id] === "mastered").length;
+    const l = core.filter(id => states[id] === "learning").length;
+    const person = people.find(p => p.id === activePerson);
+    progHtml = `<div class="nums">${person?.name}: <b style="color:var(--ok)">${m}</b> mastered · <b style="color:var(--warn)">${l}</b> learning · ${core.length - m - l} ahead</div>
+      <div class="pbar"><div class="m" style="width:${(m / core.length * 100).toFixed(1)}%"></div><div class="l" style="width:${(l / core.length * 100).toFixed(1)}%"></div></div>`;
+  } else {
+    progHtml = `<div class="nums">Select a person above to see their progress on this path.</div>`;
+  }
+  const early = core.filter(id => nodesById[id].tier <= 3).length;
+  el.innerHTML = `<div class="head"><h2>${c.emoji} ${c.title}</h2>
+    <span class="nums">${core.length} path skills (${early} at ages 5–9) · ${enr.size} enrichment ✦</span></div>${progHtml}`;
+  el.classList.add("show");
+}
+
+/* ======================= tabs & chips ======================= */
+function switchTab(t) {
+  tab = t;
+  $("tabOverview").setAttribute("aria-selected", String(t === "overview"));
+  $("tabCareer").setAttribute("aria-selected", String(t === "career"));
+  $("controlsOverview").hidden = t !== "overview";
+  $("controlsCareer").hidden = t !== "career";
+  $("traceBanner").classList.toggle("show", t === "overview" && !!traceCareer);
+  closePanel();
+  renderBoard();
+  renderCareerSummary();
+  $("hintbar").textContent = t === "career"
+    ? "Only the chosen career's skills are shown — solid cards are the required path, ✦ dashed cards are enrichment. Click a skill to mark progress."
+    : "The board scrolls sideways like a game tech tree — kindergarten on the left, careers on the right. Click a skill for details and to mark progress. Esc clears highlights.";
+}
+
+function buildChips() {
+  const mk = (wrap, c, onclick) => {
+    const b = document.createElement("button");
+    b.dataset.id = c.id;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `${c.emoji} ${c.title.split(" / ")[0].split(" (")[0]}`;
+    b.addEventListener("click", onclick);
+    wrap.appendChild(b);
+  };
+  DATA.careers.forEach(c => mk($("careerChips"), c, () => setTrace(c.id)));
+  DATA.careers.forEach(c => mk($("careerTabChips"), c, () => selectCareerTab(c.id)));
+  DOMAIN_ORDER.forEach(d => {
+    const b = document.createElement("button");
+    b.dataset.id = d;
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `<span class="dot" style="background:var(--d-${d})"></span>${DOMAIN_LABEL[d]}`;
+    b.addEventListener("click", () => setDomain(d));
+    $("domainChips").appendChild(b);
+  });
+}
+
+/* ======================= boot ======================= */
+async function boot() {
+  buildChips();
+  renderBoard();
+
+  // storage: use the API when this page is served next to one; otherwise this device only
+  const params = new URLSearchParams(location.search);
+  try {
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), 2500);
+    const r = await fetch("api/ping", { signal: ctl.signal });
+    clearTimeout(t);
+    if (r.ok) store = apiStore(params.get("board") || null);
+  } catch (e) { /* stay local */ }
+  $("modeTag").textContent = store.mode === "api" ? "🌐 shared family board" : "💾 saving on this device only";
+  $("modeTag").title = store.mode === "api"
+    ? "Progress is saved to the shared board — share the board link so others see it too."
+    : "Progress is saved in this browser only. Deploy with the API + database to share a board.";
+
+  const data = await store.load();
+  people = data.people || [];
+  progress = data.progress || {};
+  if (people.length === 1) activePerson = people[0].id;
+  renderPeople(); applyStates();
+
+  // refresh from server when returning to the tab (api mode)
+  document.addEventListener("visibilitychange", async () => {
+    if (store.mode === "api" && document.visibilityState === "visible") {
+      const d = await store.load();
+      people = d.people || []; progress = d.progress || {};
+      if (activePerson && !people.find(p => p.id === activePerson)) activePerson = null;
+      renderPeople(); applyStates();
+    }
+  });
+}
+
+$("tabOverview").addEventListener("click", () => switchTab("overview"));
+$("tabCareer").addEventListener("click", () => switchTab("career"));
+$("personAdd").addEventListener("click", addPerson);
+$("personName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
+$("traceClear").addEventListener("click", () => setTrace(traceCareer));
+$("shareBtn").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(store.shareUrl); $("shareBtn").textContent = "✓ Link copied"; }
+  catch { prompt("Copy this board link:", store.shareUrl); }
+  setTimeout(() => $("shareBtn").textContent = "🔗 Copy board link", 2000);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (panel.classList.contains("open")) { closePanel(); return; }
+    if (traceCareer) setTrace(traceCareer);
+    if (traceDomain) setDomain(traceDomain);
+  }
+});
+
+/* edges stay glued to the cards: redraw when fonts arrive, on resize, on board reflow */
+if (document.fonts?.ready) document.fonts.ready.then(() => drawEdges());
+addEventListener("resize", () => drawEdges());
+new ResizeObserver(() => drawEdges()).observe(board);
+
+boot();
+</script>

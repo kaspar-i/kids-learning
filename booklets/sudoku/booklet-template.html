@@ -1,0 +1,297 @@
+<meta charset="utf-8">
+<title>Animal Sudoku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Andika:wght@400;700&display=swap">
+<style>
+  :root {
+    --desk: #dfe7ec;        /* screen backdrop behind the paper sheets */
+    --paper: #ffffff;
+    --ink: #26323c;         /* grid lines and reading text */
+    --ink-soft: #5b6b78;
+    --sun: #f4a934;         /* cover accent */
+    --secA: #5fa860;        /* warm-up */
+    --secB: #4a90c9;        /* numbers 3x3 */
+    --secC: #e5735c;        /* 4x4 pictures */
+    --secD: #8b6fc0;        /* champion */
+    --cell3: min(30mm, 21vw);
+    --cell4: min(23mm, 16vw);
+    --cellS3: 10mm;
+    --cellS4: 8.5mm;
+  }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    background: var(--desk);
+    color: var(--ink);
+    font-family: "Andika", "Segoe UI", Verdana, sans-serif;
+    margin: 0;
+    padding: 24px 8px 80px;
+  }
+  h1, h2, h3, .chip, .stars, .grid, .pgnum {
+    font-family: "Baloo 2", "Comic Sans MS", "Segoe UI", sans-serif;
+  }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  /* ---------- paper sheets ---------- */
+  .sheet {
+    background: var(--paper);
+    width: min(210mm, 100%);
+    min-height: 285mm;
+    margin: 0 auto 26px;
+    padding: 16mm 14mm 12mm;
+    box-sizing: border-box;
+    box-shadow: 0 4px 22px rgba(38, 50, 60, .22);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .pgnum {
+    position: absolute; bottom: 6mm; right: 12mm;
+    color: var(--ink-soft); font-weight: 600; font-size: 13px;
+  }
+
+  /* ---------- cover ---------- */
+  .cover { align-items: center; text-align: center; justify-content: center; gap: 10mm; }
+  .cover .kicker {
+    text-transform: uppercase; letter-spacing: .22em; font-size: 14px;
+    color: var(--ink-soft); font-weight: 700;
+  }
+  .cover h1 { font-size: 64px; font-weight: 800; line-height: 1.05; color: var(--ink); }
+  .cover h1 .sun { color: var(--sun); }
+  .cover .sub { font-size: 18px; color: var(--ink-soft); max-width: 34ch; margin: 0 auto; }
+  .cover-grid {
+    display: grid; grid-template-columns: repeat(2, 34mm); grid-auto-rows: 34mm;
+    border: 3.5px solid var(--ink); border-radius: 10px; overflow: hidden;
+  }
+  .cover-grid span {
+    display: grid; place-items: center; font-size: 58px;
+    border: 1.5px solid var(--ink);
+  }
+  .belongs {
+    margin-top: 6mm; font-size: 16px; color: var(--ink);
+    border-top: 2px dashed var(--ink-soft); padding-top: 6mm; width: 70%;
+  }
+
+  /* ---------- how to play ---------- */
+  .rules { gap: 7mm; }
+  .rules h2 { font-size: 30px; font-weight: 800; }
+  .rules ol { margin: 0; padding-left: 1.3em; font-size: 16.5px; line-height: 1.65; }
+  .rules li { margin-bottom: .5em; }
+  .example { display: flex; gap: 10mm; align-items: center; flex-wrap: wrap; }
+  .tipbox {
+    border: 2.5px solid var(--secA); border-radius: 12px; padding: 6mm 7mm;
+    font-size: 15px; line-height: 1.6;
+  }
+  .tipbox b { color: var(--secA); }
+
+  /* ---------- section intro strip ---------- */
+  .section-strip {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 7mm;
+    border-bottom: 3px solid var(--sc, var(--ink)); padding-bottom: 3mm;
+  }
+  .section-strip h2 { font-size: 24px; font-weight: 800; color: var(--sc, var(--ink)); }
+  .section-strip p { margin: 0; color: var(--ink-soft); font-size: 14.5px; }
+
+  /* ---------- puzzles ---------- */
+  .puzzles2 { display: flex; flex-direction: column; gap: 9mm; flex: 1; justify-content: space-evenly; }
+  .puzzle { display: flex; flex-direction: column; align-items: center; gap: 4mm; }
+  .puzzle header {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+  }
+  .chip {
+    background: var(--sc, var(--ink)); color: #fff; font-weight: 800;
+    border-radius: 999px; padding: 2px 14px; font-size: 15px;
+  }
+  .puzzle h3 { font-size: 19px; font-weight: 700; flex: 1; }
+  .theme { color: var(--ink-soft); font-size: 14px; }
+  .stars { color: var(--sun); font-size: 18px; letter-spacing: 2px; }
+
+  .grid {
+    display: grid; border: 3.5px solid var(--ink); border-radius: 8px;
+    background: var(--paper);
+  }
+  .grid span {
+    display: grid; place-items: center; border: 1.5px solid var(--ink);
+    font-weight: 700; color: var(--ink);
+  }
+  .g3 { grid-template-columns: repeat(3, var(--cell3)); grid-auto-rows: var(--cell3); }
+  .g3 span { font-size: calc(var(--cell3) * .58); }
+  .g4 { grid-template-columns: repeat(4, var(--cell4)); grid-auto-rows: var(--cell4); }
+  .g4 span { font-size: calc(var(--cell4) * .58); }
+  .g4 span.boxL { border-left-width: 3.5px; }
+  .g4 span.boxT { border-top-width: 3.5px; }
+  .grid span.blank { position: relative; }
+  .grid span.blank::after {
+    content: ""; position: absolute; inset: 12%;
+    border: 2px dashed #c3ced6; border-radius: 8px;
+  }
+  .legend { font-size: 16px; color: var(--ink-soft); }
+  .legend .syms { font-size: 24px; letter-spacing: 6px; font-family: "Baloo 2", sans-serif; font-weight: 700; color: var(--ink); }
+
+  /* ---------- solutions ---------- */
+  .sols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7mm 4mm; align-content: start; }
+  .sol { display: flex; flex-direction: column; align-items: center; gap: 2mm; }
+  .sol .lbl { font-size: 13px; font-weight: 700; color: var(--ink-soft); font-family: "Baloo 2", sans-serif; }
+  .gs3 { grid-template-columns: repeat(3, var(--cellS3)); grid-auto-rows: var(--cellS3); border-width: 2.5px; border-radius: 5px; }
+  .gs3 span { font-size: 7mm; border-width: 1px; }
+  .gs4 { grid-template-columns: repeat(4, var(--cellS4)); grid-auto-rows: var(--cellS4); border-width: 2.5px; border-radius: 5px; }
+  .gs4 span { font-size: 5.6mm; border-width: 1px; }
+  .gs4 span.boxL { border-left-width: 2.5px; }
+  .gs4 span.boxT { border-top-width: 2.5px; }
+
+  /* ---------- screen-only toolbar ---------- */
+  .toolbar {
+    position: fixed; bottom: 20px; right: 20px; z-index: 5;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toolbar button {
+    font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 16px;
+    background: var(--ink); color: #fff; border: 0; border-radius: 999px;
+    padding: 12px 22px; cursor: pointer; box-shadow: 0 4px 14px rgba(38,50,60,.35);
+  }
+  .toolbar button:hover { background: #3a4a58; }
+  .toolbar button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .toolbar .hint {
+    background: var(--paper); border-radius: 999px; padding: 8px 14px;
+    font-size: 13px; color: var(--ink-soft); box-shadow: 0 2px 10px rgba(38,50,60,.2);
+  }
+
+  @media (max-width: 760px) {
+    .sheet { min-height: 0; padding: 8mm 5mm; }
+    .cover h1 { font-size: 42px; }
+    .sols { grid-template-columns: repeat(3, 1fr); }
+    .toolbar .hint { display: none; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .sheet {
+      box-shadow: none; border-radius: 0; margin: 0; width: auto;
+      min-height: 0; page-break-after: always;
+    }
+    .sheet:last-child { page-break-after: auto; }
+  }
+  @page { size: A4; margin: 0; }
+</style>
+
+<div class="toolbar">
+  <span class="hint">Prints on A4 — one page per sheet</span>
+  <button type="button" onclick="window.print()">🖨️ Print booklet</button>
+</div>
+
+<main id="book">
+__BOOK_HTML__
+</main>
+
+<script data-removed-by-build>
+const DATA = __PUZZLES_JSON__;
+
+const SECTIONS = {
+  A: { name: "Warm-up · 3×3 Pictures",   color: "var(--secA)", blurb: "Every picture appears once in each row → and each column ↓." },
+  B: { name: "3×3 Numbers",              color: "var(--secB)", blurb: "Same rule, now with numbers 1–3. Write the missing ones." },
+  C: { name: "Big kid · 4×4 Pictures",   color: "var(--secC)", blurb: "New rule: each 2×2 box (thick lines) also gets every picture once!" },
+  D: { name: "Champion · 4×4 Numbers",   color: "var(--secD)", blurb: "The hardest ones. Numbers 1–4 in every row, column and box." },
+};
+
+const stars = p => {
+  const s = p.size === 3
+    ? (p.blanks <= 3 ? 1 : p.blanks <= 4 ? 2 : 3)
+    : (p.blanks <= 6 ? 1 : p.blanks <= 8 ? 2 : 3);
+  return "★".repeat(s) + "☆".repeat(3 - s);
+};
+
+function gridHTML(p, { solved = false, mini = false } = {}) {
+  const cls = mini ? (p.size === 3 ? "grid gs3" : "grid gs4") : (p.size === 3 ? "grid g3" : "grid g4");
+  const src = solved ? p.solution : p.grid;
+  let cells = "";
+  for (let r = 0; r < p.size; r++) {
+    for (let c = 0; c < p.size; c++) {
+      const v = src[r][c];
+      const box = p.size === 4 ? `${c === 2 ? " boxL" : ""}${r === 2 ? " boxT" : ""}` : "";
+      cells += v === 0
+        ? `<span class="blank${box}"></span>`
+        : `<span class="${box.trim()}">${p.symbols[v - 1]}</span>`;
+    }
+  }
+  return `<div class="${cls}" role="img" aria-label="${p.size} by ${p.size} puzzle">${cells}</div>`;
+}
+
+function puzzleHTML(p) {
+  const legend = p.kind === "picture"
+    ? `<footer class="legend">Use each of these: <span class="syms">${p.symbols.join(" ")}</span></footer>`
+    : `<footer class="legend">Write the numbers <span class="syms">${p.symbols.join(" · ")}</span></footer>`;
+  return `<article class="puzzle" style="--sc:${SECTIONS[p.section].color}">
+    <header><span class="chip">${p.section}</span><h3>Puzzle ${p.id}${p.kind === "picture" ? " · " + p.theme : ""}</h3><span class="stars" aria-label="difficulty">${stars(p)}</span></header>
+    ${gridHTML(p)}
+    ${legend}
+  </article>`;
+}
+
+/* worked example for the how-to page */
+const EXAMPLE = {
+  size: 3, kind: "picture", symbols: ["\u{1F436}", "\u{1F431}", "\u{1F430}"],
+  grid: [[1, 2, 3], [3, 1, 2], [2, 3, 0]],
+  solution: [[1, 2, 3], [3, 1, 2], [2, 3, 1]],
+};
+
+const sheets = [];
+
+/* cover */
+sheets.push(`<section class="sheet cover">
+  <div class="kicker">Little Learners · Puzzle Booklet 1</div>
+  <h1>Animal <span class="sun">Sudoku</span></h1>
+  <div class="cover-grid" aria-hidden="true">
+    <span>\u{1F436}</span><span>\u{1F431}</span><span>\u{1F431}</span><span>\u{1F436}</span>
+  </div>
+  <p class="sub">24 picture and number puzzles for ages 5–8 · from first tries to champion level</p>
+  <div class="belongs">This book belongs to __________________</div>
+</section>`);
+
+/* how to play */
+sheets.push(`<section class="sheet rules">
+  <h2>How to play</h2>
+  <ol>
+    <li>Look at one <b>row</b> (→). Every picture must appear <b>exactly once</b>.</li>
+    <li>Now check the <b>column</b> (↓) — exactly once there too.</li>
+    <li>Find a dashed box and ask: <i>which picture is missing here?</i></li>
+    <li>Draw the missing picture (or write its number). Do this for every empty box!</li>
+    <li>In the 4×4 puzzles there is one more rule: each <b>2×2 box</b> with thick lines also gets every picture once.</li>
+  </ol>
+  <div class="example">
+    ${gridHTML(EXAMPLE)}
+    <p style="max-width:32ch;font-size:16px;line-height:1.6">In this row the \u{1F436} and the \u{1F431} are already there…<br>so the empty box must be the <b>\u{1F430}</b>!</p>
+  </div>
+  <div class="tipbox"><b>For grown-ups:</b> one or two puzzles per sitting is plenty. If an answer is wrong, don't correct it — ask "can you check this row together with me?" and let your child find it. The booklet gets harder section by section (look at the stars); it's fine to stay in a section until it feels easy.</div>
+  <span class="pgnum">2</span>
+</section>`);
+
+/* puzzle sheets: 2 per page, sections start on a fresh page */
+let pageNo = 3;
+for (const key of ["A", "B", "C", "D"]) {
+  const list = DATA.puzzles.filter(p => p.section === key);
+  for (let i = 0; i < list.length; i += 2) {
+    const strip = i === 0
+      ? `<div class="section-strip" style="--sc:${SECTIONS[key].color}"><h2>${SECTIONS[key].name}</h2><p>${SECTIONS[key].blurb}</p></div>`
+      : "";
+    sheets.push(`<section class="sheet">
+      ${strip}
+      <div class="puzzles2">${list.slice(i, i + 2).map(puzzleHTML).join("")}</div>
+      <span class="pgnum">${pageNo++}</span>
+    </section>`);
+  }
+}
+
+/* solutions */
+for (let i = 0; i < DATA.puzzles.length; i += 12) {
+  sheets.push(`<section class="sheet">
+    <div class="section-strip" style="--sc:var(--sun)"><h2>Answers</h2><p>No peeking until you've tried! Puzzles ${i + 1}–${Math.min(i + 12, DATA.puzzles.length)}</p></div>
+    <div class="sols">${DATA.puzzles.slice(i, i + 12).map(p =>
+      `<div class="sol"><span class="lbl">Puzzle ${p.id}</span>${gridHTML(p, { solved: true, mini: true })}</div>`).join("")}</div>
+    <span class="pgnum">${pageNo++}</span>
+  </section>`);
+}
+
+document.getElementById("book").innerHTML = sheets.join("");
+</script>

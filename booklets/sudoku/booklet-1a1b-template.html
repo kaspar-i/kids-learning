@@ -1,0 +1,261 @@
+<meta charset="utf-8">
+<title>Animal Sudoku 1a + 1b</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Andika:wght@400;700&display=swap">
+<style>
+  :root {
+    --desk: #dfe7ec;        /* screen backdrop behind the paper sheets */
+    --paper: #ffffff;
+    --ink: #26323c;         /* grid lines and reading text */
+    --ink-soft: #5b6b78;
+    --sun: #f4a934;         /* special-page accent */
+    --secA: #5fa860;        /* booklet 1a accent */
+    --secB: #4a90c9;        /* recognition / remember accents */
+    --secC: #e5735c;        /* booklet 1b accent */
+    --secD: #8b6fc0;        /* create / beauty accent */
+    --cellB: 20mm;          /* Band-1 working cell (B3: 2 cm at 5, tiles must fit) */
+    --cellM: 8.5mm;         /* answers minis */
+    --cellR: 11mm;          /* remember-band minis (pencil-only judgement items) */
+    --tile: 18mm;           /* cut-out tiles (slightly under the cell so little hands can place them) */
+  }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    background: var(--desk);
+    color: var(--ink);
+    font-family: "Andika", "Segoe UI", Verdana, sans-serif;
+    margin: 0;
+    padding: 24px 8px 80px;
+  }
+  h1, h2, h3, .chip, .grid, .pgnum, .iconchip, .bandlbl, .cap { font-family: "Baloo 2", "Comic Sans MS", "Segoe UI", sans-serif; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  /* ---------- paper sheets ---------- */
+  .sheet {
+    background: var(--paper);
+    width: min(210mm, 100%);
+    min-height: 285mm;
+    margin: 0 auto 26px;
+    padding: 14mm 14mm 12mm;
+    box-sizing: border-box;
+    box-shadow: 0 4px 22px rgba(38, 50, 60, .22);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .pgnum {
+    position: absolute; bottom: 6mm; right: 12mm;
+    color: var(--ink-soft); font-weight: 600; font-size: 13px;
+  }
+
+  /* ---------- cover ---------- */
+  .cover { align-items: center; text-align: center; justify-content: center; gap: 9mm; }
+  .cover .kicker {
+    text-transform: uppercase; letter-spacing: .22em; font-size: 14px;
+    color: var(--ink-soft); font-weight: 700;
+  }
+  .cover h1 { font-size: 58px; font-weight: 800; line-height: 1.05; color: var(--ink); }
+  .cover h1 .accent { color: var(--bc, var(--sun)); }
+  .cover .sub { font-size: 18px; color: var(--ink-soft); max-width: 40ch; margin: 0 auto; }
+  .cover .story { font-size: 16px; color: var(--ink); max-width: 44ch; margin: 0 auto; line-height: 1.6; }
+  .belongs {
+    margin-top: 4mm; font-size: 16px; color: var(--ink);
+    border-top: 2px dashed var(--ink-soft); padding-top: 6mm; width: 70%;
+  }
+
+  /* ---------- how-to / parent pages ---------- */
+  .rules { gap: 5mm; }
+  .rules h2 { font-size: 28px; font-weight: 800; }
+  .rules p.lead { margin: 0; font-size: 16px; line-height: 1.6; }
+  .iconlegend { display: flex; flex-direction: column; gap: 2.5mm; }
+  .iconlegend .row { display: flex; align-items: center; gap: 5mm; font-size: 15.5px; }
+  .iconlegend .ic { font-size: 24px; min-width: 15mm; text-align: center; }
+  .example { display: flex; gap: 9mm; align-items: center; flex-wrap: wrap; }
+  .tipbox {
+    border: 2.5px solid var(--bc, var(--secA)); border-radius: 12px; padding: 4.5mm 6mm;
+    font-size: 14.5px; line-height: 1.55;
+  }
+  .tipbox b { color: var(--bc, var(--secA)); }
+
+  /* B19 documentation surface */
+  .docsurface { display: flex; gap: 8mm; align-items: stretch; }
+  .docsurface .portrait {
+    width: 30mm; height: 30mm; border: 2px dashed var(--ink-soft); border-radius: 10px;
+    display: grid; place-items: center; font-size: 11px; color: var(--ink-soft); text-align: center;
+    flex: none;
+  }
+  .docsurface .docfields { display: flex; flex-direction: column; gap: 2.5mm; font-size: 14.5px; flex: 1; justify-content: center; }
+  .cando { display: flex; align-items: center; gap: 3mm; }
+  .cando .box { width: 5.5mm; height: 5.5mm; border: 2px solid var(--ink); border-radius: 2mm; flex: none; }
+
+  /* ---------- section strips & icon chips ---------- */
+  .section-strip {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 5mm;
+    border-bottom: 3px solid var(--sc, var(--ink)); padding-bottom: 2.5mm;
+  }
+  .section-strip h2 { font-size: 23px; font-weight: 800; color: var(--sc, var(--ink)); }
+  .section-strip p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+  .iconchip {
+    align-self: flex-start;
+    background: #f2f6f8; border: 2px solid var(--sc, var(--ink-soft)); border-radius: 999px;
+    padding: 1.5mm 6mm; font-size: 18px; letter-spacing: 3px; margin-bottom: 4mm;
+  }
+  .iconchip .say { font-size: 12.5px; letter-spacing: 0; color: var(--ink-soft); font-family: "Andika", sans-serif; margin-left: 3mm; }
+
+  /* ---------- grids & strips ---------- */
+  .grid {
+    display: grid; border: 3.5px solid var(--ink); border-radius: 8px;
+    background: var(--paper); width: fit-content;
+  }
+  .grid span {
+    display: grid; place-items: center; border: 1.5px solid var(--ink);
+    font-weight: 700; color: var(--ink);
+    width: var(--cs, var(--cellB)); height: var(--cs, var(--cellB));
+    font-size: calc(var(--cs, var(--cellB)) * .58);
+  }
+  .grid.mini { border-width: 2.5px; border-radius: 5px; --cs: var(--cellM); }
+  .grid.mini span { border-width: 1px; }
+  .grid.band { border-width: 2.5px; border-radius: 6px; --cs: var(--cellR); }
+  .grid span.blank { position: relative; }
+  .grid span.blank::after {
+    content: ""; position: absolute; inset: 10%;
+    border: 2px dashed #c3ced6; border-radius: 8px;
+  }
+  .grid span.focus::after { border-color: var(--sun); border-width: 2.5px; }
+  .vcol { grid-template-columns: var(--cs, var(--cellB)); }
+
+  .rowitem { display: flex; align-items: center; gap: 6mm; }
+  .rowitem .lbl {
+    font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 17px;
+    color: var(--ink-soft); min-width: 7mm;
+  }
+  .rowstack { display: flex; flex-direction: column; gap: 4.5mm; }
+  .gridrow { display: flex; gap: 6mm; align-items: flex-start; flex-wrap: wrap; }
+  .griditem { display: flex; flex-direction: column; gap: 2mm; align-items: center; }
+  .griditem .glbl { font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 14px; color: var(--ink-soft); }
+
+  /* legal-or-not marks and choice tiles */
+  .checkopts { display: flex; gap: 3mm; align-items: center; }
+  .checkopts .opt {
+    width: 9.5mm; height: 9.5mm; border: 2.5px solid var(--ink-soft); border-radius: 50%;
+    display: grid; place-items: center; font-size: 17px; font-weight: 800;
+  }
+  .choicetiles { display: flex; gap: 4mm; align-items: center; }
+  .choicetiles .qm { font-size: 20px; font-weight: 800; color: var(--ink-soft); }
+  .ctile {
+    width: 13mm; height: 13mm; border: 2.5px dashed var(--secB); border-radius: 8px;
+    display: grid; place-items: center; font-size: 8mm;
+  }
+
+  /* legend under puzzles */
+  .legend { font-size: 15px; color: var(--ink-soft); margin-top: 2mm; }
+  .legend .syms { font-size: 22px; letter-spacing: 5px; font-family: "Baloo 2", sans-serif; font-weight: 700; color: var(--ink); }
+
+  /* ---------- remember band (B18 Band-1 elapsed-time retrieval) ---------- */
+  .band-box {
+    border: 2.5px dashed var(--secB); border-radius: 12px; padding: 3mm 5mm;
+    display: flex; gap: 7mm; align-items: center; margin-bottom: 5mm; flex-wrap: wrap;
+  }
+  .band-box .bandlbl { font-weight: 800; font-size: 14px; color: var(--secB); max-width: 30mm; line-height: 1.3; }
+  .banditem { display: flex; align-items: center; gap: 3mm; }
+  .banditem .bic { font-size: 16px; }
+
+  /* ---------- tile sheet ---------- */
+  .tiles-note { font-size: 15.5px; line-height: 1.6; margin-bottom: 5mm; }
+  .tilegrid { display: grid; grid-template-columns: repeat(8, var(--tile)); justify-content: start; }
+  .tilegrid span {
+    width: var(--tile); height: var(--tile);
+    border: 1.5px dashed var(--ink-soft);
+    display: grid; place-items: center; font-size: 13mm;
+  }
+
+  /* ---------- special (provocation) page ---------- */
+  .special {
+    border: 3px dashed var(--sun); background: #fff8ec; border-radius: 14px;
+    padding: 5mm 6mm; display: flex; flex-direction: column; gap: 4mm;
+  }
+  .special .sptitle { font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 19px; color: #b97c14; }
+
+  /* create / make-your-own */
+  .create-box {
+    border: 3px solid var(--secD); border-radius: 14px; padding: 5mm 6mm;
+    display: flex; flex-direction: column; gap: 4mm;
+  }
+  .create-box .cptitle { font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 19px; color: var(--secD); }
+
+  /* parent footer (B17) + my-thinking margin (B19) */
+  .parenthint {
+    margin-top: auto; border-left: 4px solid var(--sc, var(--secA));
+    padding: 2mm 5mm; font-size: 13px; color: var(--ink-soft); line-height: 1.55;
+  }
+  .parenthint b { color: var(--ink); }
+  .mythink {
+    border-top: 2px dashed var(--ink-soft); margin-top: 4mm; padding-top: 2.5mm;
+    font-size: 13.5px; color: var(--ink-soft);
+  }
+
+  /* ---------- unlock trial / capability / stamp ---------- */
+  .trialbox { border: 3px solid var(--secC); border-radius: 14px; padding: 5mm 6mm; font-size: 14.5px; line-height: 1.6; }
+  .trialbox b { color: var(--secC); }
+  .cap {
+    background: var(--sun); color: #fff; border-radius: 12px; padding: 4mm 7mm;
+    font-size: 19px; font-weight: 800; text-align: center;
+  }
+  .stampbox {
+    border: 2.5px dashed var(--secA); border-radius: 12px; padding: 4mm 6mm;
+    font-size: 14.5px; line-height: 1.6;
+  }
+  .stampbox b { color: var(--secA); }
+
+  /* ---------- solutions ---------- */
+  .sols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6mm 3mm; align-content: start; }
+  .sol { display: flex; flex-direction: column; align-items: center; gap: 1.5mm; }
+  .sol .lbl { font-size: 12px; font-weight: 700; color: var(--ink-soft); font-family: "Baloo 2", sans-serif; text-align: center; }
+  .keyline { font-size: 13.5px; color: var(--ink-soft); line-height: 1.7; }
+
+  /* ---------- screen-only toolbar ---------- */
+  .toolbar {
+    position: fixed; bottom: 20px; right: 20px; z-index: 5;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toolbar button {
+    font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 16px;
+    background: var(--ink); color: #fff; border: 0; border-radius: 999px;
+    padding: 12px 22px; cursor: pointer; box-shadow: 0 4px 14px rgba(38,50,60,.35);
+  }
+  .toolbar button:hover { background: #3a4a58; }
+  .toolbar button:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+  .toolbar .hint {
+    background: var(--paper); border-radius: 999px; padding: 8px 14px;
+    font-size: 13px; color: var(--ink-soft); box-shadow: 0 2px 10px rgba(38,50,60,.2);
+  }
+
+  @media (max-width: 760px) {
+    .sheet { min-height: 0; padding: 8mm 5mm; }
+    .cover h1 { font-size: 40px; }
+    .sols { grid-template-columns: repeat(3, 1fr); }
+    .tilegrid { grid-template-columns: repeat(4, var(--tile)); }
+    .toolbar .hint { display: none; }
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar { display: none; }
+    .sheet {
+      box-shadow: none; border-radius: 0; margin: 0; width: auto;
+      min-height: 0; page-break-after: always;
+    }
+    .sheet:last-child { page-break-after: auto; }
+  }
+  @page { size: A4; margin: 0; }
+</style>
+
+<div class="toolbar">
+  <span class="hint">Prints on A4 — staple pages 1–14 as booklet 1a, 15–28 as booklet 1b</span>
+  <button type="button" onclick="window.print()">🖨️ Print both booklets</button>
+</div>
+
+<main id="book">
+__BOOK_HTML__
+</main>

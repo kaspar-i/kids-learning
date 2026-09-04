@@ -1,0 +1,10 @@
+{
+  "name": "kids-learning",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Little Learners Skill Tree — children's learning path with family progress tracking",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}
