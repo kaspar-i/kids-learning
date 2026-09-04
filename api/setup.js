@@ -16,7 +16,7 @@ export default async function handler(req, res) {
     await sql`create table if not exists progress (
       person_id text not null references people(id) on delete cascade,
       node_id text not null,
-      state text not null check (state in ('mastered','learning','notlearned')),
+      state text not null check (state in ('mastered','learning')),
       updated_at timestamptz not null default now(),
       primary key (person_id, node_id)
     )`;

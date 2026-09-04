@@ -19,8 +19,7 @@
     --ok-bg: rgba(108, 192, 122, .16);
     --warn: #f0b95a;      /* learning */
     --warn-bg: rgba(240, 185, 90, .15);
-    --todo: #e07a7a;      /* not learned yet */
-    --todo-bg: rgba(224, 122, 122, .13);
+    --todo: #e07a7a;      /* kept only for destructive-action hover (remove person) */
     --d-literacy: #e8794a;
     --d-numeracy: #4fa3e3;
     --d-logic: #b48ce8;
@@ -152,8 +151,6 @@
   .node.s-mastered .st { color: var(--ok); }
   .node.s-learning { background: linear-gradient(var(--warn-bg), var(--warn-bg)) var(--card); }
   .node.s-learning .st { color: var(--warn); }
-  .node.s-notlearned { background: linear-gradient(var(--todo-bg), var(--todo-bg)) var(--card); }
-  .node.s-notlearned .st { color: var(--todo); }
   .node.enrich { border-style: dashed; }
   .node.enrich .t::after { content: " ✦"; color: var(--gold-dim); }
 
@@ -212,7 +209,6 @@
   .statebtns button:hover { border-color: var(--faint); }
   .statebtns button.on-mastered { border-color: var(--ok); color: var(--ok); background: var(--ok-bg); }
   .statebtns button.on-learning { border-color: var(--warn); color: var(--warn); background: var(--warn-bg); }
-  .statebtns button.on-notlearned { border-color: var(--todo); color: var(--todo); background: var(--todo-bg); }
   .panel .noperson { font-size: 12.5px; color: var(--faint); }
 
   .hintbar { padding: 0 26px 40px; color: var(--faint); font-size: 12.5px; }
@@ -243,8 +239,7 @@
   <span class="statelegend">
     <span><span class="sw" style="background:var(--ok)"></span>mastered</span>
     <span><span class="sw" style="background:var(--warn)"></span>learning</span>
-    <span><span class="sw" style="background:var(--todo)"></span>not learned yet</span>
-    <span><span class="sw" style="background:var(--card);border:1px solid var(--card-edge)"></span>not marked</span>
+    <span><span class="sw" style="background:var(--card);border:1px solid var(--card-edge)"></span>not started yet</span>
   </span>
 </div>
 
@@ -2774,9 +2769,11 @@ const TIER_META = [
   ["Voyager", "middle school · age 10–13"],
   ["Horizons", "high school · age 14–18"],
 ];
-const STATES = ["notlearned", "learning", "mastered"];
-const STATE_LABEL = { mastered: "✓ Mastered", learning: "◐ Learning", notlearned: "○ Not learned yet" };
-const STATE_MARK = { mastered: "✓", learning: "◐", notlearned: "○" };
+/* Additive palette by design: a skill is unmarked ("not started yet"), learning, or
+   mastered — there is deliberately NO negative/red state a child could see. */
+const STATES = ["learning", "mastered"];
+const STATE_LABEL = { mastered: "✓ Mastered", learning: "◐ Learning" };
+const STATE_MARK = { mastered: "✓", learning: "◐" };
 
 const nodesById = {}; DATA.nodes.forEach(n => nodesById[n.id] = n);
 const kids = {}; DATA.nodes.forEach(n => (n.prereqs || []).forEach(p => (kids[p] = kids[p] || []).push(n.id)));

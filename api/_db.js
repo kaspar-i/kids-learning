@@ -9,4 +9,4 @@ export function readBody(req) {
 
 export const okCode = (c) => typeof c === "string" && /^[A-Za-z0-9_-]{6,40}$/.test(c);
 export const okId = (s, max = 200) => typeof s === "string" && s.length > 0 && s.length <= max;
-export const STATES = ["mastered", "learning", "notlearned"];
+export const STATES = ["mastered", "learning"];
