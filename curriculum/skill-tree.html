@@ -54,6 +54,43 @@
   .tabs button:hover { color: var(--text); }
   .tabs button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
   .tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+  .bundletoggle {
+    margin-left: auto; align-self: center; font-family: "Instrument Sans", sans-serif;
+    font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--card);
+    border: 1px solid var(--card-edge) !important; border-radius: 999px !important;
+    padding: 5px 14px !important; margin-bottom: 4px;
+  }
+  .bundletoggle:hover { border-color: var(--faint) !important; color: var(--text); }
+  .bundletoggle[aria-pressed="true"] { border-color: var(--gold) !important; color: var(--gold); background: #2a2c22; }
+
+  /* ---------- bundle rungs (tier 4-5 step ladders) ---------- */
+  .steps-badge { color: var(--gold-dim); font-weight: 600; }
+  .rungstack {
+    margin: -3px 0 4px 14px; padding-left: 10px;
+    border-left: 2px solid var(--card-edge);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .rung {
+    font: inherit; text-align: left; cursor: pointer;
+    background: var(--bg-raise); color: var(--text);
+    border: 1px solid var(--card-edge); border-radius: 7px;
+    padding: 5px 9px; font-size: 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .rung:hover { border-color: var(--faint); }
+  .rung:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .rung .rst { margin-left: auto; font-weight: 700; }
+  .rung.s-mastered { background: linear-gradient(var(--ok-bg), var(--ok-bg)) var(--bg-raise); }
+  .rung.s-mastered .rst { color: var(--ok); }
+  .rung.s-learning { background: linear-gradient(var(--warn-bg), var(--warn-bg)) var(--bg-raise); }
+  .rung.s-learning .rst { color: var(--warn); }
+  .ladder { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .ladder .lr { border: 1px solid var(--card-edge); border-radius: 10px; padding: 8px 10px; }
+  .ladder .lr.focus { border-color: var(--gold); }
+  .ladder .lr .lt { font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: baseline; }
+  .ladder .lr .la { color: var(--faint); font-size: 11px; margin-left: auto; }
+  .ladder .lr p { margin: 3px 0 5px; font-size: 12.5px; color: var(--muted); }
+  .ladder .lr .statebtns { margin: 0; }
+  .ladder .lr .statebtns button { padding: 4px 9px; font-size: 12px; }
 
   /* ---------- people bar ---------- */
   .peoplebar {
@@ -231,6 +268,7 @@
 <nav class="tabs" role="tablist">
   <button role="tab" id="tabOverview" aria-selected="true">Overview</button>
   <button role="tab" id="tabCareer" aria-selected="false">Career paths</button>
+  <button type="button" class="bundletoggle" id="bundleToggle" aria-pressed="false" hidden>⊞ Expand bundles</button>
 </nav>
 
 <div class="peoplebar">
@@ -2376,6 +2414,56 @@ const DATA = {
    "exercises": [
     "Balance puzzles growing into simple equations — the missing-box logic grown up",
     "Percent in the wild: discounts and receipt VAT, then statistics on your own data"
+   ],
+   "rungs": [
+    {
+     "id": "below-zero",
+     "title": "Numbers Below Zero",
+     "ages": "10-11",
+     "description": "The number line grows downward: reads, orders and jumps across negative numbers with temperatures, floors and debts.",
+     "exercises": [
+      "Winter thermometer log: order the week's morning temperatures, coldest to warmest",
+      "Lift game: start on floor 3, go down 5 - which floor now?"
+     ]
+    },
+    {
+     "id": "boxes-become-letters",
+     "title": "Boxes Become Letters",
+     "ages": "10-11",
+     "description": "The missing-box puzzles grow up: the box becomes a letter, and one-move balance equations are solved by doing the same to both sides.",
+     "exercises": [
+      "Balance puzzles: keep the scale level while x is uncovered",
+      "Rewrite old friends: 13 = box + 5 becomes 13 = x + 5 - solve both ways"
+     ]
+    },
+    {
+     "id": "percent-in-the-wild",
+     "title": "Percent in the Wild",
+     "ages": "11-12",
+     "description": "Ratio and percent become everyday tools: price per unit, discounts, receipt VAT and recipe scaling, reasoned about before calculated.",
+     "exercises": [
+      "Discount detective: is 30% off the big pack really cheaper? Work it out at the shelf",
+      "Scale the pancake recipe from 4 eaters to 6"
+     ]
+    },
+    {
+     "id": "two-move-equations",
+     "title": "Equations That Take Two Moves",
+     "ages": "12-13",
+     "description": "Solves two-step equations and writes own equations from real situations - the balance idea carrying real weight.",
+     "exercises": [
+      "Think-of-a-number tricks: catch the trick as an equation and undo it in two moves"
+     ]
+    },
+    {
+     "id": "tell-it-with-data",
+     "title": "Tell It With Data",
+     "ages": "12-13",
+     "description": "Collects an own dataset and describes it honestly with mean, range and a well-chosen chart.",
+     "exercises": [
+      "Survey-to-story: gather twenty-plus answers to an own question, chart them, write the three-sentence finding"
+     ]
+    }
    ]
   },
   {
@@ -2398,6 +2486,53 @@ const DATA = {
    "exercises": [
     "Two-source animal report with a simple references list",
     "Opinion essay: claim, three evidence paragraphs, conclusion"
+   ],
+   "rungs": [
+    {
+     "id": "paragraphs-that-hold",
+     "title": "Paragraphs That Hold Together",
+     "ages": "10-11",
+     "description": "Builds solid paragraphs - one idea each, a topic sentence up front, supporting sentences that actually support.",
+     "exercises": [
+      "Paragraph surgery: find the sentence that wandered in from another idea"
+     ]
+    },
+    {
+     "id": "one-source-report",
+     "title": "Report From One Source",
+     "ages": "10-11",
+     "description": "Writes a structured multi-paragraph report from a single book or article, in own words, with the source named.",
+     "exercises": [
+      "One-book animal report: three headed sections and the book named at the end"
+     ]
+    },
+    {
+     "id": "two-source-report",
+     "title": "Two Sources, One Report",
+     "ages": "11-12",
+     "description": "Draws on two sources in one report, notices where they disagree, and lists both in a simple source list.",
+     "exercises": [
+      "Two-source animal report with a simple references list - and one sentence on where the sources differed"
+     ]
+    },
+    {
+     "id": "say-it-with-evidence",
+     "title": "Say It With Evidence",
+     "ages": "12-13",
+     "description": "Writes an argument piece: a clear claim, evidence paragraphs that earn it, and a conclusion that lands.",
+     "exercises": [
+      "Opinion essay: claim, three evidence paragraphs, conclusion"
+     ]
+    },
+    {
+     "id": "second-draft-thinking",
+     "title": "Second-Draft Thinking",
+     "ages": "12-13",
+     "description": "Revises for structure, not just spelling: reorders, cuts and strengthens a full draft against an own checklist.",
+     "exercises": [
+      "Draft-two ritual: one structural change per pass, and say why the piece got better"
+     ]
+    }
    ]
   },
   {
@@ -2425,6 +2560,65 @@ const DATA = {
    "exercises": [
     "First full English novel with a reading journal (a graded-reader ladder climbs to it - tick per level)",
     "Deliver a school presentation in English (the productive-spoken rung's summit; low-stakes English retells to family come first)"
+   ],
+   "rungs": [
+    {
+     "id": "graded-reader-ladder",
+     "title": "Climb the Graded Readers",
+     "ages": "10-11",
+     "description": "Reads English graded readers level by level - one tick per level climbed - until the next level up feels like a step, not a wall.",
+     "exercises": [
+      "One-line English reading log per book; move up a level when this one feels easy"
+     ]
+    },
+    {
+     "id": "first-english-retells",
+     "title": "Telling It Back in English",
+     "ages": "10-11",
+     "description": "The productive-spoken rung opens (every earlier English node listened; this one speaks): low-stakes English retells of stories and days to family, warmly received and never corrected mid-flow.",
+     "exercises": [
+      "Retell tonight's rail chapter in English - the first voluntary retell is a tick worth the poster",
+      "English dinner minute: tell one thing from today in English"
+     ]
+    },
+    {
+     "id": "first-english-paragraphs",
+     "title": "A Paragraph of My Own",
+     "ages": "11-12",
+     "description": "Writes first short English paragraphs, riding Estonian-trained structure while English spelling and phrasing are practiced on purpose - structure transfers, spelling does not.",
+     "exercises": [
+      "Postcard-length English paragraph weekly",
+      "Own tricky-spelling list, three words at a time"
+     ]
+    },
+    {
+     "id": "first-english-novel",
+     "title": "The First Whole Novel",
+     "ages": "11-12",
+     "description": "Reads a first full English novel with a reading journal - the graded-reader ladder's summit and the door to reading anything.",
+     "exercises": [
+      "First full English novel with a reading journal"
+     ]
+    },
+    {
+     "id": "whole-pieces-in-english",
+     "title": "Whole Pieces in English",
+     "ages": "12-13",
+     "description": "Plans, drafts and edits whole short pieces in English - stories, reports, letters - the composition cycle now running in the second language.",
+     "exercises": [
+      "English story-mountain piece: plan, draft, checklist edit",
+      "An English letter or email actually sent"
+     ]
+    },
+    {
+     "id": "present-in-english",
+     "title": "Present It in English",
+     "ages": "12-13",
+     "description": "Prepares and delivers a real presentation in English - the productive-spoken rung's summit, built on years of low-stakes retells.",
+     "exercises": [
+      "Deliver a school presentation in English"
+     ]
+    }
    ]
   },
   {
@@ -2447,6 +2641,54 @@ const DATA = {
    "exercises": [
     "Python turtle art, then a dice-game simulator",
     "Automate something real: a family chores-rota generator"
+   ],
+   "rungs": [
+    {
+     "id": "first-text-code",
+     "title": "First Lines of Real Code",
+     "ages": "10-11",
+     "description": "Writes first text-language programs (e.g., Python): print, variables and input - the block habits re-costumed in typed code.",
+     "exercises": [
+      "Python turtle art: your block-coding shapes, now typed"
+     ]
+    },
+    {
+     "id": "loops-and-choices",
+     "title": "Loops & Choices in Text",
+     "ages": "11-12",
+     "description": "Uses loops and conditionals in text code to build small games of repetition and chance.",
+     "exercises": [
+      "Dice-game simulator: roll, count, decide"
+     ]
+    },
+    {
+     "id": "name-your-steps",
+     "title": "Functions: Name Your Steps",
+     "ages": "11-12",
+     "description": "Writes functions - decomposition made textual: naming a step, reusing it, and keeping programs tidy.",
+     "exercises": [
+      "Refactor ritual: take an own working program and split it into named functions"
+     ]
+    },
+    {
+     "id": "lists-that-work",
+     "title": "Lists That Do Work",
+     "ages": "12-13",
+     "description": "Uses lists and simple data structures over real data - collecting, filtering and summarizing with code.",
+     "exercises": [
+      "Family movie-night ranker: collect the votes in a list, let the code decide"
+     ]
+    },
+    {
+     "id": "tool-with-a-user",
+     "title": "A Tool Someone Uses",
+     "ages": "12-13",
+     "description": "Builds and maintains a small tool or game with at least one real user beyond the maker.",
+     "exercises": [
+      "Automate something real: a family chores-rota generator",
+      "User report: what they asked for, what you changed"
+     ]
+    }
    ]
   },
   {
@@ -2468,6 +2710,53 @@ const DATA = {
    "exercises": [
     "Design your own one-variable experiment with a lab-notebook write-up",
     "Replicate a classic kitchen experiment and document it honestly"
+   ],
+   "rungs": [
+    {
+     "id": "open-the-lab-notebook",
+     "title": "Open the Lab Notebook",
+     "ages": "10-11",
+     "description": "Starts a running lab notebook - date, question, setup, result - and every experiment from now on gets its page.",
+     "exercises": [
+      "Notebook rule: if it is not written down, it did not happen - one page per experiment"
+     ]
+    },
+    {
+     "id": "name-every-variable",
+     "title": "Name Every Variable",
+     "ages": "10-11",
+     "description": "Names what is changed, what is measured and what is kept the same before any experiment runs - the fair test grown precise.",
+     "exercises": [
+      "Variable cards: sort a planned experiment's parts into change, measure and keep-the-same"
+     ]
+    },
+    {
+     "id": "experiments-across-sciences",
+     "title": "Experiments Across the Sciences",
+     "ages": "11-12",
+     "description": "Runs controlled experiments across biology, chemistry and physics topics, each documented honestly in the notebook.",
+     "exercises": [
+      "Replicate a classic kitchen experiment and document it honestly"
+     ]
+    },
+    {
+     "id": "design-your-own",
+     "title": "Design Your Own Experiment",
+     "ages": "12-13",
+     "description": "Designs an own controlled experiment end-to-end and writes it up: question, method, data, conclusion.",
+     "exercises": [
+      "Design your own one-variable experiment with a lab-notebook write-up"
+     ]
+    },
+    {
+     "id": "read-results-critically",
+     "title": "Read Results Like a Scientist",
+     "ages": "12-13",
+     "description": "Reads others' experiments and claims critically: was it fair, was it enough, and does the conclusion actually follow?",
+     "exercises": [
+      "Claim clinic: take a headline claim and list what you would need to see before believing it"
+     ]
+    }
    ]
   },
   {
@@ -2489,6 +2778,54 @@ const DATA = {
    "exercises": [
     "Claim-evidence-rebuttal cards; argue the side you personally disagree with",
     "Two-minute impromptu speeches with one minute of prep"
+   ],
+   "rungs": [
+    {
+     "id": "claims-need-evidence",
+     "title": "Claims Need Evidence",
+     "ages": "10-11",
+     "description": "Builds claim-plus-evidence arguments on paper before speaking them - the because-muscle grown structural.",
+     "exercises": [
+      "Claim-evidence cards: one claim, two pieces of evidence that actually support it"
+     ]
+    },
+    {
+     "id": "answer-the-real-point",
+     "title": "Answer the Real Point",
+     "ages": "11-12",
+     "description": "Adds rebuttal: listens to an argument and answers what it actually said, not what was easiest to answer.",
+     "exercises": [
+      "Rebuttal tennis: reply to the argument's strongest sentence, not its weakest"
+     ]
+    },
+    {
+     "id": "steelman-first",
+     "title": "Steelman First",
+     "ages": "11-12",
+     "description": "States the opposing side so well its owner says 'yes, that is my view' - before arguing back.",
+     "exercises": [
+      "Argue the side you personally disagree with",
+      "Steelman ritual: summarize the other side to their satisfaction before replying"
+     ]
+    },
+    {
+     "id": "think-on-your-feet",
+     "title": "Think on Your Feet",
+     "ages": "12-13",
+     "description": "Speaks off short preparation: impromptu speeches that still carry a claim, evidence and an ending.",
+     "exercises": [
+      "Two-minute impromptu speeches with one minute of prep"
+     ]
+    },
+    {
+     "id": "a-real-debate",
+     "title": "A Real Debate",
+     "ages": "12-13",
+     "description": "Takes part in full structured debates in front of a group - any debate club, mock-trial group or structured-argument format counts.",
+     "exercises": [
+      "A full-format debate with roles, timekeeping and a swap-sides rematch"
+     ]
+    }
    ]
   },
   {
@@ -2510,6 +2847,44 @@ const DATA = {
    "exercises": [
     "Three-month pocket-money ledger with categories and a savings goal",
     "Price-per-unit audit of the family groceries"
+   ],
+   "rungs": [
+    {
+     "id": "the-ledger-habit",
+     "title": "The Ledger Habit",
+     "ages": "10-11",
+     "description": "Keeps an own running pocket-money ledger - the quest's month grown into a habit with categories and a balance always current.",
+     "exercises": [
+      "Ledger with categories: every euro in, every euro out, balance always current"
+     ]
+    },
+    {
+     "id": "the-real-price-tag",
+     "title": "The Real Price Tag",
+     "ages": "10-11",
+     "description": "Compares prices per unit on real shopping - is the big pack actually cheaper, and by how much?",
+     "exercises": [
+      "Price-per-unit audit of the family groceries"
+     ]
+    },
+    {
+     "id": "plan-the-month",
+     "title": "Plan the Month",
+     "ages": "11-12",
+     "description": "Plans a monthly budget with categories, lives inside it, and reviews honestly at month's end.",
+     "exercises": [
+      "Month plan vs month truth: two columns and one honest end-of-month talk"
+     ]
+    },
+    {
+     "id": "watch-savings-grow",
+     "title": "Watch Savings Grow",
+     "ages": "12-13",
+     "description": "Runs a months-long savings goal and charts it - feeling how saving builds and what waiting buys.",
+     "exercises": [
+      "Three-month pocket-money ledger with categories and a savings goal"
+     ]
+    }
    ]
   },
   {
@@ -2530,6 +2905,44 @@ const DATA = {
    "exercises": [
     "Lead a family event end-to-end: plan, delegate, run, debrief",
     "AAR habit sheet: what we expected, what happened, what next"
+   ],
+   "rungs": [
+    {
+     "id": "own-the-plan",
+     "title": "Own the Plan",
+     "ages": "10-11",
+     "description": "Plans a small group undertaking - who does what, in what order - before anyone starts, and holds the plan visible.",
+     "exercises": [
+      "Plan sheet for a family undertaking: steps, owners, order - made before the doing"
+     ]
+    },
+    {
+     "id": "delegate-and-track",
+     "title": "Delegate & Keep Track",
+     "ages": "11-12",
+     "description": "Hands real jobs to others and tracks progress without doing every job personally - leading, not just doing.",
+     "exercises": [
+      "Delegation card: each helper's job, checked in on twice, taken over never"
+     ]
+    },
+    {
+     "id": "the-debrief-habit",
+     "title": "The Debrief Habit",
+     "ages": "11-12",
+     "description": "Runs the expected-happened-next debrief after every project until it is a reflex.",
+     "exercises": [
+      "AAR habit sheet: what we expected, what happened, what next"
+     ]
+    },
+    {
+     "id": "lead-it-end-to-end",
+     "title": "Lead It End-to-End",
+     "ages": "12-13",
+     "description": "Leads a full project end-to-end - plan, delegate, run, debrief - accountable for the whole arc.",
+     "exercises": [
+      "Lead a family event end-to-end: plan, delegate, run, debrief"
+     ]
+    }
    ]
   },
   {
@@ -2551,6 +2964,53 @@ const DATA = {
     "Birdhouse from your own dimensioned sketch",
     "Egg-drop iteration cycle with documented versions",
     "One cycle runs the 'version 2 uses less' constraint: same performance, less material - and repair beats rebuild where it can (framework section 6 sustainability lens, v1.7)"
+   ],
+   "rungs": [
+    {
+     "id": "working-drawings",
+     "title": "Drawings You Can Build From",
+     "ages": "10-11",
+     "description": "Turns scale drawings into working drawings: dimensioned sketches precise enough that someone else could build from them.",
+     "exercises": [
+      "Dimension an own design: every length written, every part named"
+     ]
+    },
+    {
+     "id": "build-from-your-plan",
+     "title": "Build From Your Own Plan",
+     "ages": "10-11",
+     "description": "Builds a real object from an own dimensioned sketch, with real materials and real tools.",
+     "exercises": [
+      "Birdhouse from your own dimensioned sketch"
+     ]
+    },
+    {
+     "id": "test-it-for-real",
+     "title": "Test It for Real",
+     "ages": "11-12",
+     "description": "Tests builds to their limits and records exactly where and how they fail - failure as data, on paper.",
+     "exercises": [
+      "Egg-drop iteration cycle with documented versions"
+     ]
+    },
+    {
+     "id": "version-2-uses-less",
+     "title": "Version 2 Uses Less",
+     "ages": "12-13",
+     "description": "Runs an improvement cycle under the honest constraint: same performance, less material - and repair beats rebuild where it can.",
+     "exercises": [
+      "One build redone lighter: same job, less stuff, the difference documented"
+     ]
+    },
+    {
+     "id": "the-whole-cycle",
+     "title": "The Whole Cycle, Yours",
+     "ages": "12-13",
+     "description": "Carries a self-chosen project through the full cycle alone: measure, draw, prototype, test, iterate, finish.",
+     "exercises": [
+      "A term project of own choosing, documented from first sketch to final version"
+     ]
+    }
    ]
   },
   {
@@ -2572,6 +3032,44 @@ const DATA = {
    "exercises": [
     "Run three micro-ventures across the year; keep a one-page P&L for each - materials-honest since v1.7: inputs, leftovers and waste appear in the P&L beside the euros (framework section 6 sustainability lens)",
     "Post-mortem ritual: what sold, what flopped, what the next venture changes"
+   ],
+   "rungs": [
+    {
+     "id": "venture-number-one",
+     "title": "Venture Number One",
+     "ages": "10-11",
+     "description": "Runs a first full make-price-sell cycle beyond the quest stall, with a one-page P&L at the end.",
+     "exercises": [
+      "One micro-venture: make, price against real costs, sell, count honestly"
+     ]
+    },
+    {
+     "id": "count-everything-honestly",
+     "title": "Count Everything Honestly",
+     "ages": "11-12",
+     "description": "Accounts each venture materials-honestly: inputs, leftovers and waste appear in the P&L beside the euros.",
+     "exercises": [
+      "P&L with a materials line: what was used, what was left over, what was thrown away"
+     ]
+    },
+    {
+     "id": "the-post-mortem-ritual",
+     "title": "The Post-Mortem Ritual",
+     "ages": "11-12",
+     "description": "Closes every venture with the ritual - what sold, what flopped, what the next one changes - and the next venture opens by reading it.",
+     "exercises": [
+      "Post-mortem ritual: what sold, what flopped, what the next venture changes"
+     ]
+    },
+    {
+     "id": "a-year-of-ventures",
+     "title": "A Year of Ventures",
+     "ages": "12-13",
+     "description": "Runs several ventures across a year, each one changed by the last one's lessons - iteration at venture scale.",
+     "exercises": [
+      "Run three micro-ventures across the year; keep a one-page P&L for each"
+     ]
+    }
    ]
   },
   {
@@ -2591,6 +3089,54 @@ const DATA = {
    "exercises": [
     "Three-minute mini-documentary about a family hobby: storyboard, shot list, two editing passes, family premiere",
     "Re-cut rounds: show a cut to two people, log what they said, change one thing per round - version-2 culture on a timeline"
+   ],
+   "rungs": [
+    {
+     "id": "storyboard-and-shot-list",
+     "title": "Storyboard & Shot List",
+     "ages": "10-11",
+     "description": "Plans a whole piece on paper before touching a camera: storyboard frames, a shot list, and the story it must tell.",
+     "exercises": [
+      "Storyboard a two-minute piece in six frames, with a shot list a helper could film from"
+     ]
+    },
+    {
+     "id": "camera-and-sound",
+     "title": "Camera & Sound Basics",
+     "ages": "10-11",
+     "description": "Learns the craft floor: steady framing, light in the right place, and sound clean enough to listen to.",
+     "exercises": [
+      "Same scene, three shots: wide, close, and one that tells the feeling",
+      "Sound hunt: record the same line near, far and outside - hear the difference"
+     ]
+    },
+    {
+     "id": "cut-on-a-timeline",
+     "title": "Cut It on a Timeline",
+     "ages": "11-12",
+     "description": "Edits on a timeline: trims, ordering, titles and sound, until the piece says what the storyboard promised.",
+     "exercises": [
+      "Edit one shoot two ways: the long honest cut and the tight two-minute cut"
+     ]
+    },
+    {
+     "id": "re-cut-rounds",
+     "title": "Re-Cut Rounds",
+     "ages": "12-13",
+     "description": "Improves through feedback-driven re-cuts: show it, log what people said, change one thing per round.",
+     "exercises": [
+      "Re-cut rounds: show a cut to two people, log what they said, change one thing per round"
+     ]
+    },
+    {
+     "id": "story-for-a-real-audience",
+     "title": "A Story for a Real Audience",
+     "ages": "12-13",
+     "description": "Ships a complete short piece for a real audience, premiere included - with anything published staying parent-gated and the what-never-goes-online rules said aloud.",
+     "exercises": [
+      "Three-minute mini-documentary about a family hobby: storyboard, shot list, two editing passes, family premiere"
+     ]
+    }
    ]
   },
   {
@@ -2613,6 +3159,53 @@ const DATA = {
    "exercises": [
     "Functions and rates of change explored through real datasets",
     "Probability lab: simulations before formulas"
+   ],
+   "rungs": [
+    {
+     "id": "functions-as-machines",
+     "title": "Functions as Machines",
+     "ages": "14-15",
+     "description": "Meets functions as input-output machines and graphs of real relationships - the balance equations now moving.",
+     "exercises": [
+      "Functions and rates of change explored through real datasets"
+     ]
+    },
+    {
+     "id": "the-probability-lab",
+     "title": "The Probability Lab",
+     "ages": "14-15",
+     "description": "Runs simulations before formulas: the childhood dice intuition grown into honest experiments, then the mathematics that explains them.",
+     "exercises": [
+      "Probability lab: simulations before formulas"
+     ]
+    },
+    {
+     "id": "algebra-that-flows",
+     "title": "Algebra That Flows",
+     "ages": "15-16",
+     "description": "Manipulates expressions and solves multi-step problems fluently enough that the algebra serves the thinking, not the reverse.",
+     "exercises": [
+      "One real problem a week where the algebra is the tool, never the point"
+     ]
+    },
+    {
+     "id": "statistics-that-tell-the-truth",
+     "title": "Statistics That Tell the Truth",
+     "ages": "16-17",
+     "description": "Works descriptive and inferential statistics on real data - and learns exactly how charts and averages can mislead.",
+     "exercises": [
+      "Mislead-me page: make the same data look like two different stories, then say which is honest"
+     ]
+    },
+    {
+     "id": "rates-of-change",
+     "title": "Rates of Change",
+     "ages": "17-18",
+     "description": "Enters calculus-track mathematics: derivatives and integrals as rates and accumulation in real systems.",
+     "exercises": [
+      "Model something moving: speed, growth or cooling, with calculus doing the work"
+     ]
+    }
    ]
   },
   {
@@ -2632,6 +3225,53 @@ const DATA = {
    "exercises": [
     "Lab practicals and a human-body-systems deep dive",
     "Shadow a health professional for a day with prepared questions, and hold a term-long volunteering commitment - empathy under real conditions"
+   ],
+   "rungs": [
+    {
+     "id": "body-systems-in-depth",
+     "title": "Body Systems in Depth",
+     "ages": "14-15",
+     "description": "Studies human body systems at real depth - the tier-2 body map grown into physiology.",
+     "exercises": [
+      "A human-body-systems deep dive with own summary diagrams"
+     ]
+    },
+    {
+     "id": "chemistry-of-living-things",
+     "title": "Chemistry of Living Things",
+     "ages": "15-16",
+     "description": "Builds the chemistry foundations medicine stands on, from reactions toward biochemistry.",
+     "exercises": [
+      "Kitchen-to-lab bridge: one classic reaction studied properly, equations and all"
+     ]
+    },
+    {
+     "id": "real-lab-hands",
+     "title": "Real Lab Hands",
+     "ages": "15-16",
+     "description": "Works real lab practicals with proper technique and honest records - the lab notebook now meeting real equipment.",
+     "exercises": [
+      "Lab practicals with technique, safety and a notebook that would convince a stranger"
+     ]
+    },
+    {
+     "id": "care-in-real-life",
+     "title": "Care in Real Life",
+     "ages": "16-17",
+     "description": "Holds a term-long people-facing service commitment - empathy under real conditions, the leg of medicine no textbook carries.",
+     "exercises": [
+      "A term-long volunteering commitment, held even on the days it is hard"
+     ]
+    },
+    {
+     "id": "see-the-profession",
+     "title": "See the Profession Up Close",
+     "ages": "17-18",
+     "description": "Shadows a health professional with prepared questions and connects the science to the working day.",
+     "exercises": [
+      "Shadow a health professional for a day with prepared questions, then write down what surprised you"
+     ]
+    }
    ]
   },
   {
@@ -2651,6 +3291,53 @@ const DATA = {
    "exercises": [
     "Ship a project: repository, versions, README, one real user",
     "Implement classic search and sort algorithms and measure them"
+   ],
+   "rungs": [
+    {
+     "id": "save-every-version",
+     "title": "Save Every Version",
+     "ages": "14-15",
+     "description": "Puts every project under version control: commits that say why, history that can be walked, mistakes that can be undone.",
+     "exercises": [
+      "Repository habit: no project without one; commit messages a stranger could follow"
+     ]
+    },
+    {
+     "id": "classic-algorithms",
+     "title": "Classic Algorithms",
+     "ages": "15-16",
+     "description": "Implements classic search, sort and data-structure algorithms and measures them against each other.",
+     "exercises": [
+      "Implement classic search and sort algorithms and measure them"
+     ]
+    },
+    {
+     "id": "code-with-others",
+     "title": "Code With Others",
+     "ages": "16-17",
+     "description": "Works in a shared codebase: reads others' code, makes small clean contributions, and takes review kindly.",
+     "exercises": [
+      "One real contribution to a shared or open codebase, however small"
+     ]
+    },
+    {
+     "id": "ship-it",
+     "title": "Ship It",
+     "ages": "16-17",
+     "description": "Ships a real project - repository, versions, README - to at least one real user.",
+     "exercises": [
+      "Ship a project: repository, versions, README, one real user"
+     ]
+    },
+    {
+     "id": "keep-it-alive",
+     "title": "Keep It Alive",
+     "ages": "17-18",
+     "description": "Maintains shipped software through bug reports, fixes and releases - code as a living thing with users on the other end.",
+     "exercises": [
+      "Maintenance log: issues received, fixes shipped, one lesson per release"
+     ]
+    }
    ]
   },
   {
@@ -2672,6 +3359,53 @@ const DATA = {
    "exercises": [
     "Uurimistöö: own question, method, data and a defended write-up",
     "Read and critique one real published study"
+   ],
+   "rungs": [
+    {
+     "id": "read-a-real-study",
+     "title": "Read a Real Study",
+     "ages": "14-15",
+     "description": "Reads and critiques published research: what was done, what was found, and what the paper cannot claim.",
+     "exercises": [
+      "Read and critique one real published study"
+     ]
+    },
+    {
+     "id": "a-question-worth-asking",
+     "title": "A Question Worth Asking",
+     "ages": "15-16",
+     "description": "Narrows an own interest into a research question that is honest, answerable and worth the year.",
+     "exercises": [
+      "Question funnel: ten curiosities, three candidates, one question with a reason it matters"
+     ]
+    },
+    {
+     "id": "method-and-data",
+     "title": "Method & Data",
+     "ages": "16-17",
+     "description": "Designs the method and collects the data - sources read in English, records kept like a scientist.",
+     "exercises": [
+      "Method page a stranger could follow; data gathered and logged before conclusions are touched"
+     ]
+    },
+    {
+     "id": "write-it-up",
+     "title": "Write It Up",
+     "ages": "16-17",
+     "description": "Writes the full research report: question, method, data, findings and sources, in proper form.",
+     "exercises": [
+      "The uurimistöö write-up: drafted, edited, finished"
+     ]
+    },
+    {
+     "id": "defend-your-findings",
+     "title": "Defend Your Findings",
+     "ages": "17-18",
+     "description": "Presents and defends the findings before real questioners - and concedes cleanly where the work has limits.",
+     "exercises": [
+      "Uurimistöö defense: present, take questions, answer what was actually asked"
+     ]
+    }
    ]
   },
   {
@@ -2691,6 +3425,44 @@ const DATA = {
    "exercises": [
     "Mock trial: prepare and argue a case, then swap sides",
     "Contract close-read: find the three clauses that matter in a phone plan"
+   ],
+   "rungs": [
+    {
+     "id": "read-the-small-print",
+     "title": "Read the Small Print",
+     "ages": "14-15",
+     "description": "Close-reads real rules and contracts and finds the clauses that actually matter.",
+     "exercises": [
+      "Contract close-read: find the three clauses that matter in a phone plan"
+     ]
+    },
+    {
+     "id": "how-rules-become-law",
+     "title": "How Rules Become Law",
+     "ages": "15-16",
+     "description": "Studies civics and legal reasoning: how rules are made, applied and appealed - and why fair process matters.",
+     "exercises": [
+      "Trace one real rule from written text to real-life application - school, sport or state"
+     ]
+    },
+    {
+     "id": "build-a-case",
+     "title": "Build a Case",
+     "ages": "16-17",
+     "description": "Prepares a full case: the facts, the strongest arguments, and the other side's strongest arguments answered in advance.",
+     "exercises": [
+      "Case file: facts, argument outline, and a steelman page for the opposition"
+     ]
+    },
+    {
+     "id": "argue-it-for-real",
+     "title": "Argue It for Real",
+     "ages": "17-18",
+     "description": "Argues full cases in mock trial or competitive debate - then swaps sides and argues the other way.",
+     "exercises": [
+      "Mock trial: prepare and argue a case, then swap sides"
+     ]
+    }
    ]
   },
   {
@@ -2713,6 +3485,53 @@ const DATA = {
    "exercises": [
     "Student company: product, costs, prices, P&L and a final pitch",
     "Market-day stall with honest profit accounting"
+   ],
+   "rungs": [
+    {
+     "id": "the-company-plan",
+     "title": "The Company Plan",
+     "ages": "14-15",
+     "description": "Plans the student company: the product, its real costs, its price and who will actually buy it.",
+     "exercises": [
+      "One-page company plan: product, cost, price, customer - and why that price"
+     ]
+    },
+    {
+     "id": "open-for-business",
+     "title": "Open for Business",
+     "ages": "15-16",
+     "description": "Launches and sells for real - real customers, real money, real weather.",
+     "exercises": [
+      "Market-day stall with honest profit accounting"
+     ]
+    },
+    {
+     "id": "keep-real-books",
+     "title": "Keep Real Books",
+     "ages": "16-17",
+     "description": "Keeps the company's real P&L across the whole run, however small the numbers.",
+     "exercises": [
+      "Company books: every cost and sale entered, the P&L always current"
+     ]
+    },
+    {
+     "id": "the-pitch",
+     "title": "The Pitch",
+     "ages": "17-18",
+     "description": "Prepares and delivers the company pitch: what it is, how it went, what the numbers say.",
+     "exercises": [
+      "Student company final pitch: product, costs, prices, P&L, lessons"
+     ]
+    },
+    {
+     "id": "close-the-books",
+     "title": "Close the Books",
+     "ages": "17-18",
+     "description": "Winds the company down properly: final accounts settled and an honest what-we-learned report.",
+     "exercises": [
+      "Final report: what worked, what flopped, what the next venture inherits"
+     ]
+    }
    ]
   },
   {
@@ -2733,6 +3552,44 @@ const DATA = {
    "exercises": [
     "Run a club or event series for a term: agenda, budget, people",
     "Organize a tournament: schedule, roles, prizes, debrief"
+   ],
+   "rungs": [
+    {
+     "id": "run-the-meeting",
+     "title": "Run the Meeting",
+     "ages": "14-15",
+     "description": "Chairs real meetings with an agenda, decisions and follow-ups - the family-meeting chair grown into a working skill.",
+     "exercises": [
+      "Chair a club or project meeting: agenda out before, decisions written after"
+     ]
+    },
+    {
+     "id": "organize-something-real",
+     "title": "Organize Something Real",
+     "ages": "15-16",
+     "description": "Organizes a full event end-to-end: schedule, roles, budget, and the debrief after.",
+     "exercises": [
+      "Organize a tournament: schedule, roles, prizes, debrief"
+     ]
+    },
+    {
+     "id": "hold-the-role",
+     "title": "Hold the Role for a Term",
+     "ages": "16-17",
+     "description": "Holds a leadership role for a full term: sets direction, runs the rhythm, keeps people moving and heard.",
+     "exercises": [
+      "Run a club or event series for a term: agenda, budget, people"
+     ]
+    },
+    {
+     "id": "answer-for-the-outcome",
+     "title": "Answer for the Outcome",
+     "ages": "17-18",
+     "description": "Is accountable for outcomes and people across a sustained role: makes the hard calls, debriefs honestly, and keeps people whole.",
+     "exercises": [
+      "End-of-term accountability review, self-written: what I promised, what happened, what I own"
+     ]
+    }
    ]
   },
   {
@@ -2752,6 +3609,53 @@ const DATA = {
    "exercises": [
     "CAD-design and fabricate a working part",
     "Bridge-building or robotics competition entry with load testing"
+   ],
+   "rungs": [
+    {
+     "id": "draw-it-in-cad",
+     "title": "Draw It in CAD",
+     "ages": "14-15",
+     "description": "Models first parts in CAD - the scale drawings of childhood arriving on screen, precise enough to make.",
+     "exercises": [
+      "Model three real household parts in CAD, measured from life"
+     ]
+    },
+    {
+     "id": "mechanics-you-can-feel",
+     "title": "Mechanics You Can Feel",
+     "ages": "15-16",
+     "description": "Applies force, load and structure physics to real builds - why it holds, where it bends, when it breaks.",
+     "exercises": [
+      "Predict-then-load: calculate what a build should hold, then test whether it does"
+     ]
+    },
+    {
+     "id": "make-the-part",
+     "title": "Make the Part",
+     "ages": "15-16",
+     "description": "Designs and fabricates a working part from an own CAD drawing - drawing, machine and material meeting reality.",
+     "exercises": [
+      "CAD-design and fabricate a working part"
+     ]
+    },
+    {
+     "id": "survive-the-load",
+     "title": "Survive the Load",
+     "ages": "16-17",
+     "description": "Builds projects that must survive honest load testing, with the failures documented as carefully as the successes.",
+     "exercises": [
+      "Bridge-building or robotics competition entry with load testing"
+     ]
+    },
+    {
+     "id": "from-spec-to-survival",
+     "title": "From Spec to Survival",
+     "ages": "17-18",
+     "description": "Carries a full engineering project from specification to real-world survival - designed, built, tested, iterated, finished.",
+     "exercises": [
+      "A capstone build that someone else actually uses, documented end to end"
+     ]
+    }
    ]
   },
   {
@@ -2773,6 +3677,44 @@ const DATA = {
    "exercises": [
     "Spreadsheet model: saving vs investing over ten years",
     "Read a real annual report: find revenue, costs and profit"
+   ],
+   "rungs": [
+    {
+     "id": "spreadsheet-hands",
+     "title": "Spreadsheet Hands",
+     "ages": "14-15",
+     "description": "Gets fluent in spreadsheets - formulas, references, tidy tables - the tool every later rung stands on.",
+     "exercises": [
+      "Rebuild the childhood pocket-money ledger as a live spreadsheet that totals itself"
+     ]
+    },
+    {
+     "id": "read-the-statements",
+     "title": "Read the Statements",
+     "ages": "15-16",
+     "description": "Reads real financial statements and finds the story: revenue, costs, profit, and what changed since last year.",
+     "exercises": [
+      "Read a real annual report: find revenue, costs and profit"
+     ]
+    },
+    {
+     "id": "model-the-what-ifs",
+     "title": "Model the What-Ifs",
+     "ages": "16-17",
+     "description": "Models scenarios in spreadsheets: change an assumption, watch the future move, and say which assumption matters most.",
+     "exercises": [
+      "Spreadsheet model: saving vs investing over ten years"
+     ]
+    },
+    {
+     "id": "risk-and-return",
+     "title": "Risk, Return & How Money Works",
+     "ages": "17-18",
+     "description": "Studies investing, risk and economics basics - the dice intuition of childhood grown into portfolio sense.",
+     "exercises": [
+      "Paper portfolio held for a term with a written reason per position - and an honest review of what luck did"
+     ]
+    }
    ]
   },
   {
@@ -2792,6 +3734,53 @@ const DATA = {
    "exercises": [
     "Run a channel for a term: content calendar, pieces shipped on schedule, a monthly analytics review of what worked and why",
     "Creator P&L and brand one-pager: costs, any revenue, audience growth - presented like the student-company pitch"
+   ],
+   "rungs": [
+    {
+     "id": "find-your-corner",
+     "title": "Find Your Corner",
+     "ages": "14-15",
+     "description": "Chooses a niche and shapes a simple brand: a name, a look, and a promise the channel keeps.",
+     "exercises": [
+      "Brand one-pager: who it is for, what it promises, why you"
+     ]
+    },
+    {
+     "id": "keep-the-schedule",
+     "title": "Keep the Schedule",
+     "ages": "15-16",
+     "description": "Runs a publishing schedule actually kept across a term - publishing itself staying inside the parent gate throughout.",
+     "exercises": [
+      "Content calendar for a term: pieces planned, pieces shipped on time"
+     ]
+    },
+    {
+     "id": "read-the-numbers-honestly",
+     "title": "Read the Numbers Honestly",
+     "ages": "16-17",
+     "description": "Reads audience analytics honestly: what worked, what did not, and what next month changes.",
+     "exercises": [
+      "A monthly analytics review of what worked and why"
+     ]
+    },
+    {
+     "id": "meet-your-audience-kindly",
+     "title": "Meet Your Audience Kindly",
+     "ages": "16-17",
+     "description": "Handles comments and community kindly and safely - the platform judgment on which the family gate's lifting depends.",
+     "exercises": [
+      "Comment-culture playbook: what gets answered, what gets ignored, what gets shown to a parent"
+     ]
+    },
+    {
+     "id": "the-channels-books",
+     "title": "The Channel's Books",
+     "ages": "17-18",
+     "description": "Runs the channel as a small honest venture: monetization basics, a creator P&L, and growth presented like a pitch.",
+     "exercises": [
+      "Creator P&L and brand one-pager: costs, any revenue, audience growth - presented like the student-company pitch"
+     ]
+    }
    ]
   }
  ]
@@ -2927,6 +3916,8 @@ let traceCareer = null;  // overview highlight context (sticky)
 let traceDomain = null;
 let careerTabSel = null; // career-tab filter
 let selectedNode = null;
+let focusedRung = null;  // rung id highlighted in the open panel
+let bundlesExpanded = false;
 
 const $ = id => document.getElementById(id);
 const board = $("board"), svg = $("edges"), panel = $("panel");
@@ -2959,9 +3950,24 @@ function renderBoard() {
       b.className = "node" + (enrich.has(n.id) ? " enrich" : "");
       b.id = "n-" + n.id;
       b.style.setProperty("--dc", `var(--d-${n.domain})`);
-      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}</span>`;
+      const steps = n.rungs?.length
+        ? ` · <span class="steps-badge">${bundlesExpanded ? "▾" : "▸"} ${n.rungs.length} steps</span>` : "";
+      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}${steps}</span>`;
       b.addEventListener("click", e => { e.stopPropagation(); openNode(n.id); });
       col.appendChild(b);
+      if (bundlesExpanded && n.rungs?.length) {
+        const stack = document.createElement("div");
+        stack.className = "rungstack";
+        n.rungs.forEach(rg => {
+          const rb = document.createElement("button");
+          rb.className = "rung";
+          rb.dataset.key = n.id + "/" + rg.id;
+          rb.innerHTML = `<span>${rg.title}</span><span class="rst"></span>`;
+          rb.addEventListener("click", e => { e.stopPropagation(); openNode(n.id, false, rg.id); });
+          stack.appendChild(rb);
+        });
+        col.appendChild(stack);
+      }
     });
     board.appendChild(col);
   }
@@ -3112,18 +4118,26 @@ function applyStates() {
     const mark = el.querySelector(".st");
     if (mark) mark.textContent = st ? STATE_MARK[st] : "";
   });
+  document.querySelectorAll(".rung").forEach(el => {
+    const st = stateOf(el.dataset.key);
+    el.classList.remove("s-mastered", "s-learning");
+    if (st) el.classList.add("s-" + st);
+    const mark = el.querySelector(".rst");
+    if (mark) mark.textContent = st ? STATE_MARK[st] : "";
+  });
   renderCareerSummary();
 }
 
-async function setNodeState(nodeId, state) {
+async function setNodeState(key, state, refreshId) {
   if (!activePerson) return;
   progress[activePerson] = progress[activePerson] || {};
-  const cur = progress[activePerson][nodeId] || null;
+  const cur = progress[activePerson][key] || null;
   const next = (cur === state) ? null : state;    // clicking the active state clears it
-  if (next) progress[activePerson][nodeId] = next; else delete progress[activePerson][nodeId];
+  if (next) progress[activePerson][key] = next; else delete progress[activePerson][key];
   applyStates();
-  if (selectedNode === nodeId) openNode(nodeId, true);
-  try { await store.setState(activePerson, nodeId, next); }
+  const target = refreshId || key;
+  if (selectedNode === target) openNode(target, true, focusedRung);
+  try { await store.setState(activePerson, key, next); }
   catch (e) { console.warn("save failed", e); }
 }
 
@@ -3205,8 +4219,27 @@ function stateButtonsHtml(nodeId) {
     </div>`;
 }
 
-function openNode(id, keepScroll) {
+function ladderHtml(n) {
+  if (!n.rungs?.length) return "";
+  return `<h3>The ladder inside — ${n.rungs.length} steps</h3><div class="ladder">${n.rungs.map(rg => {
+    const key = n.id + "/" + rg.id;
+    const cur = stateOf(key);
+    const btns = activePerson
+      ? `<div class="statebtns">${STATES.map(s =>
+          `<button type="button" data-rkey="${key}" data-state="${s}" class="${cur === s ? "on-" + s : ""}">${STATE_LABEL[s]}</button>`).join("")}</div>`
+      : "";
+    return `<div class="lr${focusedRung === rg.id ? " focus" : ""}">
+      <div class="lt">${cur ? `<span style="color:var(--${cur === "mastered" ? "ok" : "warn"})">${STATE_MARK[cur]}</span>` : ""}<span>${rg.title}</span><span class="la">${rg.ages || ""}</span></div>
+      <p>${rg.description || ""}</p>
+      ${rg.exercises?.length ? `<p style="color:var(--faint)">e.g. ${rg.exercises.join(" · ")}</p>` : ""}
+      ${btns}
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function openNode(id, keepScroll, focusRung) {
   selectedNode = id;
+  focusedRung = focusRung || null;
   const n = nodesById[id];
   const prereqTitles = (n.prereqs || []).map(p => nodesById[p]?.title || p);
   const unlocks = (kids[id] || []).filter(k => !visibleNodeIds() || visibleNodeIds().has(k)).map(k => nodesById[k].title);
@@ -3221,6 +4254,7 @@ function openNode(id, keepScroll) {
     ${pathTagFor(id)}
     <p class="desc">${n.description}</p>
     ${stateButtonsHtml(id)}
+    ${ladderHtml(n)}
     ${n.exercises?.length ? `<h3>Example exercises</h3><ul>${n.exercises.map(e => `<li>${e}</li>`).join("")}</ul>` : ""}
     ${prereqTitles.length ? `<h3>Builds on</h3><ul>${prereqTitles.map(t => `<li>${t}</li>`).join("")}</ul>` : "<h3>Builds on</h3><p class='desc' style='color:var(--muted)'>Nothing — this is a starting skill.</p>"}
     ${unlocks.length ? `<h3>Unlocks</h3><ul>${unlocks.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
@@ -3228,8 +4262,12 @@ function openNode(id, keepScroll) {
     <div class="cline">${(n.careers || []).map(c => DATA.careers.find(x => x.id === c)?.emoji || "").join(" ")}</div>`;
   panel.classList.add("open");
   panel.querySelector(".close").addEventListener("click", closePanel);
-  panel.querySelectorAll(".statebtns button").forEach(b =>
-    b.addEventListener("click", () => setNodeState(id, b.dataset.state)));
+  panel.querySelectorAll(".statebtns button:not([data-rkey])").forEach(b =>
+    b.addEventListener("click", () => setNodeState(id, b.dataset.state, id)));
+  panel.querySelectorAll(".statebtns button[data-rkey]").forEach(b =>
+    b.addEventListener("click", () => setNodeState(b.dataset.rkey, b.dataset.state, id)));
+  const focusEl = panel.querySelector(".lr.focus");
+  if (focusEl && !keepScroll) focusEl.scrollIntoView({ block: "nearest" });
   applyHighlights();
 }
 
@@ -3374,6 +4412,16 @@ async function boot() {
 
 $("tabOverview").addEventListener("click", () => switchTab("overview"));
 $("tabCareer").addEventListener("click", () => switchTab("career"));
+{
+  const bt = $("bundleToggle");
+  bt.hidden = !DATA.nodes.some(n => n.rungs?.length);
+  bt.addEventListener("click", () => {
+    bundlesExpanded = !bundlesExpanded;
+    bt.setAttribute("aria-pressed", String(bundlesExpanded));
+    bt.textContent = bundlesExpanded ? "⊟ Collapse bundles" : "⊞ Expand bundles";
+    renderBoard();
+  });
+}
 $("personAdd").addEventListener("click", addPerson);
 $("personName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
 $("traceClear").addEventListener("click", () => setTrace(traceCareer));

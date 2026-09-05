@@ -54,6 +54,43 @@
   .tabs button:hover { color: var(--text); }
   .tabs button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
   .tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+  .bundletoggle {
+    margin-left: auto; align-self: center; font-family: "Instrument Sans", sans-serif;
+    font-size: 12.5px; font-weight: 600; color: var(--muted); background: var(--card);
+    border: 1px solid var(--card-edge) !important; border-radius: 999px !important;
+    padding: 5px 14px !important; margin-bottom: 4px;
+  }
+  .bundletoggle:hover { border-color: var(--faint) !important; color: var(--text); }
+  .bundletoggle[aria-pressed="true"] { border-color: var(--gold) !important; color: var(--gold); background: #2a2c22; }
+
+  /* ---------- bundle rungs (tier 4-5 step ladders) ---------- */
+  .steps-badge { color: var(--gold-dim); font-weight: 600; }
+  .rungstack {
+    margin: -3px 0 4px 14px; padding-left: 10px;
+    border-left: 2px solid var(--card-edge);
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .rung {
+    font: inherit; text-align: left; cursor: pointer;
+    background: var(--bg-raise); color: var(--text);
+    border: 1px solid var(--card-edge); border-radius: 7px;
+    padding: 5px 9px; font-size: 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .rung:hover { border-color: var(--faint); }
+  .rung:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .rung .rst { margin-left: auto; font-weight: 700; }
+  .rung.s-mastered { background: linear-gradient(var(--ok-bg), var(--ok-bg)) var(--bg-raise); }
+  .rung.s-mastered .rst { color: var(--ok); }
+  .rung.s-learning { background: linear-gradient(var(--warn-bg), var(--warn-bg)) var(--bg-raise); }
+  .rung.s-learning .rst { color: var(--warn); }
+  .ladder { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .ladder .lr { border: 1px solid var(--card-edge); border-radius: 10px; padding: 8px 10px; }
+  .ladder .lr.focus { border-color: var(--gold); }
+  .ladder .lr .lt { font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: baseline; }
+  .ladder .lr .la { color: var(--faint); font-size: 11px; margin-left: auto; }
+  .ladder .lr p { margin: 3px 0 5px; font-size: 12.5px; color: var(--muted); }
+  .ladder .lr .statebtns { margin: 0; }
+  .ladder .lr .statebtns button { padding: 4px 9px; font-size: 12px; }
 
   /* ---------- people bar ---------- */
   .peoplebar {
@@ -231,6 +268,7 @@
 <nav class="tabs" role="tablist">
   <button role="tab" id="tabOverview" aria-selected="true">Overview</button>
   <button role="tab" id="tabCareer" aria-selected="false">Career paths</button>
+  <button type="button" class="bundletoggle" id="bundleToggle" aria-pressed="false" hidden>⊞ Expand bundles</button>
 </nav>
 
 <div class="peoplebar">
@@ -418,6 +456,8 @@ let traceCareer = null;  // overview highlight context (sticky)
 let traceDomain = null;
 let careerTabSel = null; // career-tab filter
 let selectedNode = null;
+let focusedRung = null;  // rung id highlighted in the open panel
+let bundlesExpanded = false;
 
 const $ = id => document.getElementById(id);
 const board = $("board"), svg = $("edges"), panel = $("panel");
@@ -450,9 +490,24 @@ function renderBoard() {
       b.className = "node" + (enrich.has(n.id) ? " enrich" : "");
       b.id = "n-" + n.id;
       b.style.setProperty("--dc", `var(--d-${n.domain})`);
-      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}</span>`;
+      const steps = n.rungs?.length
+        ? ` · <span class="steps-badge">${bundlesExpanded ? "▾" : "▸"} ${n.rungs.length} steps</span>` : "";
+      b.innerHTML = `<span class="t">${n.title}</span><span class="st"></span><span class="m"><span class="dot"></span>${DOMAIN_LABEL[n.domain] || n.domain} · ${n.ageBand}${steps}</span>`;
       b.addEventListener("click", e => { e.stopPropagation(); openNode(n.id); });
       col.appendChild(b);
+      if (bundlesExpanded && n.rungs?.length) {
+        const stack = document.createElement("div");
+        stack.className = "rungstack";
+        n.rungs.forEach(rg => {
+          const rb = document.createElement("button");
+          rb.className = "rung";
+          rb.dataset.key = n.id + "/" + rg.id;
+          rb.innerHTML = `<span>${rg.title}</span><span class="rst"></span>`;
+          rb.addEventListener("click", e => { e.stopPropagation(); openNode(n.id, false, rg.id); });
+          stack.appendChild(rb);
+        });
+        col.appendChild(stack);
+      }
     });
     board.appendChild(col);
   }
@@ -603,18 +658,26 @@ function applyStates() {
     const mark = el.querySelector(".st");
     if (mark) mark.textContent = st ? STATE_MARK[st] : "";
   });
+  document.querySelectorAll(".rung").forEach(el => {
+    const st = stateOf(el.dataset.key);
+    el.classList.remove("s-mastered", "s-learning");
+    if (st) el.classList.add("s-" + st);
+    const mark = el.querySelector(".rst");
+    if (mark) mark.textContent = st ? STATE_MARK[st] : "";
+  });
   renderCareerSummary();
 }
 
-async function setNodeState(nodeId, state) {
+async function setNodeState(key, state, refreshId) {
   if (!activePerson) return;
   progress[activePerson] = progress[activePerson] || {};
-  const cur = progress[activePerson][nodeId] || null;
+  const cur = progress[activePerson][key] || null;
   const next = (cur === state) ? null : state;    // clicking the active state clears it
-  if (next) progress[activePerson][nodeId] = next; else delete progress[activePerson][nodeId];
+  if (next) progress[activePerson][key] = next; else delete progress[activePerson][key];
   applyStates();
-  if (selectedNode === nodeId) openNode(nodeId, true);
-  try { await store.setState(activePerson, nodeId, next); }
+  const target = refreshId || key;
+  if (selectedNode === target) openNode(target, true, focusedRung);
+  try { await store.setState(activePerson, key, next); }
   catch (e) { console.warn("save failed", e); }
 }
 
@@ -696,8 +759,27 @@ function stateButtonsHtml(nodeId) {
     </div>`;
 }
 
-function openNode(id, keepScroll) {
+function ladderHtml(n) {
+  if (!n.rungs?.length) return "";
+  return `<h3>The ladder inside — ${n.rungs.length} steps</h3><div class="ladder">${n.rungs.map(rg => {
+    const key = n.id + "/" + rg.id;
+    const cur = stateOf(key);
+    const btns = activePerson
+      ? `<div class="statebtns">${STATES.map(s =>
+          `<button type="button" data-rkey="${key}" data-state="${s}" class="${cur === s ? "on-" + s : ""}">${STATE_LABEL[s]}</button>`).join("")}</div>`
+      : "";
+    return `<div class="lr${focusedRung === rg.id ? " focus" : ""}">
+      <div class="lt">${cur ? `<span style="color:var(--${cur === "mastered" ? "ok" : "warn"})">${STATE_MARK[cur]}</span>` : ""}<span>${rg.title}</span><span class="la">${rg.ages || ""}</span></div>
+      <p>${rg.description || ""}</p>
+      ${rg.exercises?.length ? `<p style="color:var(--faint)">e.g. ${rg.exercises.join(" · ")}</p>` : ""}
+      ${btns}
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function openNode(id, keepScroll, focusRung) {
   selectedNode = id;
+  focusedRung = focusRung || null;
   const n = nodesById[id];
   const prereqTitles = (n.prereqs || []).map(p => nodesById[p]?.title || p);
   const unlocks = (kids[id] || []).filter(k => !visibleNodeIds() || visibleNodeIds().has(k)).map(k => nodesById[k].title);
@@ -712,6 +794,7 @@ function openNode(id, keepScroll) {
     ${pathTagFor(id)}
     <p class="desc">${n.description}</p>
     ${stateButtonsHtml(id)}
+    ${ladderHtml(n)}
     ${n.exercises?.length ? `<h3>Example exercises</h3><ul>${n.exercises.map(e => `<li>${e}</li>`).join("")}</ul>` : ""}
     ${prereqTitles.length ? `<h3>Builds on</h3><ul>${prereqTitles.map(t => `<li>${t}</li>`).join("")}</ul>` : "<h3>Builds on</h3><p class='desc' style='color:var(--muted)'>Nothing — this is a starting skill.</p>"}
     ${unlocks.length ? `<h3>Unlocks</h3><ul>${unlocks.map(t => `<li>${t}</li>`).join("")}</ul>` : ""}
@@ -719,8 +802,12 @@ function openNode(id, keepScroll) {
     <div class="cline">${(n.careers || []).map(c => DATA.careers.find(x => x.id === c)?.emoji || "").join(" ")}</div>`;
   panel.classList.add("open");
   panel.querySelector(".close").addEventListener("click", closePanel);
-  panel.querySelectorAll(".statebtns button").forEach(b =>
-    b.addEventListener("click", () => setNodeState(id, b.dataset.state)));
+  panel.querySelectorAll(".statebtns button:not([data-rkey])").forEach(b =>
+    b.addEventListener("click", () => setNodeState(id, b.dataset.state, id)));
+  panel.querySelectorAll(".statebtns button[data-rkey]").forEach(b =>
+    b.addEventListener("click", () => setNodeState(b.dataset.rkey, b.dataset.state, id)));
+  const focusEl = panel.querySelector(".lr.focus");
+  if (focusEl && !keepScroll) focusEl.scrollIntoView({ block: "nearest" });
   applyHighlights();
 }
 
@@ -865,6 +952,16 @@ async function boot() {
 
 $("tabOverview").addEventListener("click", () => switchTab("overview"));
 $("tabCareer").addEventListener("click", () => switchTab("career"));
+{
+  const bt = $("bundleToggle");
+  bt.hidden = !DATA.nodes.some(n => n.rungs?.length);
+  bt.addEventListener("click", () => {
+    bundlesExpanded = !bundlesExpanded;
+    bt.setAttribute("aria-pressed", String(bundlesExpanded));
+    bt.textContent = bundlesExpanded ? "⊟ Collapse bundles" : "⊞ Expand bundles";
+    renderBoard();
+  });
+}
 $("personAdd").addEventListener("click", addPerson);
 $("personName").addEventListener("keydown", e => { if (e.key === "Enter") addPerson(); });
 $("traceClear").addEventListener("click", () => setTrace(traceCareer));
